@@ -11,6 +11,7 @@ class JsonRequestPacketDeserializer
 	static JsonRequestPacketDeserializer* instance;
 	static std::string JsonRequestPacketDeserializer::decapsule(buffer buff);
 	JsonRequestPacketDeserializer();
+	json readInfo(buffer);
 
 public:
 	LoginRequest deserializeLoginRequest(buffer);

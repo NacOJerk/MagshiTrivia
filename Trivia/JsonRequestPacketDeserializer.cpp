@@ -16,51 +16,9 @@ std::string JsonRequestPacketDeserializer::decapsule(buffer buff)
 	return str;
 }
 
-int bufferToInt(buffer buff)
+json JsonRequestPacketDeserializer::readInfo(buffer buff)
 {
-	int ret = 0;
-	for (int i = 0; i < buff.size(); i++)
-	{
-		if (buff[i] == 1)
-			ret += pow(2, buff.size() - i);
-	}
-	return ret;
-}
-
-std::string  bufferToString(buffer buff)
-{
-	std::string ret = "";
-	char* letter = nullptr;
-	buffer chr;
-	for (int i = 0; i < buff.size(); i++)
-	{
-		if (i % (int)BYTE_SIZE == 0)
-		{
-			sprintf(letter, "%c", bufferToInt(chr));
-			ret += letter;
-			chr.empty();
-		}
-		chr.push_back(buff[i]);
-	}
-
-	return ret;
-}
-
-json readInfo(buffer buff)
-{
-	buffer length, content;
-	for (int count = 0, i = BYTE_SIZE; count < INT_SIZE * BYTE_SIZE; count++, i++)
-	{
-		length.push_back(buff[i]);
-	}
-	int len = bufferToInt(length);
-	for (int count = 0; count < len * BYTE_SIZE; count++, i++)
-	{
-		content.push_back(buff[i]);
-	}
-	std::string info = bufferToString(content);
-
-	return json(info);
+	return json(decapsule(buff));
 }
 
 JsonRequestPacketDeserializer::JsonRequestPacketDeserializer()
