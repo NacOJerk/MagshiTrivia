@@ -37,7 +37,7 @@ void Communicator::handleRequests()
 		SOCKET client_socket = ::accept(_serverSocket, NULL, NULL);
 		if (client_socket == INVALID_SOCKET)
 			throw std::exception(__FUNCTION__);
-		std::thread(&startThreadForNewClient, client_socket);
+		std::thread(&startThreadForNewClient, client_socket).detach();
 	}
 }
 
