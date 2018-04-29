@@ -22,7 +22,7 @@ def recv(sock):
 	length = int.from_bytes(sock.recv(4), byteorder='big')
 	message = ""
 	while len(message) < length:
-		message += sock.recv(length)
+		message += (sock.recv(length)).decode("ASCII")
 	return message
 	
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
