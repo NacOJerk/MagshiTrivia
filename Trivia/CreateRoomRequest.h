@@ -7,13 +7,13 @@ using std::string;
 class CreateRoomRequest
 {
 private:
-	string roomName;
+	string username;
 	unsigned int maxUsers;
 	unsigned int questionCount;
 	unsigned int answerTimeout;
 public:
 	CreateRoomRequest(string, unsigned int, unsigned int, unsigned int);
-	string getRoomName();
+	string getUsername();
 	unsigned int getMaxUsers();
 	unsigned int getQuestionCount();
 	unsigned int getAnswerTimeout();

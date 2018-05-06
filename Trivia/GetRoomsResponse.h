@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "RoomData.h"
+#include "Room.h"
 
 using std::vector;
 
@@ -8,9 +8,9 @@ class GetRoomsResponse
 {
 private:
 	unsigned int status;
-	vector<RoomData> rooms;
+	vector<Room> rooms;
 public:
-	GetRoomsResponse(unsigned int, vector<RoomData>);
+	GetRoomsResponse(unsigned int, vector<Room>);
 	unsigned int getStatus();
-	vector<RoomData> getRooms();
+	vector<Room> getRooms();
 };
