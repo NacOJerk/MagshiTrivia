@@ -16,5 +16,13 @@ public:
 	bool open(const std::string&);//filename
 	bool login(const std::string&, const std::string&) override;
 	bool signup(const std::string&, const std::string&, const std::string&) override;
+	void addHighscore(const std::string&, const unsigned int&) override;
+	std::vector<Highscore> getHighscores(const unsigned int&) override;
+	void addQuestionStat(const std::string&, const unsigned int&, const unsigned int&) override;
+	float getAverageTime(const std::string&) override;
+	float getSuccessRate(const std::string&) override;
+	float getStuipidityRate(const std::string&) override;
+	void addGame(const std::string&, const bool&) override;
+	float getWinRate(const std::string&) override;
 };
 

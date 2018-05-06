@@ -35,6 +35,24 @@ bool SQLDatabase::open(const std::string & name)
 			_db = nullptr;
 			return false;
 		}
+		if (!runQuery("CREATE TABLE HIGHSCORE (ID INTEGER PRIMARY KEY NOT NULL, USER TEXT NOT NULL, HIGHSCORE INTEGER NOT NULL, FOREIGN KEY (USER) REFERENCES USERS(USENAME));"))
+		{
+			sqlite3_close(_db);
+			_db = nullptr;
+			return false;
+		}
+		if (!runQuery("CREATE TABLE QUESTION_STATS (USER TEXT PRIMARY KEY NOT NULL, TIME INTEGER NOT NULL, QUESTIONS INTEGER NOT NULL, CORRECT INTEGER NOT NULL, STUIPED INTEGER NOT NULL, FOREIGN KEY (USER) REFERENCES USERS(USERNAME));"))
+		{
+			sqlite3_close(_db);
+			_db = nullptr;
+			return false;
+		}
+		if (!runQuery("CREATE TABLE ROOM_STATS (USER TEXT PRIMARY KEY NOT NULL, WINS INTEGER NOT NULL, ROOMS INTEGER NOT NULL, FOREIGN KEY (USER) REFERENCES USERS(USERNAME));"))
+		{
+			sqlite3_close(_db);
+			_db = nullptr;
+			return false;
+		}
 		/*
 		if (!runQuery(""))
 		{
@@ -80,6 +98,126 @@ bool SQLDatabase::signup(const std::string & u, const std::string & p, const std
 		return false;
 	static const char* QUERY = "INSERT INTO USERS (USERNAME, PASSWORD, EMAIL) VALUES (?, ?, ?)";
 	return !exec(QUERY, nullptr, nullptr, nullptr, "TTT", {&username, &password, &email});
+}
+
+void SQLDatabase::addHighscore(const std::string & u, const unsigned int & score)
+{
+	const static char* QUERY = "INSERT INTO HIGHSCORE (USER, HIGHSCORE) VALUES (?, ?)";
+	const char* username = u.c_str();
+	unsigned int scor = score;
+	exec(QUERY, nullptr, nullptr, nullptr, "TI", { &username, &scor });
+}
+
+std::vector<Highscore> SQLDatabase::getHighscores(const unsigned int & amount)
+{
+	const static char* QUERY = "SELECT USER, HIGHSCORE FROM HIGHSCORE ORDER BY HIGHSCORE DESC LIMIT ?";
+	std::vector<Highscore> highscores;
+	const static auto callback = [](void* vec, int, const char** data, const char**) -> int 
+	{
+		((std::vector<Highscore>*)vec)->push_back(Highscore(atoi(data[1]), std::string(data[0])));
+		return SQLITE_OK;
+	};
+	unsigned int amoun = amount;
+	exec(QUERY, callback, &highscores, nullptr, "I", { &amoun });
+	return highscores;
+}
+
+void SQLDatabase::addQuestionStat(const std::string & username, const unsigned int & time, const unsigned int & stuiped_scores)
+{
+	const static char* EXISTS = "SELECT * FROM QUESTION_STATS WHERE USER=?";
+	const static char* ADD = "INSERT INTO QUESTION_STATS (USER, TIME, QUESTIONS, CORRECT, STUIPED) VALUES (?, ?, 1, ?, ?)";
+	const static char* UPDATE = "UPDATE QUESTION_STATS SET TIME = TIME + ?, QUESTIONS = QUESTIONS + 1, CORRECT = CORRECT + ?, STUIPED = STUIPED + ? WHERE USER=?";
+	const char* user = username.c_str();
+	int correct = !stuiped_scores ? 1 : 0;
+	unsigned int tim = time;
+	unsigned int stuiped = stuiped_scores;
+	bool exists = false;
+	const static auto callback = [](void* boolean, int len, const char **, const char**) -> int
+	{
+		*((bool*)boolean) = true;
+		return SQLITE_OK;
+	};
+	exec(EXISTS, callback, &exists, nullptr, "T", { &user });
+	if (!exists)
+		exec(ADD, nullptr, nullptr, nullptr, "TIII", { &user, &tim, &correct, &stuiped });
+	else
+		exec(UPDATE, nullptr, nullptr, nullptr, "IIIT", {&tim, &correct, &stuiped, &user});
+}
+
+float SQLDatabase::getAverageTime(const std::string & u)
+{
+	const char* QUERY = "SELECT TIME/QUESTIONS*1.0 FROM QUESTION_STATS WHERE USER=?";
+	const char* username = u.c_str();
+	float storer = -1;
+	const static auto callback = [](void* store, int len, const char ** data, const char**) -> int
+	{
+		*((bool*)store) = atof(data[0]);
+		return SQLITE_OK;
+	};
+	exec(QUERY, callback, &storer, nullptr, "T", { &username });
+	return storer;
+}
+
+float SQLDatabase::getSuccessRate(const std::string & u)
+{
+	const char* QUERY = "SELECT CORRECT/QUESTIONS*1.0 FROM QUESTION_STATS WHERE USER=?";
+	const char* username = u.c_str();
+	float storer = -1;
+	const static auto callback = [](void* store, int len, const char ** data, const char**) -> int
+	{
+		*((bool*)store) = atof(data[0]) * 100;
+		return SQLITE_OK;
+	};
+	exec(QUERY, callback, &storer, nullptr, "T", { &username });
+	return storer;
+}
+
+float SQLDatabase::getStuipidityRate(const std::string & u)
+{
+	const char* QUERY = "SELECT STUIPED/QUESTIONS*1.0 FROM QUESTION_STATS WHERE USER=?";
+	const char* username = u.c_str();
+	float storer = -1;
+	const static auto callback = [](void* store, int len, const char ** data, const char**) -> int
+	{
+		*((bool*)store) = atof(data[0]) * 100;
+		return SQLITE_OK;
+	};
+	exec(QUERY, callback, &storer, nullptr, "T", { &username });
+	return storer;
+}
+
+void SQLDatabase::addGame(const std::string & username, const bool & win)
+{
+	const static char* EXISTS = "SELECT * FROM ROOM_STATS WHERE USER=?";
+	const static char* ADD = "INSERT INTO ROOM_STATS (USER, WINS, ROOMS) VALUES (?, ?, 1)";
+	const static char* UPDATE = "UPDATE ROOM_STATS SET WINS = WINS + ?, ROOMS = ROOMS + 1 WHERE USER = ?";
+	const char* user = username.c_str();
+	unsigned int add = win ? 1 : 0;
+	bool exists = false;
+	const static auto callback = [](void* boolean, int len, const char **, const char**) -> int
+	{
+		*((bool*)boolean) = true;
+		return SQLITE_OK;
+	};
+	exec(EXISTS, callback, &exists, nullptr, "T", { &user });
+	if (!exists)
+		exec(ADD, nullptr, nullptr, nullptr, "TI", { &user, &add });
+	else
+		exec(UPDATE, nullptr, nullptr, nullptr, "IT", { &add, &user });
+}
+
+float SQLDatabase::getWinRate(const std::string & u)
+{
+	const char* QUERY = "SELECT WINS/ROOMS*1.0 FROM ROOM_STATS WHERE USER=?";
+	const char* username = u.c_str();
+	float storer = -1;
+	const static auto callback = [](void* store, int len, const char ** data, const char**) -> int
+	{
+		*((bool*)store) = atof(data[0]) * 100;
+		return SQLITE_OK;
+	};
+	exec(QUERY, callback, &storer, nullptr, "T", { &username });
+	return storer;
 }
 
 int SQLDatabase::exec(const char * query, int(*callback)(void *, int, const char **, const char **), void * val, char ** errmsg, const char * types, std::vector<void*> args)
