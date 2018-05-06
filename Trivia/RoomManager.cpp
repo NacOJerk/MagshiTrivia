@@ -38,3 +38,8 @@ vector<Room> RoomManager::getRooms()
 	}
 	return vec;
 }
+
+Room RoomManager::getRoom(unsigned int id)
+{
+	return m_rooms[id];
+}

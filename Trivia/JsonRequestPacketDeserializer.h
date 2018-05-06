@@ -19,9 +19,9 @@ class JsonRequestPacketDeserializer
 public:
 	LoginRequest deserializeLoginRequest(buffer);
 	SignupRequest deserializeSignupRequest(buffer);
-	//GetPlayersInRoomRequest deserializeGetPlayersRequest(buffer);
-	//JoinRoomRequest deserializeJoinRoomRequest(buffer);
-	//CreateRoomRequest deserializeCreateRoomRequest(buffer);
+	GetPlayersInRoomRequest deserializeGetPlayersRequest(buffer);
+	JoinRoomRequest deserializeJoinRoomRequest(buffer);
+	CreateRoomRequest deserializeCreateRoomRequest(buffer);
 	static JsonRequestPacketDeserializer* getInstance();
 };
 

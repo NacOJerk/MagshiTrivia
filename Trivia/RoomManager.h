@@ -13,6 +13,7 @@ private:
 	map<unsigned int, Room> m_rooms;
 public:
 	RoomManager(map<unsigned int, Room>);
+	Room getRoom(unsigned int id);
 	void createRoom(LoggedUser, unsigned int, unsigned int);
 	void deleteRoom(unsigned int);
 	bool getRoomState(unsigned int);

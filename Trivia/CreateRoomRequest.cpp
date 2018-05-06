@@ -12,3 +12,13 @@ unsigned int CreateRoomRequest::getMaxUsers()
 {
 	return maxUsers;
 }
+
+unsigned int CreateRoomRequest::getQuestionCount()
+{
+	return questionCount;
+}
+
+unsigned int CreateRoomRequest::getAnswerTimeout()
+{
+	return answerTimeout;
+}

@@ -8,15 +8,15 @@ class RoomData
 private:
 	unsigned int id;
 	string name;
-	string maxPlayers;
+	unsigned int maxPlayers;
 	unsigned int timePerQuestion;
 	bool isActive;
 public:
-	RoomData(unsigned int, string, string, unsigned int, bool);
+	RoomData( string, unsigned int, unsigned int, bool);
 	
 	string getName();
 	unsigned int getId();
-	string getMaxPlayers();
+	unsigned int getMaxPlayers();
 	unsigned int getTimePerQuestion();
 	bool getIsActive();
 

@@ -13,4 +13,5 @@ private:
 public:
 	HighscoreTable(IDatabase&);
 	vector<Highscore> getHighscores();
+	void addQuestionStat(const string& username, const unsigned int& time, const unsigned int& stupidityRate);
 };
