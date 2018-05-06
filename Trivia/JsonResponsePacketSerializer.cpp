@@ -33,15 +33,18 @@ JsonResponsePacketSerializer * JsonResponsePacketSerializer::getInstance()
 
 buffer JsonResponsePacketSerializer::serializeResponse(ErrorResponse err)
 {
-	return encapsule(err.getMessage(), (byte)ERROR_RESPONSE);
+	string error = "{\"error\": \"" + err.getMessage() + "\"}";
+	return encapsule(error, (byte)ERROR_RESPONSE);
 }
 
 buffer JsonResponsePacketSerializer::serializeResponse(LoginResponse log)
 {
-	return encapsule(std::to_string(log.getStatus()), (byte)LOGIN_RESPONSE);
+	string res = "{\"status\": \"" + std::to_string(log.getStatus()) + "\"}";
+	return encapsule(res, (byte)LOGIN_RESPONSE);
 }
 
 buffer JsonResponsePacketSerializer::serializeResponse(SignupResponse sign)
 {
-	return encapsule(std::to_string(sign.getStatus()), (byte)SIGNUP_RESPONSE);
+	string res = "{\"status\": \"" + std::to_string(sign.getStatus()) + "\"}";
+	return encapsule(res, (byte)SIGNUP_RESPONSE);
 }
