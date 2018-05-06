@@ -18,7 +18,7 @@ std::string JsonRequestPacketDeserializer::decapsule(buffer buff)
 
 json JsonRequestPacketDeserializer::readInfo(buffer buff)
 {
-	return json(decapsule(buff));
+	return json::parse(decapsule(buff));
 }
 
 JsonRequestPacketDeserializer::JsonRequestPacketDeserializer()

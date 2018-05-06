@@ -2,9 +2,9 @@
 #include "IDatabase.h"
 #include "LoginManager.h"
 #include "LoginRequestHandler.h"
-#include "RoomManager.h"
-#include "HighscoreTable.h"
-#include "MenuRequestHandler.h"
+//#include "RoomManager.h"
+//#include "HighscoreTable.h"
+//#include "MenuRequestHandler.h"
 
 class LoginRequestHandler;
 

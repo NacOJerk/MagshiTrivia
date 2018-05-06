@@ -10,7 +10,7 @@ enum ResponseId { ERROR_RESPONSE = FINAL_ENUM, SIGNUP_RESPONSE, LOGIN_RESPONSE};
 typedef unsigned char byte;
 typedef std::vector<byte> buffer;
 
-RequestId getEnumFromID(byte id)
+static RequestId getEnumFromID(byte id)
 {
 	return static_cast<RequestId>(id);
 }

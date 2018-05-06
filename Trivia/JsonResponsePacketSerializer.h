@@ -1,5 +1,5 @@
 #pragma once
-#include "consts.h"
+#include "consts.hpp"
 #include "ErrorResponse.h"
 #include "LoginResponse.h"
 #include "SignupResponse.h"
@@ -19,12 +19,12 @@ public:
 	buffer serializeResponse(ErrorResponse);
 	buffer serializeResponse(LoginResponse);
 	buffer serializeResponse(SignupResponse);
-	buffer serializeResponse(LogoutResponse);
-	buffer serializeResponse(GetRoomsResponse);
-	buffer serializeResponse(GetPlayersInRoomResponse);
-	buffer serializeResponse(JoinRoomResponse);
-	buffer serializeResponse(CreateRoomResponse);
-	buffer serializeResponse(HighscoreResponse);
+	//buffer serializeResponse(LogoutResponse);
+	//buffer serializeResponse(GetRoomsResponse);
+	//buffer serializeResponse(GetPlayersInRoomResponse);
+	//buffer serializeResponse(JoinRoomResponse);
+	//buffer serializeResponse(CreateRoomResponse);
+	//buffer serializeResponse(HighscoreResponse);
 	static JsonResponsePacketSerializer* getInstance();
 };
 

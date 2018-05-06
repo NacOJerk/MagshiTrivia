@@ -1,9 +1,15 @@
 #include "SQLDatabase.h"
 #include <io.h>
 
+
 bool SQLDatabase::runQuery(char * query)
 {
 	return sqlite3_exec(_db, query, nullptr, nullptr, nullptr) == SQLITE_OK;
+}
+
+SQLDatabase::~SQLDatabase()
+{
+	sqlite3_close(_db);
 }
 
 bool SQLDatabase::open(const std::string & name)
@@ -15,7 +21,7 @@ bool SQLDatabase::open(const std::string & name)
 		_db = nullptr;
 		return false;
 	}
-	if (!doesFileExist)
+	if (doesFileExist == -1)
 	{
 		if (!runQuery("CREATE TABLE USERS (USERNAME TEXT PRIMARY KEY NOT NULL, PASSWORD TEXT NOT NULL, EMAIL TEXT NOT NULL)"))
 		{
@@ -41,9 +47,10 @@ bool SQLDatabase::open(const std::string & name)
 	return true;
 }
 
+
 bool SQLDatabase::login(const std::string & un, const std::string & p)
 {
-	static const char* QUERY = "GET * WHERE FROM USER WHERE USERNAME=? AND PASSWORD=?";
+	static const char* QUERY = "SELECT * FROM USERS WHERE USERNAME=? AND PASSWORD=?";
 	const char* username = un.c_str();
 	const char* password = p.c_str();
 	bool exists = false;
@@ -52,17 +59,27 @@ bool SQLDatabase::login(const std::string & un, const std::string & p)
 		*((bool*)boolean) = true;
 		return SQLITE_OK;
 	};
-	exec(QUERY, callback, &exists, nullptr, "TT", {username, password});
+	exec(QUERY, callback, &exists, nullptr, "TT", {&username, &password});
 	return exists;
 }
 
 bool SQLDatabase::signup(const std::string & u, const std::string & p, const std::string & e)
 {
-	static const char* QUERY = "INSERT INTO USERS (USERNAME, PASSWORD, EMAIL) VALUES (?, ?, ?)";
+	static const char* EXIST_CHECK = "SELECT * FROM USERS WHERE USERNAME=?";
 	const char* username = u.c_str();
 	const char* password = p.c_str();
 	const char* email = e.c_str();
-	return exec(QUERY, nullptr, nullptr, nullptr, "TTT", {username, password, email}) != SQLITE_OK;
+	bool exists = false;
+	static auto callback = [](void* boolean, int len, const char **, const char**) -> int
+	{
+		*((bool*)boolean) = true;
+		return SQLITE_OK;
+	};
+	exec(EXIST_CHECK, callback, &exists, nullptr, "T", { &username });
+	if (exists)
+		return false;
+	static const char* QUERY = "INSERT INTO USERS (USERNAME, PASSWORD, EMAIL) VALUES (?, ?, ?)";
+	return !exec(QUERY, nullptr, nullptr, nullptr, "TTT", {&username, &password, &email});
 }
 
 int SQLDatabase::exec(const char * query, int(*callback)(void *, int, const char **, const char **), void * val, char ** errmsg, const char * types, std::vector<void*> args)

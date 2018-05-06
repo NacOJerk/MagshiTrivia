@@ -1,3 +1,4 @@
+#include "consts.hpp"
 #include "Communicator.h"
 #include "Request.h"
 #include "JsonResponsePacketSerializer.h"
@@ -9,7 +10,7 @@ Communicator::Communicator(RequestHandlerFactory & facto) : m_handlerFactory(fac
 	_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	if (_serverSocket == INVALID_SOCKET)
-		throw std::exception(__FUNCTION__ " - socket");
+		throw std::exception("Communicator - socket");
 }
 
 void Communicator::bindAndListen(unsigned int port)
@@ -37,7 +38,7 @@ void Communicator::handleRequests()
 		SOCKET client_socket = ::accept(_serverSocket, NULL, NULL);
 		if (client_socket == INVALID_SOCKET)
 			throw std::exception(__FUNCTION__);
-		std::thread(&startThreadForNewClient, client_socket).detach();
+		std::thread(&Communicator::startThreadForNewClient ,this , client_socket).detach();
 	}
 }
 
@@ -83,7 +84,7 @@ byte Communicator::getId(SOCKET socket)
 unsigned int Communicator::getLength(SOCKET socket)
 {
 	byte* lengthC = readBytes(socket, 4);
-	unsigned int length = *((int*)lengthC);
+	unsigned int length = lengthC[0] << 24 | lengthC[1] << 16 | lengthC[2] << 8 | lengthC[3];
 	delete lengthC;
 	return length;
 }
@@ -133,4 +134,6 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 			handler = result.getNewHandler();
 		}
 	}
+	if (handler)
+		delete handler;
 }

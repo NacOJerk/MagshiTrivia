@@ -1,9 +1,12 @@
 #pragma once
 
 #include <WinSock2.h>
+#include <Windows.h>
 #include <thread>
 #include "RequestHandlerFactory.h"
 #include "IRequestHandler.h"
+
+class RequestHandlerFactory;
 
 class Communicator
 {

@@ -3,14 +3,20 @@
 
 JsonResponsePacketSerializer* JsonResponsePacketSerializer::instance = 0;
 
+union byteint
+{
+	byte b[4];
+	int ia;
+};
+
 buffer JsonResponsePacketSerializer::encapsule(std::string text, byte id)
 {
 	buffer buff;
 	buff.push_back(id);
-	unsigned int length = text.size();
-	byte* lengthC = (byte*)&length;
-	for (int i = 0; i < 4; buff.push_back(lengthC[i++]));
-	for (int i = 0; i < length; buff.push_back(text[i++]));
+	byteint length{ text.size() };
+
+	for (int i = 0; i < 4; buff.push_back(length.b[3-i++]));
+	for (int i = 0; i < length.ia; buff.push_back(text[i++]));
 	return buff;
 }
 
