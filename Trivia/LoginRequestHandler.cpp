@@ -5,6 +5,10 @@
 #include "SignupResponse.h"
 #include <exception>
 #include <utility>
+#include <regex>
+
+#define EMAIL_REGEX "[a-zA-Z0-9!#$%&'\*\+-/=\?\^_`{\|}~]+@[a-zA-Z0-9!#$%&'\*\+-/=\?\^_`{\|}~]+\.[a-zA-Z0-9!#$%&'\*\+-/=\?\^_`{\|}~]+"
+#define PHONE_REGEX "\d{2,3}-?\d{7}"
 
 LoginRequestHandler::LoginRequestHandler(LoginManager & mang, RequestHandlerFactory & facto) : m_loginManager(mang), m_handlerFactory(facto)
 {
@@ -45,9 +49,20 @@ RequestResult LoginRequestHandler::login(Request req)
 RequestResult LoginRequestHandler::signup(Request req)
 {
 	SignupRequest request = JsonRequestPacketDeserializer::getInstance()->deserializeSignupRequest(req.getBuffer());
-	bool result = m_loginManager.signup(request.getUsername(), request.getPassword(), request.getEmail());
-	SignupResponse response(result ? SUCCESS : FAILED);
-	buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(response);
-	IRequestHandler* handler = nullptr;//Always gonna go back to here
-	return RequestResult(buff, handler);
+	std::regex reg(string(EMAIL_REGEX));
+	if (std::regex_match(request.getEmail(), reg)) 
+	{
+		bool result = m_loginManager.signup(request.getUsername(), request.getPassword(), request.getEmail());
+		SignupResponse response(result ? SUCCESS : FAILED);
+		buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(response);
+		IRequestHandler* handler = nullptr;//Always gonna go back to here
+		return RequestResult(buff, handler);
+	}
+	else
+	{
+		ErrorResponse response("Invalid Email Address!");
+		buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(response);
+		IRequestHandler* handler = nullptr;//Always gonna go back to here
+		return RequestResult(buff, handler);
+	}
 }
