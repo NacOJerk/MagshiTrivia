@@ -45,3 +45,24 @@ SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(buffer buf
 
 	return SignupRequest(j_info["username"], j_info["password"], j_info["email"]);
 }
+
+GetPlayersInRoomRequest JsonRequestPacketDeserializer::deserializeGetPlayersRequest(buffer buff)
+{
+	json j_info = readInfo(buff);
+
+	return GetPlayersInRoomRequest(j_info["id"]);
+}
+
+JoinRoomRequest JsonRequestPacketDeserializer::deserializeJoinRoomRequest(buffer buff)
+{
+	json j_info = readInfo(buff);
+
+	return JoinRoomRequest(j_info["id"]);
+}
+
+CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(buffer buff)
+{
+	json j_info = readInfo(buff);
+
+	return CreateRoomRequest(j_info["username"], j_info["maxUsers"], j_info["questionCount"], j_info["answerTimeout"]);
+}

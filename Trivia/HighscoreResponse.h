@@ -8,9 +8,9 @@ class HighscoreResponse
 {
 private:
 	unsigned int status;
-	vector<HighscoreTable> highscores;
+	vector<Highscore> highscores;
 public:
-	HighscoreResponse(unsigned int, vector<HighscoreTable>);
+	HighscoreResponse(unsigned int, vector<Highscore>);
 	unsigned int getStatus();
-	vector<HighscoreTable> getHighscores();
+	vector<Highscore> getHighscores();
 };
