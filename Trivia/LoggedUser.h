@@ -1,14 +1,19 @@
 #pragma once
 #include <WinSock2.h>
 #include <string>
+#include "Client.h"
+
+class Client;
 
 class LoggedUser
 {
 	std::string m_username;
-	SOCKET _socket;
+	Client& _client;
 public:
-	LoggedUser(const std::string&, SOCKET);
+	LoggedUser();
+	LoggedUser(const std::string&, Client&);
 	std::string getUsername() const;
-	SOCKET getSocket();
+	Client& getClient();
+	LoggedUser& operator=(LoggedUser&);
 };
 

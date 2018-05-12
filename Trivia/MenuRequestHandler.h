@@ -11,7 +11,7 @@ class RequestHandlerFactory;
 class MenuRequestHandler : public IRequestHandler
 {
 private:
-	LoggedUser m_users;
+	LoggedUser& m_users;
 	RoomManager& m_roomManager;
 	HighscoreTable& m_highscoreTable;
 	LoginManager& m_loginManager;
@@ -25,7 +25,7 @@ private:
 	RequestResult createRoom(Request);
 
 public:
-	MenuRequestHandler(LoggedUser, RoomManager&, HighscoreTable&, LoginManager&, RequestHandlerFactory&);
+	MenuRequestHandler(LoggedUser&, RoomManager&, HighscoreTable&, LoginManager&, RequestHandlerFactory&);
 	bool isRequestRelevant(Request) override;
-	RequestResult handlRequest(Request, SOCKET) override;
+	RequestResult handlRequest(Request, Client&) override;
 };

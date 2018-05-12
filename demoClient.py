@@ -26,7 +26,7 @@ def recv(sock):
 	return message
 	
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(("172.29.109.130", 12345))
+s.connect(("localhost", 12345))
 
 dic = {"username": "shahar", "password": "123456"}
 send(s, LOGIN_REQUEST_ID, dic)

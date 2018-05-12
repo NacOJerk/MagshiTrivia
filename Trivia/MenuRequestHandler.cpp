@@ -61,7 +61,7 @@ RequestResult MenuRequestHandler::createRoom(Request r)
 
 
 
-MenuRequestHandler::MenuRequestHandler(LoggedUser usr, RoomManager & rm, HighscoreTable & ht, LoginManager & lm, RequestHandlerFactory & rhf) : m_users(usr), m_roomManager(rm), m_highscoreTable(ht), m_loginManager(lm), m_handlerFactory(rhf)
+MenuRequestHandler::MenuRequestHandler(LoggedUser& usr, RoomManager & rm, HighscoreTable & ht, LoginManager & lm, RequestHandlerFactory & rhf) : m_users(usr), m_roomManager(rm), m_highscoreTable(ht), m_loginManager(lm), m_handlerFactory(rhf)
 {
 
 }
@@ -72,7 +72,7 @@ bool MenuRequestHandler::isRequestRelevant(Request req)
 	return id == GET_PLAYERS_IN_ROOM_REQUEST || id == JOIN_ROOM_REQUEST || id == CREATE_ROOM_REQUEST || id == SIGNOUT_REQUEST || id == GET_ROOMS_REQUEST || id == GET_HIGHSCORE;
 }
 
-RequestResult MenuRequestHandler::handlRequest(Request req, SOCKET sock)
+RequestResult MenuRequestHandler::handlRequest(Request req, Client& sock)
 {
 	switch (req.getID())
 	{

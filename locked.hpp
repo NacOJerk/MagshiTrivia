@@ -15,6 +15,8 @@ public:
 		*_obj = data;
 	}
 
+	locked(E data) : locked(new E, data) {}
+
 	locked(const locked& othr)
 	{
 		*this = othr;

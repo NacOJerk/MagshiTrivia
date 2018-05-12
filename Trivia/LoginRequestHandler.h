@@ -12,9 +12,9 @@ class LoginRequestHandler : public IRequestHandler
 public:
 	LoginRequestHandler(LoginManager&, RequestHandlerFactory&);
 	bool isRequestRelevant(Request) override;
-	RequestResult handlRequest(Request, SOCKET) override;
+	RequestResult handlRequest(Request, Client&) override;
 private:
-	RequestResult login(Request, SOCKET);
-	RequestResult signup(Request, SOCKET);
+	RequestResult login(Request, Client&);
+	RequestResult signup(Request, Client&);
 };
 

@@ -56,7 +56,7 @@ byte * Communicator::readBytes(SOCKET socket, unsigned int length)
 	{
 		int result = recv(socket, chars + pos, length, 0);
 		pos += result;
-		if (result == INVALID_SOCKET)
+		if (result == INVALID_SOCKET || result == 0)
 		{
 			delete chars;
 			throw std::exception("Error while reciving data from socket");
@@ -120,59 +120,46 @@ void Communicator::sendBuffer(SOCKET socket, buffer buff)
 
 void Communicator::startThreadForNewClient(SOCKET client_socket)
 {
-	setRequestHandler(client_socket, m_handlerFactory.createLoginRequestHandler());
+	printf("Client joined\n");
+	Client client(client_socket, m_handlerFactory.createLoginRequestHandler());
 	while (true)
 	{
-		IRequestHandler* handler = getRequestHandler(client_socket);
-		byte id = getId(client_socket);
-		buffer buff = getBuffer(client_socket, getLength(client_socket));
-		Request req(getEnumFromID(id), time(0), buff);
-		if (!handler->isRequestRelevant(req))
+		locked<IRequestHandler*>& hand = client.getHandler();
+		IRequestHandler** handler = hand;
+		try
 		{
-			buffer response = JsonResponsePacketSerializer::getInstance()->serializeResponse(ErrorResponse("Your request does not fit the current state"));
-			sendBuffer(client_socket, response);
-			continue;
+			byte id = getId(client_socket);
+			buffer buff = getBuffer(client_socket, getLength(client_socket));
+			Request req(getEnumFromID(id), time(0), buff);
+			if (!(*handler)->isRequestRelevant(req))
+			{
+				buffer response = JsonResponsePacketSerializer::getInstance()->serializeResponse(ErrorResponse("Your request does not fit the current state"));
+				sendBuffer(client_socket, response);
+				handler == nullptr;
+				hand();
+				continue;
+			}
+			RequestResult result = (*handler)->handlRequest(req, client);
+			sendBuffer(client_socket, result.getBuffer());
+			if (result.getNewHandler() != nullptr)
+			{
+				delete *handler;
+				*handler = result.getNewHandler();
+			}
+			handler == nullptr;
+			hand();
 		}
-		RequestResult result = handler->handlRequest(req, client_socket);
-		sendBuffer(client_socket, result.getBuffer());
-		if (result.getNewHandler() != nullptr)
+		catch (std::exception& e)
 		{
-			delete handler;
-			handler = result.getNewHandler();
+			if (handler)
+				hand();
+			printf("Client disconnected");
+			if (client.isLoggedIn())
+				printf(" (%s)", client.getUser().getUsername().c_str());
+			printf("\n");
+			break;
 		}
 	}
-	deleteHandler(client_socket);
-}
-
-void Communicator::setRequestHandler(SOCKET socket, IRequestHandler * handler)
-{
-	std::map<SOCKET, IRequestHandler*>* sockets = _sockets;
-	(*sockets)[socket] = handler;
-	sockets = nullptr;
-	_sockets();
-}
-
-IRequestHandler * Communicator::getRequestHandler(SOCKET sock)
-{
-	IRequestHandler* handler = nullptr;
-	std::map<SOCKET, IRequestHandler*>* sockets = _sockets;
-	if (sockets->find(sock) != sockets->end())
-	{
-		handler = (*sockets)[sock];
-	}
-	sockets = nullptr;
-	_sockets();
-	return handler;
-}
-
-void Communicator::deleteHandler(SOCKET sock)
-{
-	std::map<SOCKET, IRequestHandler*>* sockets = _sockets;
-	if (sockets->find(sock) != sockets->end())
-	{
-		delete (*sockets)[sock];
-		sockets->erase(sockets->find(sock));
-	}
-	sockets = nullptr;
-	_sockets();
+	if (client.isLoggedIn())
+		m_handlerFactory.getLoginManager()->logout(client.getUser().getUsername());
 }

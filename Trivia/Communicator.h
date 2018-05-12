@@ -6,7 +6,7 @@
 #include <thread>
 #include "RequestHandlerFactory.h"
 #include "IRequestHandler.h"
-#include "../locked.hpp"
+#include "Client.h"
 
 class RequestHandlerFactory;
 
@@ -14,7 +14,6 @@ class Communicator
 {
 	RequestHandlerFactory& m_handlerFactory;
 	SOCKET _serverSocket;
-	locked<std::map<SOCKET, IRequestHandler*>> _sockets;
 	
 public:
 	Communicator(RequestHandlerFactory&);
@@ -29,8 +28,5 @@ private:
 	buffer getBuffer(SOCKET, unsigned int);
 	void sendBuffer(SOCKET, buffer);
 	void startThreadForNewClient(SOCKET);
-	void setRequestHandler(SOCKET, IRequestHandler*);
-	IRequestHandler* getRequestHandler(SOCKET);
-	void deleteHandler(SOCKET);
 };
 

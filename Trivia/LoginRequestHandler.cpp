@@ -20,7 +20,7 @@ bool LoginRequestHandler::isRequestRelevant(Request request)
 	return id == LOGIN_REQUEST || id == SIGNUP_REQUEST;
 }
 
-RequestResult LoginRequestHandler::handlRequest(Request request, SOCKET sock)
+RequestResult LoginRequestHandler::handlRequest(Request request, Client& sock)
 {
 	switch (request.getID())
 	{
@@ -32,7 +32,7 @@ RequestResult LoginRequestHandler::handlRequest(Request request, SOCKET sock)
 	throw std::exception("Couldn't handle packet");
 }
 
-RequestResult LoginRequestHandler::login(Request req, SOCKET sock)
+RequestResult LoginRequestHandler::login(Request req, Client& sock)
 {
 	LoginRequest request = JsonRequestPacketDeserializer::getInstance()->deserializeLoginRequest(req.getBuffer());
 	bool result =m_loginManager.login(request.getUsername(), request.getPassword(), sock);
@@ -41,12 +41,12 @@ RequestResult LoginRequestHandler::login(Request req, SOCKET sock)
 	IRequestHandler* handler = nullptr;
 	if (result)
 	{
-		handler = m_handlerFactory.createMenuRequestHandler(m_loginManager.getUser(request.getUsername()));
+		handler = m_handlerFactory.createMenuRequestHandler(*m_loginManager.getUser(request.getUsername()));
 	}
 	return RequestResult(buff, handler);
 }
 
-RequestResult LoginRequestHandler::signup(Request req, SOCKET sock)
+RequestResult LoginRequestHandler::signup(Request req, Client& sock)
 {
 	SignupRequest request = JsonRequestPacketDeserializer::getInstance()->deserializeSignupRequest(req.getBuffer());
 	std::regex reg(string(EMAIL_REGEX));
@@ -58,7 +58,7 @@ RequestResult LoginRequestHandler::signup(Request req, SOCKET sock)
 		IRequestHandler* handler = nullptr;
 		if (result)
 		{
-			handler = m_handlerFactory.createMenuRequestHandler(m_loginManager.getUser(request.getUsername()));
+			handler = m_handlerFactory.createMenuRequestHandler(*m_loginManager.getUser(request.getUsername()));
 		}
 		return RequestResult(buff, handler);
 	}
