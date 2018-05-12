@@ -4,10 +4,10 @@ Room::Room() : m_metadata(), m_users()
 {
 }
 
-Room::Room(RoomData data, vector<LoggedUser> users) : m_metadata(data), m_users(users)
+Room::Room(RoomData data, vector<std::reference_wrapper<LoggedUser>> users) : m_metadata(data), m_users(users)
 {}
 
-void Room::addUser(LoggedUser user)
+void Room::addUser(LoggedUser& user)
 {
 	m_users.push_back(user);
 }
@@ -17,14 +17,14 @@ void Room::removeUser(string username)
 	auto it = m_users.begin();
 	for (it; it != m_users.end(); it++)
 	{
-		if (it->getUsername() == username)
+		if (it->get().getUsername() == username)
 			break;
 	}
 	if (it != m_users.end())
 		m_users.erase(it);
 }
 
-vector<LoggedUser> Room::getAllUsers()
+vector<std::reference_wrapper<LoggedUser>>& Room::getAllUsers()
 {
 	return m_users;
 }

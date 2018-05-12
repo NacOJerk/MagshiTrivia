@@ -9,12 +9,12 @@ class Room
 {
 private:
 	RoomData m_metadata;
-	vector<LoggedUser> m_users;
+	vector<std::reference_wrapper<LoggedUser>> m_users;
 public:
 	Room();
-	Room(RoomData, vector<LoggedUser>);
-	void addUser(LoggedUser);
+	Room(RoomData, vector<std::reference_wrapper<LoggedUser>>);
+	void addUser(LoggedUser&);
 	void removeUser(string);
-	vector<LoggedUser> getAllUsers();
+	vector<std::reference_wrapper<LoggedUser>>& getAllUsers();
 	RoomData getData();
 };

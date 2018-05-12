@@ -69,7 +69,7 @@ buffer JsonResponsePacketSerializer::serializeResponse(GetRoomsResponse get)
 			continue;
 		json j;
 		auto data = room.getData();
-		j["admin"] = room.getAllUsers()[0].getUsername();
+		j["admin"] = room.getAllUsers()[0].get().getUsername();
 		j["questionTime"] = data.getTimePerQuestion();
 		j["maxPlayers"] = data.getMaxPlayers();
 		j["numPlayers"] = room.getAllUsers().size();

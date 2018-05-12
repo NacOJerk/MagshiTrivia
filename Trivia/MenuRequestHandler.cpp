@@ -27,11 +27,15 @@ RequestResult MenuRequestHandler::getRooms(Request)
 RequestResult MenuRequestHandler::getPlayersInRoom(Request r)
 {
 	GetPlayersInRoomRequest req = JsonRequestPacketDeserializer::getInstance()->deserializeGetPlayersRequest(r.getBuffer());
-	vector<LoggedUser> lUsers = m_roomManager.getRoom(req.getRoomId()).getAllUsers();
+	if (m_roomManager.hasRoom(req.getRoomId()))
+	{
+		return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(ErrorResponse("The room doesn't exists")), nullptr);
+	}
+	vector<std::reference_wrapper<LoggedUser>>& lUsers = m_roomManager.getRoom(req.getRoomId()).getAllUsers();
 	vector<string> users;
 	for (auto user : lUsers)
 	{
-		users.push_back(user.getUsername());
+		users.push_back(user.get().getUsername());
 	}
 	return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(GetPlayersInRoomResponse(users)), nullptr);
 }
@@ -46,16 +50,18 @@ RequestResult MenuRequestHandler::getHighscores(Request)
 RequestResult MenuRequestHandler::joinRoom(Request r)
 {
 	JoinRoomRequest req = JsonRequestPacketDeserializer::getInstance()->deserializeJoinRoomRequest(r.getBuffer());
-	m_roomManager.getRoom(r.getID()).addUser(m_users);
-	unsigned int status = SUCCESS;
+	unsigned int status = m_roomManager.hasRoom(req.getRoomId()) ? SUCCESS : FAILED;
+	if(status == SUCCESS)
+		m_roomManager.getRoom(r.getID()).addUser(m_users);
 	return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(JoinRoomResponse(status)), nullptr);
 }
 
 RequestResult MenuRequestHandler::createRoom(Request r)
 {
 	CreateRoomRequest req = JsonRequestPacketDeserializer::getInstance()->deserializeCreateRoomRequest(r.getBuffer());
-	m_roomManager.createRoom(m_users, req.getMaxUsers(), req.getAnswerTimeout(), req.getQuestionCount());
-	unsigned int status = SUCCESS;
+	unsigned int status = !(req.getMaxUsers() < 1 || req.getAnswerTimeout() < 1 || req.getQuestionCount() < 1) ? SUCCESS : FAILED;
+	if(status == SUCCESS)
+		m_roomManager.createRoom(m_users, req.getMaxUsers(), req.getAnswerTimeout(), req.getQuestionCount());
 	return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(CreateRoomResponse(status)), nullptr);
 }
 

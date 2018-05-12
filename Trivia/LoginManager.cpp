@@ -78,6 +78,8 @@ void LoginManager::logout(const std::string& name)
 	if (it != users->end())
 	{
 		LoggedUser* usr = *it;
+
+		//Finalizing things
 		usr->getClient().setUser(nullptr);
 		delete usr;
 		users->erase(it);
