@@ -1,6 +1,6 @@
 #include "HighscoreResponse.h"
 
-HighscoreResponse::HighscoreResponse(unsigned int status, vector<Highscore> highscores) : status(status), highscores(highscores)
+HighscoreResponse::HighscoreResponse(unsigned int _status, vector<Highscore> _highscores) : status(_status), highscores(_highscores)
 {}
 
 unsigned int HighscoreResponse::getStatus()

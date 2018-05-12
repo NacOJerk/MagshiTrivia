@@ -69,7 +69,7 @@ buffer JsonResponsePacketSerializer::serializeResponse(GetRoomsResponse get)
 			continue;
 		json j;
 		auto data = room.getData();
-		j["admin"] = room.getAllUsers()[0];
+		j["admin"] = room.getAllUsers()[0].getUsername();
 		j["questionTime"] = data.getTimePerQuestion();
 		j["maxPlayers"] = data.getMaxPlayers();
 		j["numPlayers"] = room.getAllUsers().size();
@@ -110,16 +110,16 @@ buffer JsonResponsePacketSerializer::serializeResponse(HighscoreResponse res)
 {
 	
 	json jsn;
-	vector<json> users;
+	vector<string> users;
 	vector<Highscore> scores = res.getHighscores();
 	for (auto score : scores)
 	{
 		json j;
 		j["name"] = score.getUsername();
 		j["score"] = score.getScore();
-		users.push_back(j);
+		users.push_back(j.dump());
 	}
 	jsn["status"] = res.getStatus();
-	jsn["scores"] = scores;
+	jsn["scores"] = users;
 	return encapsule(jsn.dump(), HIGHSCORE_RESPONSE);;
 }

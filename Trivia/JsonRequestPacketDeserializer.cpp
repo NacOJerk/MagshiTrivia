@@ -49,15 +49,15 @@ SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(buffer buf
 GetPlayersInRoomRequest JsonRequestPacketDeserializer::deserializeGetPlayersRequest(buffer buff)
 {
 	json j_info = readInfo(buff);
-
-	return GetPlayersInRoomRequest(j_info["id"]);
+	unsigned int i = j_info["id"];
+	return GetPlayersInRoomRequest(i);
 }
 
 JoinRoomRequest JsonRequestPacketDeserializer::deserializeJoinRoomRequest(buffer buff)
 {
 	json j_info = readInfo(buff);
-
-	return JoinRoomRequest(j_info["id"]);
+	unsigned int i = j_info["id"];
+	return JoinRoomRequest(i);
 }
 
 CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(buffer buff)

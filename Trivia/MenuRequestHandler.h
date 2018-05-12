@@ -4,14 +4,18 @@
 #include "RoomManager.h"
 #include "HighscoreTable.h"
 #include "RequestHandlerFactory.h"
+#include "IRequestHandler.h"
 
-class MenuRequestHandler
+class RequestHandlerFactory;
+
+class MenuRequestHandler : public IRequestHandler
 {
 private:
 	LoggedUser m_users;
-	RoomManager m_roomManager;
-	HighscoreTable m_highscoreTable;
-	RequestHandlerFactory m_handlerFactory;
+	RoomManager& m_roomManager;
+	HighscoreTable& m_highscoreTable;
+	LoginManager& m_loginManager;
+	RequestHandlerFactory& m_handlerFactory;
 
 	RequestResult signout(Request);
 	RequestResult getRooms(Request);
@@ -21,6 +25,7 @@ private:
 	RequestResult createRoom(Request);
 
 public:
-	bool isRequestRelevant(Request);
-	RequestResult handleRequest(Request);
+	MenuRequestHandler(LoggedUser, RoomManager&, HighscoreTable&, LoginManager&, RequestHandlerFactory&);
+	bool isRequestRelevant(Request) override;
+	RequestResult handlRequest(Request, SOCKET) override;
 };

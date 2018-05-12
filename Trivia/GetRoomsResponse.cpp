@@ -1,6 +1,6 @@
 #include "GetRoomsResponse.h"
 
-GetRoomsResponse::GetRoomsResponse(unsigned int status, vector<Room> rooms) : status(status), rooms(rooms)
+GetRoomsResponse::GetRoomsResponse(unsigned int _status, vector<Room> _rooms) : status(_status), rooms(_rooms)
 {
 }
 

@@ -1,5 +1,9 @@
 #include "Room.h"
 
+Room::Room() : m_metadata(), m_users()
+{
+}
+
 Room::Room(RoomData data, vector<LoggedUser> users) : m_metadata(data), m_users(users)
 {}
 

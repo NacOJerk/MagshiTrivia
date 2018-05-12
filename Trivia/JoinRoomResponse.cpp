@@ -1,6 +1,6 @@
 #include "JoinRoomResponse.h"
 
-JoinRoomResponse::JoinRoomResponse(unsigned int status) : status(status)
+JoinRoomResponse::JoinRoomResponse(unsigned int _status) : status(_status)
 {
 }
 

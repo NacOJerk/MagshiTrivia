@@ -20,42 +20,46 @@ bool LoginRequestHandler::isRequestRelevant(Request request)
 	return id == LOGIN_REQUEST || id == SIGNUP_REQUEST;
 }
 
-RequestResult LoginRequestHandler::handlRequest(Request request)	
+RequestResult LoginRequestHandler::handlRequest(Request request, SOCKET sock)
 {
 	switch (request.getID())
 	{
 	case LOGIN_REQUEST:
-		return login(request);
+		return login(request, sock);
 	case SIGNUP_REQUEST:
-		return signup(request);
+		return signup(request, sock);
 	}
 	throw std::exception("Couldn't handle packet");
 }
 
-RequestResult LoginRequestHandler::login(Request req)
+RequestResult LoginRequestHandler::login(Request req, SOCKET sock)
 {
 	LoginRequest request = JsonRequestPacketDeserializer::getInstance()->deserializeLoginRequest(req.getBuffer());
-	bool result =m_loginManager.login(request.getUsername(), request.getPassword());
+	bool result =m_loginManager.login(request.getUsername(), request.getPassword(), sock);
 	LoginResponse response(result ? SUCCESS : FAILED);
 	buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(response);
 	IRequestHandler* handler = nullptr;
 	if (result)
 	{
-		// ADD MENU IN HERE
+		handler = m_handlerFactory.createMenuRequestHandler(m_loginManager.getUser(request.getUsername()));
 	}
 	return RequestResult(buff, handler);
 }
 
-RequestResult LoginRequestHandler::signup(Request req)
+RequestResult LoginRequestHandler::signup(Request req, SOCKET sock)
 {
 	SignupRequest request = JsonRequestPacketDeserializer::getInstance()->deserializeSignupRequest(req.getBuffer());
 	std::regex reg(string(EMAIL_REGEX));
 	if (std::regex_match(request.getEmail(), reg)) 
 	{
-		bool result = m_loginManager.signup(request.getUsername(), request.getPassword(), request.getEmail());
+		bool result = m_loginManager.signup(request.getUsername(), request.getPassword(), request.getEmail(), sock);
 		SignupResponse response(result ? SUCCESS : FAILED);
 		buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(response);
-		IRequestHandler* handler = nullptr;//Always gonna go back to here
+		IRequestHandler* handler = nullptr;
+		if (result)
+		{
+			handler = m_handlerFactory.createMenuRequestHandler(m_loginManager.getUser(request.getUsername()));
+		}
 		return RequestResult(buff, handler);
 	}
 	else

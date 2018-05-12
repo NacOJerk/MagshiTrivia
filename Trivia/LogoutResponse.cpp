@@ -1,6 +1,6 @@
 #include "LogoutResponse.h"
 
-LogoutResponse::LogoutResponse(unsigned int status) : status(status)
+LogoutResponse::LogoutResponse(unsigned int _status) : status(_status)
 {
 }
 

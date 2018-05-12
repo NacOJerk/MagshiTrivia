@@ -1,6 +1,6 @@
 #include "GetPlayersInRoomResponse.h"
 
-GetPlayersInRoomResponse::GetPlayersInRoomResponse(vector<string> players) : players(players)
+GetPlayersInRoomResponse::GetPlayersInRoomResponse(vector<string> _players) : players(_players)
 {
 }
 

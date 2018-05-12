@@ -4,17 +4,17 @@
 #include "Room.h"
 #include "LoggedUser.h"
 
-using std::map;
+class Room;
 
 class RoomManager
 {
 private:
 	static unsigned int id;
-	map<unsigned int, Room> m_rooms;
+	std::map<unsigned int, Room> m_rooms;
 public:
-	RoomManager(map<unsigned int, Room>);
+	RoomManager();
 	Room getRoom(unsigned int id);
-	void createRoom(LoggedUser, unsigned int, unsigned int);
+	void createRoom(LoggedUser, unsigned int, unsigned int, unsigned int);
 	void deleteRoom(unsigned int);
 	bool getRoomState(unsigned int);
 	vector<Room> getRooms();

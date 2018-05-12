@@ -13,6 +13,12 @@ Communicator::Communicator(RequestHandlerFactory & facto) : m_handlerFactory(fac
 		throw std::exception("Communicator - socket");
 }
 
+void Communicator::start(unsigned int port)
+{
+	bindAndListen(port);
+	std::thread(&Communicator::handleRequests, this).detach();
+}
+
 void Communicator::bindAndListen(unsigned int port)
 {
 	struct sockaddr_in sa = { 0 };
@@ -114,9 +120,10 @@ void Communicator::sendBuffer(SOCKET socket, buffer buff)
 
 void Communicator::startThreadForNewClient(SOCKET client_socket)
 {
-	IRequestHandler* handler = m_handlerFactory.createLoginRequestHandler();
+	setRequestHandler(client_socket, m_handlerFactory.createLoginRequestHandler());
 	while (true)
 	{
+		IRequestHandler* handler = getRequestHandler(client_socket);
 		byte id = getId(client_socket);
 		buffer buff = getBuffer(client_socket, getLength(client_socket));
 		Request req(getEnumFromID(id), time(0), buff);
@@ -126,7 +133,7 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 			sendBuffer(client_socket, response);
 			continue;
 		}
-		RequestResult result = handler->handlRequest(req);
+		RequestResult result = handler->handlRequest(req, client_socket);
 		sendBuffer(client_socket, result.getBuffer());
 		if (result.getNewHandler() != nullptr)
 		{
@@ -134,6 +141,38 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 			handler = result.getNewHandler();
 		}
 	}
-	if (handler)
-		delete handler;
+	deleteHandler(client_socket);
+}
+
+void Communicator::setRequestHandler(SOCKET socket, IRequestHandler * handler)
+{
+	std::map<SOCKET, IRequestHandler*>* sockets = _sockets;
+	(*sockets)[socket] = handler;
+	sockets = nullptr;
+	_sockets();
+}
+
+IRequestHandler * Communicator::getRequestHandler(SOCKET sock)
+{
+	IRequestHandler* handler = nullptr;
+	std::map<SOCKET, IRequestHandler*>* sockets = _sockets;
+	if (sockets->find(sock) != sockets->end())
+	{
+		handler = (*sockets)[sock];
+	}
+	sockets = nullptr;
+	_sockets();
+	return handler;
+}
+
+void Communicator::deleteHandler(SOCKET sock)
+{
+	std::map<SOCKET, IRequestHandler*>* sockets = _sockets;
+	if (sockets->find(sock) != sockets->end())
+	{
+		delete (*sockets)[sock];
+		sockets->erase(sockets->find(sock));
+	}
+	sockets = nullptr;
+	_sockets();
 }

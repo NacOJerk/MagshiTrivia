@@ -1,6 +1,6 @@
 #include "CreateRoomRequest.h"
 
-CreateRoomRequest::CreateRoomRequest(string username, unsigned int maxUsers, unsigned int questionCount, unsigned int answerTimeout) : username(username), maxUsers(maxUsers), questionCount(questionCount), answerTimeout(answerTimeout)
+CreateRoomRequest::CreateRoomRequest(string _username, unsigned int _maxUsers, unsigned int _questionCount, unsigned int _answerTimeout) : username(_username), maxUsers(_maxUsers), questionCount(_questionCount), answerTimeout(_answerTimeout)
 {}
 
 string CreateRoomRequest::getUsername()

@@ -2,7 +2,7 @@
 #include "Room.h"
 
 unsigned int RoomManager::id = 0;
-RoomManager::RoomManager(map<unsigned int, Room> rooms) : m_rooms(rooms)
+RoomManager::RoomManager()
 {}
 
 unsigned int RoomManager::generateId()
@@ -10,9 +10,9 @@ unsigned int RoomManager::generateId()
 	return ++id;
 }
 
-void RoomManager::createRoom(LoggedUser user, unsigned int maxPlayers, unsigned int timePerQuestion)
+void RoomManager::createRoom(LoggedUser user, unsigned int maxPlayers, unsigned int timePerQuestion, unsigned int amountQuestions)
 {
-	RoomData data(user.getUsername(), maxPlayers, timePerQuestion, false);
+	RoomData data(user.getUsername(), maxPlayers, timePerQuestion, amountQuestions, false);
 	vector<LoggedUser> vec;
 	vec.push_back(user);
 	Room room(data, vec);

@@ -1,7 +1,11 @@
 #include "RoomData.h"
 #include "RoomManager.h"
 
-RoomData::RoomData(string name, unsigned int maxPlayers, unsigned int time, bool isActive) : name(name), maxPlayers(maxPlayers), timePerQuestion(time), isActive(isActive)
+RoomData::RoomData()
+{
+}
+
+RoomData::RoomData(string name, unsigned int maxPlayers, unsigned int time, unsigned int questionAmo, bool isActive) : name(name), maxPlayers(maxPlayers), timePerQuestion(time), isActive(isActive), amountQuestions(questionAmo)
 {
 	id = RoomManager::generateId();
 }
@@ -24,6 +28,11 @@ unsigned int RoomData::getMaxPlayers()
 unsigned int RoomData::getTimePerQuestion()
 {
 	return timePerQuestion;
+}
+
+unsigned int RoomData::getAmountQuestions()
+{
+	return amountQuestions;
 }
 
 bool RoomData::getIsActive()
