@@ -1,0 +1,5 @@
+#define EMAIL_REGEX "[a-zA-Z0-9!#$%&'\*\+-/=\?\^_`{\|}~]+@[a-zA-Z0-9!#$%&'\*\+-/=\?\^_`{\|}~]+\.[a-zA-Z0-9!#$%&'\*\+-/=\?\^_`{\|}~]+"
+#define PHONE_REGEX "^\d{2,3}-?\d{7}$"
+#define ADDRESS_REGEX "^\d+\/\d+ [A-Za-z ]+, [A-Za-z ]+$"
+#define USERNAME_REGEX "^[0-9A-Za-z_]{4,20}$"
+#define DATE_REGEX "^\d\d[\/\.-]\d\d[\/\.-]\d\d\d\d$"
