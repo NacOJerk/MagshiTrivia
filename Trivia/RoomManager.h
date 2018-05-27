@@ -15,7 +15,7 @@ public:
 	RoomManager();
 	bool hasRoom(unsigned int id);
 	Room& getRoom(unsigned int id);
-	void createRoom(LoggedUser&, unsigned int, unsigned int, unsigned int);
+	unsigned int createRoom(LoggedUser&, unsigned int, unsigned int, unsigned int);
 	void deleteRoom(unsigned int);
 	bool getRoomState(unsigned int);
 	vector<Room>& getRooms();
