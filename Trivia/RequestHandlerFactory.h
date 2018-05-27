@@ -5,6 +5,8 @@
 #include "RoomManager.h"
 #include "HighscoreTable.h"
 #include "MenuRequestHandler.h"
+#include "RoomAdminRequestHandler.h"
+#include "RoomMemberRequestHandler.h"
 
 class LoginRequestHandler;
 class MenuRequestHandler;
@@ -19,6 +21,8 @@ public:
 	RequestHandlerFactory(IDatabase&);
 	LoginRequestHandler* createLoginRequestHandler();
 	MenuRequestHandler* createMenuRequestHandler(LoggedUser);
+	RoomAdminRequestHandler* createRoomAdminRequestHandler();
+	RoomAdminRequestHandler* createRoomMemberRequestHandler();
 	LoginManager* getLoginManager();
 	RoomManager* getRoomManager();
 	HighscoreTable* getHighscoreTable();

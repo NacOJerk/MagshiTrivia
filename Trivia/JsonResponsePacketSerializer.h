@@ -9,6 +9,10 @@
 #include "JoinRoomResponse.h"
 #include "CreateRoomResponse.h"
 #include "HighscoreResponse.h"
+#include "CloseRoomResponse.h"
+#include "StartGameResponse.h"
+#include "GetRoomStateResponse.h"
+#include "LeaveRoomResponse.h"
 
 class JsonResponsePacketSerializer
 {
@@ -25,6 +29,10 @@ public:
 	buffer serializeResponse(JoinRoomResponse);
 	buffer serializeResponse(CreateRoomResponse);
 	buffer serializeResponse(HighscoreResponse);
+	buffer serializeResponse(CloseRoomResponse);
+	buffer serializeResponse(StartGameResponse);
+	buffer serializeResponse(GetRoomStateResponse);
+	buffer serializeResponse(LeaveRoomResponse);
 	static JsonResponsePacketSerializer* getInstance();
 };
 

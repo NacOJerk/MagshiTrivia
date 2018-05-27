@@ -10,7 +10,7 @@ CREATE_ROOM_REQUEST = (5).to_bytes(1, byteorder='big')
 SIGNOUT_REQUEST = (6).to_bytes(1, byteorder='big')
 GET_ROOMS_REQUEST = (7).to_bytes(1, byteorder='big')
 GET_HISCORES_REQUEST = (8).to_bytes(1, byteorder='big')
-ERROR_RESPONSE_ID = (9).to_bytes(1, byteorder='big')
+ERROR_RESPONSE_ID = (100).to_bytes(1, byteorder='big')
 
 def send(sock, id, dict = {}):
 	send_from = 0
