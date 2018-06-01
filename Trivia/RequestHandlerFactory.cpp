@@ -29,3 +29,13 @@ HighscoreTable * RequestHandlerFactory::getHighscoreTable()
 {
 	return &m_highscoreTable;
 }
+
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(LoggedUser& usr, Room& rm)
+{
+	return new RoomAdminRequestHandler(rm, usr, m_roomManager, *this);
+}
+
+RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(LoggedUser& usr, Room& rm)
+{
+	return new RoomMemberRequestHandler(rm, usr, m_roomManager, *this);
+}

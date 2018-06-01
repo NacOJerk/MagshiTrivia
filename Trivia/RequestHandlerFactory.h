@@ -21,8 +21,8 @@ public:
 	RequestHandlerFactory(IDatabase&);
 	LoginRequestHandler* createLoginRequestHandler();
 	MenuRequestHandler* createMenuRequestHandler(LoggedUser);
-	RoomAdminRequestHandler* createRoomAdminRequestHandler();
-	RoomAdminRequestHandler* createRoomMemberRequestHandler();
+	RoomAdminRequestHandler* createRoomAdminRequestHandler(LoggedUser&, Room&);
+	RoomMemberRequestHandler* createRoomMemberRequestHandler(LoggedUser&, Room&);
 	LoginManager* getLoginManager();
 	RoomManager* getRoomManager();
 	HighscoreTable* getHighscoreTable();
