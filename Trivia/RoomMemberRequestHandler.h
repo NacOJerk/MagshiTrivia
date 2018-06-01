@@ -17,6 +17,7 @@ private:
 	{
 		//unnecessary function
 		//preventing overload errors
+		return RequestResult(buffer(), nullptr);
 	}
 
 public:

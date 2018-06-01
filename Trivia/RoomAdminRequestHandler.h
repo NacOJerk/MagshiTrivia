@@ -16,8 +16,9 @@ private:
 
 	RequestResult handlRequest(Request, Client&)
 	{
-	//unnecessary function
-	//preventing overload errors
+		//unnecessary function
+		//preventing overload errors
+		return RequestResult(buffer(), nullptr);
 	}
 
 public:
