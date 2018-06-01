@@ -13,25 +13,35 @@ void PipeManager::write(buffer buf, const SOCKET & socket) const
 		buf = pipe.get().write(buf);
 	}
 
+
 	//Set up for like ya know sending the stuff
-	char* data = new char[buf.size()];
-	const unsigned int length = buf.size();
-	for (unsigned int i = 0; i < length, data[i] = buf[i++]);
+	char* data = new char[buf.size() + 4];
+	union byteint
+	{
+		byte b[4];
+		unsigned int ia;
+	};
+
+	byteint length = { buf.size() };
+
+	for (int i = 0; i < 4; data[i] = length.b[3 - i++]);
+	for (unsigned int i = 4; i < length.ia; data[i] = buf[i++]);
 	
 	//Sending the thingy
 	int pos = 0;
 	do
 	{
-		int result = send(socket, data + pos, length, 0);
+		int result = send(socket, data + pos, length.ia, 0);
 		if (result == INVALID_SOCKET)
 		{
 			throw std::exception("Error while sending data to socket");
 		}
 		pos += result;
-	} while (pos < length);
+		length.ia -= result;
+	} while (length.ia > 0);
 }
 
-buffer PipeManager::read(const SOCKET & socket, const unsigned int & length)
+Request PipeManager::read(const SOCKET & socket, const unsigned int & length)
 {
 	//First I recive them bytes
 	char* chars = new char[length];
@@ -56,12 +66,12 @@ buffer PipeManager::read(const SOCKET & socket, const unsigned int & length)
 	for (auto pipe : _pipes)
 		buf = pipe.get().read(buf);
 
-	return buf;
-}
+	byte id = buf[0];
+	unsigned int length = buf[1] << 24 | buf[2] << 16 | buf[3] << 8 | buf[4];
+	buf.erase(buf.begin(), buf.begin() + 5);
 
-byte * PipeManager::readBytes(const SOCKET & socket, const unsigned int & length)
-{
-	buffer buf = read(socket, length);
-	byte* data = new byte[buf.size()];
-	return nullptr;
+	if (length != buf.size())
+		throw std::exception("Buffer size and length size mismatch");
+
+	return Request(getEnumFromID(id), time(0), buf);
 }

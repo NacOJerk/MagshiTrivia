@@ -3,6 +3,7 @@
 #include <WinSock2.h>
 #include <vector>
 
+#include "Request.h"
 #include "consts.hpp"
 #include "Pipe.h"
 
@@ -17,10 +18,7 @@ public:
 	void addPipe(const Pipe&);
 
 	void write(buffer, const SOCKET&) const;//Returns true if it was able to send the data	
-	buffer read(const SOCKET&, const unsigned int&);//Returns the readed buffer
-
-	//Based on the functions above
-	byte* readBytes(const SOCKET&, const unsigned int&);
+	Request read(const SOCKET&, const unsigned int&);//Returns a request
 
 };
 
