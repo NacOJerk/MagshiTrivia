@@ -41,9 +41,8 @@ void PipeManager::write(buffer buf, const SOCKET & socket) const
 	} while (length.ia > 0);
 }
 
-Request PipeManager::read(const SOCKET & socket, const unsigned int & length)
+char* recive(const SOCKET& socket, const unsigned int& length)
 {
-	//First I recive them bytes
 	char* chars = new char[length];
 	int pos = 0;
 	do
@@ -56,6 +55,18 @@ Request PipeManager::read(const SOCKET & socket, const unsigned int & length)
 			throw std::exception("Error while reciving data from socket");
 		}
 	} while (pos < length);
+	return chars;
+}
+
+Request PipeManager::read(const SOCKET & socket)
+{
+
+	char* len = recive(socket, 4);
+	unsigned int length = len[0] << 24 | len[1] << 16 | len[2] << 8 | len[3];
+	delete len;
+
+	char* chars = recive(socket, length);
+	//First I recive them bytes
 
 	//moving the things to buff
 	buffer buf;
@@ -63,11 +74,11 @@ Request PipeManager::read(const SOCKET & socket, const unsigned int & length)
 	delete chars;
 
 	//piping the things
-	for (auto pipe : _pipes)
-		buf = pipe.get().read(buf);
+	for(auto rit = _pipes.rbegin(); rit != _pipes.rend(); ++rit)
+		buf = rit->get().read(buf);
 
 	byte id = buf[0];
-	unsigned int length = buf[1] << 24 | buf[2] << 16 | buf[3] << 8 | buf[4];
+	length = buf[1] << 24 | buf[2] << 16 | buf[3] << 8 | buf[4];
 	buf.erase(buf.begin(), buf.begin() + 5);
 
 	if (length != buf.size())
