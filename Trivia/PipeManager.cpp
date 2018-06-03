@@ -1,5 +1,9 @@
 #include "PipeManager.h"
 
+PipeManager::PipeManager()
+{
+}
+
 void PipeManager::addPipe(const Pipe & pipe)
 {
 	_pipes.push_back(pipe);

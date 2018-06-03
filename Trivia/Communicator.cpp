@@ -48,72 +48,9 @@ void Communicator::handleRequests()
 	}
 }
 
-byte * Communicator::readBytes(SOCKET socket, unsigned int length)
-{
-	char* chars = new char[length];
-	int pos = 0;
-	do
-	{
-		int result = recv(socket, chars + pos, length, 0);
-		pos += result;
-		if (result == INVALID_SOCKET || result == 0)
-		{
-			delete chars;
-			throw std::exception("Error while reciving data from socket");
-		}
-	} while (pos < length);
-	return (byte*)chars;
-}
-
-void Communicator::sendDataToSocket(SOCKET socket, char * data, unsigned int length)
-{
-	int pos = 0;
-	do
-	{
-		int result = send(socket, data + pos, length, 0);
-		if (result == INVALID_SOCKET)
-		{
-			throw std::exception("Error while sending data to socket");
-		}
-		pos += result;
-	} while (pos < length);
-}
-
-byte Communicator::getId(SOCKET socket)
-{
-	byte* idc = readBytes(socket, 1);
-	byte id = *idc;
-	delete idc;
-	return id;
-}
-
-unsigned int Communicator::getLength(SOCKET socket)
-{
-	byte* lengthC = readBytes(socket, 4);
-	unsigned int length = lengthC[0] << 24 | lengthC[1] << 16 | lengthC[2] << 8 | lengthC[3];
-	delete lengthC;
-	return length;
-}
-
-buffer Communicator::getBuffer(SOCKET socket, unsigned int length)
-{
-	byte* buffC = readBytes(socket, length);
-	buffer buff;
-	for (int i = 0; i < length; buff.push_back(buffC[i++]));
-	delete buffC;
-	return buff;
-}
-
 void Communicator::sendBuffer(SOCKET socket, buffer buff)
 {
-	char* data = new char[buff.size()];
-	for (int i = 0; i < buff.size();data[i] = buff[i], i++);
-	int result =  send(socket, data, buff.size(), 0);
-	delete data;
-	if (result == INVALID_SOCKET)
-	{
-		throw std::exception("Error while sending data to socket");
-	}
+	_pm.write(buff, socket);
 }
 
 
@@ -128,9 +65,7 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 		IRequestHandler** handler = hand;
 		try
 		{
-			byte id = getId(client_socket);
-			buffer buff = getBuffer(client_socket, getLength(client_socket));
-			Request req(getEnumFromID(id), time(0), buff);
+			Request req = _pm.read(client_socket);
 			if (!(*handler)->isRequestRelevant(req))
 			{
 				buffer response = JsonResponsePacketSerializer::getInstance()->serializeResponse(ErrorResponse("Your request does not fit the current state"));

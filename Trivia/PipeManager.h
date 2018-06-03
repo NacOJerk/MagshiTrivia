@@ -15,6 +15,8 @@ class PipeManager
 	PipeManager(const PipeManager&);
 public:
 
+	PipeManager();
+
 	void addPipe(const Pipe&);
 
 	void write(buffer, const SOCKET&) const;//Returns true if it was able to send the data	
