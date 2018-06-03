@@ -19,7 +19,6 @@ void PipeManager::write(buffer buf, const SOCKET & socket) const
 
 
 	//Set up for like ya know sending the stuff
-	char* data = new char[buf.size() + 4];
 	union byteint
 	{
 		byte b[4];
@@ -27,10 +26,12 @@ void PipeManager::write(buffer buf, const SOCKET & socket) const
 	};
 
 	byteint length = { buf.size() };
+	char* data = new char[buf.size() + 4];
 
-	for (int i = 0; i < 4; data[i] = length.b[3 - i++]);
-	for (unsigned int i = 4; i < length.ia; data[i] = buf[i++]);
-	
+	for (int i = 0; i < 4; data[i] = length.b[3 - i], i++);
+	for (unsigned int i = 0; i < buf.size(); data[i + 4] = buf[i], i++);
+
+	length.ia += 4;
 	//Sending the thingy
 	int pos = 0;
 	do

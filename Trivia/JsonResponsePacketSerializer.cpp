@@ -123,3 +123,39 @@ buffer JsonResponsePacketSerializer::serializeResponse(HighscoreResponse res)
 	jsn["scores"] = users;
 	return encapsule(jsn.dump(), HIGHSCORE_RESPONSE);;
 }
+
+buffer JsonResponsePacketSerializer::serializeResponse(CloseRoomResponse res)
+{
+	json jsn;
+	jsn["status"] = res.getStatus();
+
+	return encapsule(jsn.dump(), CLOSE_ROOM_RESPONSE);
+}
+
+buffer JsonResponsePacketSerializer::serializeResponse(StartGameResponse res)
+{
+	json jsn;
+	jsn["status"] = res.getStatus();
+
+	return encapsule(jsn.dump(), START_GAME_RESPONSE);
+}
+
+buffer JsonResponsePacketSerializer::serializeResponse(GetRoomStateResponse res)
+{
+	json jsn;
+	jsn["status"] = res.getStatus();
+	jsn["has_game_begun"] = res.getHasGameBegun();
+	jsn["players"] = res.getPlayers();
+	jsn["question_count"] = res.getQuestionCount();
+	jsn["answer_timeout"] = res.getAnswerTimeout();
+
+	return encapsule(jsn.dump(), GET_ROOM_STATE_RESPONSE);
+}
+
+buffer JsonResponsePacketSerializer::serializeResponse(LeaveRoomResponse res)
+{
+	json jsn;
+	jsn["status"] = res.getStatus();
+
+	return encapsule(jsn.dump(), LEAVE_ROOM_RESPONSE);
+}

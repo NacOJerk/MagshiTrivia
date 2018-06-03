@@ -11,6 +11,35 @@ Communicator::Communicator(RequestHandlerFactory & facto) : m_handlerFactory(fac
 
 	if (_serverSocket == INVALID_SOCKET)
 		throw std::exception("Communicator - socket");
+	class StupidPipe : public Pipe
+	{
+	public:
+		StupidPipe()
+		{
+
+		}
+
+		buffer write(buffer buff) const
+		{
+			buff.push_back('Z');
+			buff.push_back('i');
+			buff.push_back('n');
+			buff.push_back('e');
+			return buff;
+		}
+
+		buffer read(buffer buff) const
+		{
+			buff.erase(buff.begin() + buff.size() - 1);
+			buff.erase(buff.begin() + buff.size() - 1);
+			buff.erase(buff.begin() + buff.size() - 1);
+			buff.erase(buff.begin() + buff.size() - 1);
+			return buff;
+		}
+
+	};
+
+	_pm.addPipe(*(new StupidPipe()));
 }
 
 void Communicator::start(unsigned int port)
