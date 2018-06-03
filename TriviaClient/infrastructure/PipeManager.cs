@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System;
 using System.Net;
 using System.Net.Sockets;
+using TriviaClient.Utils;
 
 namespace TriviaClient.infrastructure
 {
@@ -40,6 +41,24 @@ namespace TriviaClient.infrastructure
                 for (int i = sent; i < data.Length; data2[i - sent] = data[sent], i++) ;
                 data = data2;
             }
+        }
+
+        public Request Read(Socket sock)
+        {
+            byte[] len = new byte[4];
+            sock.Receive(len);
+            int length = len[0] | len[1] << 8 | len[2] << 16 | len[3] << 24;
+            byte[] data = new byte[length];
+            sock.Receive(data);
+            foreach (IPipe pipe in _pipes.Reverse<IPipe>())
+                data = pipe.Read(data);
+            RequestID id = (RequestID) data[0];
+            length = data[1] | data[2] << 8 | data[3] << 16 | data[4] << 24;
+            if (length != data.Length - 5)
+                throw new Exception("Invaild Packet");
+            byte[] buff = new byte[data.Length - 5];
+            for (int i = 0; i < buff.Length; buff[i] = data[i + 5] , i++) ;
+            return new Request(id, buff);
         }
 
     }
