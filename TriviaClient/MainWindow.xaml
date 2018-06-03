@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TriviaClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="1024" Width="820">
     <Grid>
-        
+        <TextBlock HorizontalAlignment="Center" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="100" Margin="39,38,0,0" TextWrapping="Wrap" Text="Login" VerticalAlignment="Top" Height="334" Width="726"/>
+
     </Grid>
 </Window>

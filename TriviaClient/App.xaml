@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:TriviaClient"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+		<FontFamily x:Key="Cursive">pack://Fonts/#Dancing Script</FontFamily>
     </Application.Resources>
 </Application>
