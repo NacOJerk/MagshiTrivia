@@ -42,7 +42,7 @@ namespace TriviaClient.infrastructure
             }
         }
 
-        public Request Read(Socket sock)
+        public Response Read(Socket sock)
         {
             byte[] len = new byte[4];
             sock.Receive(len);
@@ -51,13 +51,13 @@ namespace TriviaClient.infrastructure
             sock.Receive(data);
             foreach (IPipe pipe in _pipes.Reverse<IPipe>())
                 data = pipe.Read(data);
-            RequestID id = (RequestID) data[0];
+            ResponseID id = (ResponseID) data[0];
             length = data[1] | data[2] << 8 | data[3] << 16 | data[4] << 24;
             if (length != data.Length - 5)
                 throw new Exception("Invaild Packet");
             byte[] buff = new byte[data.Length - 5];
             for (int i = 0; i < buff.Length; buff[i] = data[i + 5] , i++) ;
-            return new Request(id, buff);
+            return new Response(id, buff);
         }
 
     }

@@ -7,18 +7,18 @@ using TriviaClient.Utils;
 
 namespace TriviaClient.infrastructure
 {
-    class Request
+    class Response
     {
-        private RequestID _id;
+        private ResponseID _id;
         private byte[] _buffer;
 
-        public Request(RequestID id, byte[] buffer)
+        public Response(ResponseID id, byte[] buffer)
         {
             _id = id;
             _buffer = buffer;
         }
 
-        public RequestID GetID()
+        public ResponseID GetID()
         {
             return _id;
         }
