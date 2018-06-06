@@ -45,7 +45,10 @@ namespace TriviaClient
 
         private void Signup_Text_Click(object sender, RoutedEventArgs e)
         {
-
+            LoginPassword.Password = "";
+            LoginUsername.Text = "";
+            SetAllVisibilityCollapsed();
+            SignupWindow.Visibility = Visibility.Visible;
         }
 
         private void Signup_Button_Click(object sender, RoutedEventArgs e)
@@ -55,7 +58,11 @@ namespace TriviaClient
 
         private void Login_Text_Click(object sender, MouseButtonEventArgs e)
         {
-
+            SignupUsername.Text = "";
+            SignupPassword.Password = "";
+            SignupEmail.Text = "";
+            SetAllVisibilityCollapsed();
+            LoginWindow.Visibility = Visibility.Visible;
         }
 
         private void Join_Room_Button_Click(object sender, RoutedEventArgs e)
@@ -73,11 +80,6 @@ namespace TriviaClient
 
         }
 
-        private void Stats_Image_Click(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
         private void View_Highscores_Button_Click(object sender, RoutedEventArgs e)
         {
 
@@ -85,12 +87,14 @@ namespace TriviaClient
 
         private void Highscores_Back_Image_Click(object sender, MouseButtonEventArgs e)
         {
-
+            SetAllVisibilityCollapsed();
+            MenuWindow.Visibility = Visibility.Visible;
         }
 
         private void Stats_Back_Image_Click(object sender, MouseButtonEventArgs e)
         {
-
+            SetAllVisibilityCollapsed();
+            MenuWindow.Visibility = Visibility.Visible;
         }
 
         private void Exit_Room_Button_Click(object sender, RoutedEventArgs e)
@@ -115,27 +119,34 @@ namespace TriviaClient
 
         private void Cancel_Join_Button_Click(object sender, RoutedEventArgs e)
         {
+            RoomsList.Items.Clear();
+            SetAllVisibilityCollapsed();
+            MenuWindow.Visibility = Visibility.Visible;
+        }
+
+        private void AnswerQuestion(string answer)
+        {
 
         }
 
         private void Answer1_Click(object sender, RoutedEventArgs e)
         {
-
+            AnswerQuestion(Answer1.ContentStringFormat);
         }
 
         private void Answer2_Click(object sender, RoutedEventArgs e)
         {
-
+            AnswerQuestion(Answer2.ContentStringFormat);
         }
 
         private void Answer3_Click(object sender, RoutedEventArgs e)
         {
-
+            AnswerQuestion(Answer3.ContentStringFormat);
         }
 
         private void Answer4_Click(object sender, RoutedEventArgs e)
         {
-
+            AnswerQuestion(Answer4.ContentStringFormat);
         }
     }
 }

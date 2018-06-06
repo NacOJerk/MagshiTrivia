@@ -86,7 +86,7 @@
 
         </Canvas>
 
-        <Canvas Name="QuestionWindow" Visibility="Visible">
+        <Canvas Name="QuestionWindow" Visibility="Collapsed">
             <TextBlock Name="Question" TextWrapping="Wrap" FontSize="90" FontFamily="/TriviaClient;component/#Dancing Script" Width="780" Canvas.Left="15" Canvas.Top="118" Text="Enter question here please"/>
             <Button Name="Answer4" Content="Answer 4" Canvas.Left="53" Canvas.Top="834" Width="707" Height="110" FontSize="70" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer4_Click"/>
             <Button Name="Answer3" Content="Answer 3" Canvas.Left="53" Canvas.Top="708" Width="707" Height="110" FontSize="70" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer3_Click"/>
@@ -101,3 +101,4 @@
 
 
 </Window>
+    
