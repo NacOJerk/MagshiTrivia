@@ -28,10 +28,10 @@ namespace TriviaClient.infrastructure
                 buff = pipe.Write(buff);
             byte[] data = new byte[buff.Length + 4];
             int len = buff.Length;
-            data[0] = (byte)(len & 255);
-            data[1] = (byte)(len >> 8 & 255);
-            data[2] = (byte)(len >> 16 & 255);
-            data[3] = (byte)(len >> 24 & 255);
+            data[3] = (byte)(len & 255);
+            data[2] = (byte)(len >> 8 & 255);
+            data[1] = (byte)(len >> 16 & 255);
+            data[0] = (byte)(len >> 24 & 255);
             for (int i = 0; i < buff.Length; data[i + 4] = buff[i], i++) ;
             while(data.Length > 0)
             {
@@ -46,13 +46,13 @@ namespace TriviaClient.infrastructure
         {
             byte[] len = new byte[4];
             sock.Receive(len);
-            int length = len[0] | len[1] << 8 | len[2] << 16 | len[3] << 24;
+            int length = len[3] | len[2] << 8 | len[1] << 16 | len[0] << 24;
             byte[] data = new byte[length];
             sock.Receive(data);
             foreach (IPipe pipe in _pipes.Reverse<IPipe>())
                 data = pipe.Read(data);
             ResponseID id = (ResponseID) data[0];
-            length = data[1] | data[2] << 8 | data[3] << 16 | data[4] << 24;
+            length = data[4] | data[3] << 8 | data[2] << 16 | data[1] << 24;
             if (length != data.Length - 5)
                 throw new Exception("Invaild Packet");
             byte[] buff = new byte[data.Length - 5];

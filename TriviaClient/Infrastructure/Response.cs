@@ -16,6 +16,7 @@ namespace TriviaClient.infrastructure
         {
             _id = id;
             _buffer = buffer;
+            
         }
 
         public ResponseID GetID()
