@@ -60,11 +60,24 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Infrastructure\Response.cs" />
-    <Compile Include="Requests\JsonPackerRequestSerializer.cs" />
+    <Compile Include="Requests\CloseRoomRequest.cs" />
+    <Compile Include="Requests\CreateRoomRequest.cs" />
+    <Compile Include="Requests\GetHighscoresRequest.cs" />
+    <Compile Include="Requests\GetPlayersInRoomRequest.cs" />
+    <Compile Include="Requests\GetRoomsRequest.cs" />
+    <Compile Include="Requests\GetRoomStateRequest.cs" />
+    <Compile Include="Requests\JoinRoomRequest.cs" />
+    <Compile Include="Requests\JsonPacketRequestSerializer.cs" />
+    <Compile Include="Requests\LeaveRoomRequest.cs" />
     <Compile Include="Requests\LoginRequest.cs" />
+    <Compile Include="Requests\SignoutRequest.cs" />
     <Compile Include="Requests\SignupRequest.cs" />
+    <Compile Include="Requests\StartGameRequest.cs" />
     <Compile Include="Responses\ErrorResponse.cs" />
+    <Compile Include="Responses\GetPlayersInRoomResponse.cs" />
+    <Compile Include="Responses\JsonPacketResponseDeserializer.cs" />
     <Compile Include="Responses\LoginResponse.cs" />
+    <Compile Include="Responses\LogoutResponse.cs" />
     <Compile Include="Responses\SignupResponse.cs" />
     <Compile Include="Utils\consts.cs" />
     <Page Include="MainWindow.xaml">

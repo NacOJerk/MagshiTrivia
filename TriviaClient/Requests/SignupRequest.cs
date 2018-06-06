@@ -8,28 +8,28 @@ namespace TriviaClient.Requests
 {
     class SignupRequest
     {
-        private string _username, _password, _email;
+        private string username, password, email;
 
         public SignupRequest(string username, string password, string email)
         {
-            _username = username;
-            _password = password;
-            _email = email;
+            this.username = username;
+            this.password = password;
+            this.email = email;
         }
 
         public string GetUsername()
         {
-            return _username;
+            return username;
         }
 
         public string GetPassword()
         {
-            return _password;
+            return password;
         }
 
         public string GetEmail()
         {
-            return _email;
+            return email;
         }
 
     }
