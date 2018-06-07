@@ -72,7 +72,8 @@ namespace TriviaClient
 
         private void Create_Room_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            SetAllVisibilityCollapsed();
+            CreateRoomWindow.Visibility = Visibility.Visible;
         }
 
         private void Logout_Button_Click(object sender, RoutedEventArgs e)
@@ -147,6 +148,17 @@ namespace TriviaClient
         private void Answer4_Click(object sender, RoutedEventArgs e)
         {
             AnswerQuestion(Answer4.ContentStringFormat);
+        }
+
+        private void Create_Room_Window_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Winner_Button_Click(object sender, RoutedEventArgs e)
+        {
+            SetAllVisibilityCollapsed();
+            MenuWindow.Visibility = Visibility.Visible;
         }
     }
 }
