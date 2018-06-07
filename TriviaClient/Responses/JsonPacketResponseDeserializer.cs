@@ -13,7 +13,7 @@ namespace TriviaClient.Responses
 
         private JsonPacketResponseDeserializer() { }
 
-        public JsonPacketResponseDeserializer GetInstance()
+        public static JsonPacketResponseDeserializer GetInstance()
         {
             if(_instance == null)
             {
