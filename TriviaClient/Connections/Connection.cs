@@ -13,7 +13,8 @@ using System.Threading;
 
 namespace TriviaClient.Connections
 {
-    delegate void Handle(Response response, Connection con);
+    delegate void Handle(PacketEvent e);
+
     class Connection
     {
         private PipeManager pipe;
@@ -22,8 +23,9 @@ namespace TriviaClient.Connections
         private Object reciveLock;
         private Object sendLock;
         private UserData userData;
+        private MainWindow window;
 
-        public Connection(string addr, int port, PipeManager mang, IPacketListener pack = null)
+        public Connection(string addr, int port, PipeManager mang,MainWindow window, IPacketListener pack = null)
         { 
             //We start by trying to connect to the server
             client = new TcpClient();
@@ -34,6 +36,7 @@ namespace TriviaClient.Connections
             if(pack != null)
                 wrap = new ListenerWrap(pack);
             userData = new UserData();
+            this.window = window;
             dynamic thread = new Thread(Reciver);
             thread.Start();
         }
@@ -78,7 +81,7 @@ namespace TriviaClient.Connections
                 Send(data);
                 r = pipe.Read(client.Client);
             }
-            handler(r, this);
+            handler(new PacketEvent(this, r, window));
         }
 
         private void Reciver()
@@ -88,7 +91,7 @@ namespace TriviaClient.Connections
                 if (wrap == null)
                     continue;
                 Response resp = Recive();
-                bool handled = wrap.Invoke(resp, this);
+                bool handled = wrap.Invoke(resp, this, window);
                 if(!handled)
                 {
                     Console.WriteLine("Unhandled packet " + resp.GetID());
@@ -112,7 +115,7 @@ namespace TriviaClient.Connections
                     if(Attribute.IsDefined(mInfo, typeof(PacketHandler)) && mInfo.IsPublic)
                     {
                         ParameterInfo[] parms = mInfo.GetParameters();
-                        if(parms.Length == 2 && parms[0].ParameterType == typeof(Response) && parms[1].ParameterType == typeof(Connection))
+                        if(parms.Length == 1 && parms[0].ParameterType == typeof(PacketEvent))
                         {
                             //Ready to add this boyyyy
                             //We first create a delegate
@@ -129,13 +132,13 @@ namespace TriviaClient.Connections
                 }
             }
 
-            public bool Invoke(Response resp, Connection con)
+            public bool Invoke(Response resp, Connection con, MainWindow window)
             {
                 if (!functions.ContainsKey(resp.GetID()))
                 {
                     return false;
                 }
-                functions[resp.GetID()](resp, con);
+                functions[resp.GetID()](new PacketEvent(con, resp, window));
                 return true;
             }
 

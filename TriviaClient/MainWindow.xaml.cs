@@ -16,6 +16,7 @@ using TriviaClient.Connections;
 using TriviaClient.infrastructure;
 using TriviaClient.Requests;
 using TriviaClient.Responses;
+using TriviaClient.Events;
 
 namespace TriviaClient
 {
@@ -30,7 +31,13 @@ namespace TriviaClient
         {
             InitializeComponent();
             PipeManager pipe = new PipeManager();
-            this.connection = new Connection("asd", 123,pipe);
+            this.connection = new Connection("asd", 123,pipe, this);
+        }
+
+        public void SwitchWindow(Canvas c)
+        {
+            SetAllVisibilityCollapsed();
+            c.Visibility = Visibility.Visible;
         }
 
         private void SetAllVisibilityCollapsed()
@@ -55,22 +62,24 @@ namespace TriviaClient
             LoginUsername.Text = "";
             LoginRequest request = new LoginRequest(username, password);
             byte[] data = JsonPacketRequestSerializer.GetInstance().Seriliaze(request);
-            this.connection.Send(data, (Response r, Connection c) => {
-                if(r.GetID() != Utils.ResponseID.LOGIN_RESPONSE)
+            this.connection.Send(data, (PacketEvent ev) => {
+                if(ev.GetResponse().GetID() != Utils.ResponseID.LOGIN_RESPONSE)
                 {
                     //IDK this is some kind of error or something dont want to handle it now
                     return;
                 }
-                LoginResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeLoginResponse(r.GetBuffer());
+                LoginResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeLoginResponse(ev.GetResponse().GetBuffer());
                 if (resp.GetStatus() == 1)
-                    c.getData().Login(username);
+                {
+                    ev.GetConnection().getData().Login(username);
+                    ev.GetConnection().SetListener(new MenuPacketListener());
+                    //We can add it so in here it will switch to the new one watch
+
+                    ev.GetMainWindow().MenuUsername.Text = username;
+                    ev.GetMainWindow().SwitchWindow(ev.GetMainWindow().MenuWindow);
+                    
+                }
             });
-            if (connection.getData().IsLoggedIn())
-            {
-                SetAllVisibilityCollapsed();
-                MenuWindow.Visibility = Visibility.Visible;
-                
-            }
         }
 
         private void Signup_Text_Click(object sender, RoutedEventArgs e)

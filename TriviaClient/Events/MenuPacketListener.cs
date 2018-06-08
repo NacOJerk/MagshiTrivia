@@ -11,6 +11,12 @@ namespace TriviaClient.Events
 {
     class MenuPacketListener : IPacketListener
     {
-        
+        [PacketHandler(Utils.ResponseID.LOGOUT_RESPONSE)]
+        public void Logout(PacketEvent e)
+        {
+            e.GetConnection().getData().Logout();
+            e.GetMainWindow().MenuUsername.Text = "";
+            e.GetMainWindow().SwitchWindow(e.GetMainWindow().LoginWindow);
+        }
     }
 }
