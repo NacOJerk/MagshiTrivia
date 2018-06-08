@@ -61,6 +61,7 @@
     </ApplicationDefinition>
     <Compile Include="Connections\Connection.cs" />
     <Compile Include="Events\MenuPacketListener.cs" />
+    <Compile Include="Events\PacketEvent.cs" />
     <Compile Include="Events\PacketHandler.cs" />
     <Compile Include="Events\IPacketListener.cs" />
     <Compile Include="Infrastructure\Response.cs" />
