@@ -38,5 +38,10 @@ namespace TriviaClient.Requests
         {
             return answerTimeout;
         }
+
+        public string ToString()
+        {
+            return "{\"username\": \"" + username + "\", \"maxUsers\": " + maxUsers + ", \"questionCount\": " + questionCount + ", \"answerTimeout\": " + answerTimeout + "}";
+        }
     }
 }

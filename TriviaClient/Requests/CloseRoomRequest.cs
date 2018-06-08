@@ -18,5 +18,10 @@ namespace TriviaClient.Requests
         {
             return id;
         }
+
+        public string ToString()
+        {
+            return "{\"id\": " + id + "}";
+        }
     }
 }

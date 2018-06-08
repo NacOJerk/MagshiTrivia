@@ -26,5 +26,9 @@ namespace TriviaClient.Requests
             return password;
         }
 
+        public string ToString()
+        {
+            return "{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}";
+        }
     }
 }

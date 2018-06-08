@@ -27,32 +27,33 @@ namespace TriviaClient.Requests
 
         private byte[] GetBuff(dynamic json, RequestID id)
         {
-            return Encapsule(JsonConvert.SerializeObject(json), id);
+            string data = JsonConvert.SerializeObject(json);
+            return Encapsule(data, id);
         }
 
         public byte[] Seriliaze(LoginRequest request)
         {
-            return Encapsule(JsonConvert.SerializeObject(request), RequestID.LOGIN_REQUEST);
+            return Encapsule(request.ToString(), RequestID.LOGIN_REQUEST);
         }
 
         public byte[] Seriliaze(SignupRequest request)
         {
-            return Encapsule(JsonConvert.SerializeObject(request), RequestID.SIGNUP_REQUEST);
+            return Encapsule(request.ToString(), RequestID.SIGNUP_REQUEST);
         }
 
         public byte[] Seriliaze(GetPlayersInRoomRequest request)
         {
-            return Encapsule(JsonConvert.SerializeObject(request), RequestID.GET_PLAYERS_IN_ROOM_REQUEST);
+            return Encapsule(request.ToString(), RequestID.GET_PLAYERS_IN_ROOM_REQUEST);
         }
 
         public byte[] Seriliaze(JoinRoomRequest request)
         {
-            return Encapsule(JsonConvert.SerializeObject(request), RequestID.JOIN_ROOM_REQUEST);
+            return Encapsule(request.ToString(), RequestID.JOIN_ROOM_REQUEST);
         }
 
         public byte[] Seriliaze(CreateRoomRequest request)
         {
-            return Encapsule(JsonConvert.SerializeObject(request), RequestID.CREATE_ROOM_REQUEST);
+            return Encapsule(request.ToString(), RequestID.CREATE_ROOM_REQUEST);
         }
 
         public byte[] Seriliaze(SignoutRequest request)
@@ -72,22 +73,22 @@ namespace TriviaClient.Requests
 
         public byte[] Seriliaze(LeaveRoomRequest request)
         {
-            return Encapsule(JsonConvert.SerializeObject(request), RequestID.LEAVE_ROOM_REQUEST);
+            return Encapsule(request.ToString(), RequestID.LEAVE_ROOM_REQUEST);
         }
 
         public byte[] Seriliaze(CloseRoomRequest request)
         {
-            return Encapsule(JsonConvert.SerializeObject(request), RequestID.CLOSE_ROOM_REQUEST);
+            return Encapsule(request.ToString(), RequestID.CLOSE_ROOM_REQUEST);
         }
 
         public byte[] Seriliaze(StartGameRequest request)
         {
-            return Encapsule(JsonConvert.SerializeObject(request), RequestID.START_GAME_REQUEST);
+            return Encapsule(request.ToString(), RequestID.START_GAME_REQUEST);
         }
 
         public byte[] Seriliaze(GetRoomStateRequest request)
         {
-            return Encapsule(JsonConvert.SerializeObject(request), RequestID.GET_ROOM_STATE_REQUEST);
+            return Encapsule(request.ToString(), RequestID.GET_ROOM_STATE_REQUEST);
         }
 
         private JsonPacketRequestSerializer()

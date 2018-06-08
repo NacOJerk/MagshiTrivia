@@ -24,7 +24,14 @@ namespace TriviaClient.Responses
 
         private string Decapsule(byte[] buff)
         {
-            return BitConverter.ToString(buff);
+            string buf = "";
+            foreach(byte bit in buff)
+            {
+                byte temp = 0;
+                byte[] byt = new byte[2] { bit, temp };
+                buf += BitConverter.ToChar(byt, 0);
+            }
+            return buf;
         }
 
         public ErrorResponse DeserializeErrorResponse(byte[] buff)

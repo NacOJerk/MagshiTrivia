@@ -31,7 +31,7 @@ namespace TriviaClient
         {
             InitializeComponent();
             PipeManager pipe = new PipeManager();
-            this.connection = new Connection("asd", 123,pipe, this);
+            this.connection = new Connection("127.0.0.1", 12345, pipe, this);
         }
 
         public void SwitchWindow(Canvas c)
@@ -76,7 +76,8 @@ namespace TriviaClient
                     //We can add it so in here it will switch to the new one watch
 
                     ev.GetMainWindow().MenuUsername.Text = username;
-                    ev.GetMainWindow().SwitchWindow(ev.GetMainWindow().MenuWindow);
+                    SetAllVisibilityCollapsed();
+                    MenuWindow.Visibility = Visibility.Visible;
                     
                 }
             });
@@ -92,7 +93,33 @@ namespace TriviaClient
 
         private void Signup_Button_Click(object sender, RoutedEventArgs e)
         {
+            string username = SignupUsername.Text, password = SignupPassword.Password, email = SignupEmail.Text;
+            SignupEmail.Text = "";
+            SignupPassword.Password = "";
+            SignupUsername.Text = "";
 
+            SignupRequest req = new SignupRequest(username, password, email);
+            byte[] buff = JsonPacketRequestSerializer.GetInstance().Seriliaze(req);
+            this.connection.Send(buff, (PacketEvent ev) =>
+            {
+                if(ev.GetResponse().GetID() != Utils.ResponseID.SIGNUP_RESPONSE)
+                {
+                    //IDK this is some kind of error or something dont want to handle it now
+                    return;
+                }
+                SignupResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeSignupResponse(ev.GetResponse().GetBuffer());
+                if (resp.GetStatus() == 1)
+                {
+                    ev.GetConnection().getData().Login(username);
+                    ev.GetConnection().SetListener(new MenuPacketListener());
+                    //We can add it so in here it will switch to the new one watch
+
+                    ev.GetMainWindow().MenuUsername.Text = username;
+                    SetAllVisibilityCollapsed();
+                    MenuWindow.Visibility = Visibility.Visible;
+
+                }
+            });
         }
 
         private void Login_Text_Click(object sender, MouseButtonEventArgs e)

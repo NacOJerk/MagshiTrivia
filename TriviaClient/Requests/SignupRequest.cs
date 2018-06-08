@@ -32,5 +32,9 @@ namespace TriviaClient.Requests
             return email;
         }
 
+        public string ToString()
+        {
+            return "{\"username\": \"" + username + "\", \"password\": \"" + password + "\", \"email\": \"" + email + "\"}";
+        }
     }
 }
