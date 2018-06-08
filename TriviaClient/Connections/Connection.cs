@@ -21,6 +21,7 @@ namespace TriviaClient.Connections
         private ListenerWrap wrap;
         private Object reciveLock;
         private Object sendLock;
+        private UserData userData;
 
         public Connection(string addr, int port, PipeManager mang, IPacketListener pack = null)
         { 
@@ -32,8 +33,14 @@ namespace TriviaClient.Connections
             pipe = mang;
             if(pack != null)
                 wrap = new ListenerWrap(pack);
+            userData = new UserData();
             dynamic thread = new Thread(Reciver);
             thread.Start();
+        }
+
+        public UserData getData()//Totally not thread safe yet doe I will just make it safe inside of the object
+        {
+            return userData;
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]

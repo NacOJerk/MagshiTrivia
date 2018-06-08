@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Height="512" Width="410">
     <Grid  Visibility="Visible">
-        <Canvas Name="LoginWindow" Visibility="Collapsed">
+        <Canvas Name="LoginWindow" Visibility="Visible">
             <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="75" Text="Login" VerticalAlignment="Top" Height="96" Width="363" Canvas.Left="23" Canvas.Top="20"/>
             <TextBlock Height="46" Canvas.Left="19"  Text="Username:" Canvas.Top="172" Width="142" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35"/>
             <TextBox Name="LoginUsername" Height="46" Canvas.Left="161" TextWrapping="Wrap" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Canvas.Top="172" Width="218"/>
@@ -105,7 +105,7 @@
             <TextBox Name="MaxUsers" Height="46" Canvas.Left="253" TextWrapping="Wrap" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Canvas.Top="160" Width="126"/>
         </Canvas>
 
-        <Canvas Name="WinnerWindow" Visibility="Visible">
+        <Canvas Name="WinnerWindow" Visibility="Collapsed">
             <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="75" Text="The Winner is..." VerticalAlignment="Top" Height="177" Width="363" Canvas.Left="20" Canvas.Top="26"/>
             <TextBlock TextAlignment="Center" Canvas.Left="20" TextWrapping="Wrap" Text="Username" Canvas.Top="203" Height="88" Width="363" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="75"/>
             <TextBlock TextAlignment="Center" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35" Canvas.Left="20" TextWrapping="Wrap" Text="With 0 correct answers" Canvas.Top="296" Height="45" Width="363"/>

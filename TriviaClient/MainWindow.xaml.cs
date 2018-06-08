@@ -12,6 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TriviaClient.Connections;
+using TriviaClient.infrastructure;
+using TriviaClient.Requests;
+using TriviaClient.Responses;
 
 namespace TriviaClient
 {
@@ -20,9 +24,13 @@ namespace TriviaClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Connection connection;
+
         public MainWindow()
         {
             InitializeComponent();
+            PipeManager pipe = new PipeManager();
+            this.connection = new Connection("asd", 123,pipe);
         }
 
         private void SetAllVisibilityCollapsed()
@@ -36,11 +44,33 @@ namespace TriviaClient
             RoomMemberWindow.Visibility = Visibility.Collapsed;
             JoinRoomWindow.Visibility = Visibility.Collapsed;
             QuestionWindow.Visibility = Visibility.Collapsed;
+            WinnerWindow.Visibility = Visibility.Collapsed;
         }
 
         private void Login_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            string username = LoginUsername.Text;
+            string password = LoginPassword.Password;
+            LoginPassword.Password = "";
+            LoginUsername.Text = "";
+            LoginRequest request = new LoginRequest(username, password);
+            byte[] data = JsonPacketRequestSerializer.GetInstance().Seriliaze(request);
+            this.connection.Send(data, (Response r, Connection c) => {
+                if(r.GetID() != Utils.ResponseID.LOGIN_RESPONSE)
+                {
+                    //IDK this is some kind of error or something dont want to handle it now
+                    return;
+                }
+                LoginResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeLoginResponse(r.GetBuffer());
+                if (resp.GetStatus() == 1)
+                    c.getData().Login(username);
+            });
+            if (connection.getData().IsLoggedIn())
+            {
+                SetAllVisibilityCollapsed();
+                MenuWindow.Visibility = Visibility.Visible;
+                
+            }
         }
 
         private void Signup_Text_Click(object sender, RoutedEventArgs e)
