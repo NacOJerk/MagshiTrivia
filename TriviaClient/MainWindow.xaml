@@ -3,11 +3,34 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:local="clr-namespace:TriviaClient"
         mc:Ignorable="d"
-        Height="512" Width="410">
+        Height="512" Width="410" Background="WhiteSmoke">
     <Grid  Visibility="Visible">
-        <Canvas Name="LoginWindow" Visibility="Visible">
+        <Canvas Name="LoadingWindow" Visibility="Visible">
+            <Image gif:ImageBehavior.AnimatedSource="loading.gif" Height="159" Canvas.Left="50" Canvas.Top="93" Width="283" RenderTransformOrigin="0.5,0.5">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <TextBlock Canvas.Left="20" TextWrapping="Wrap" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="40" Text="Connecting to server" Canvas.Top="337" Height="77" Width="320"/>
+            <Image gif:ImageBehavior.AnimatedSource="dots.gif" Height="62" Canvas.Left="279" Canvas.Top="338" Width="124" RenderTransformOrigin="0.5,0.5">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="0.255"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+        </Canvas>
+        <Canvas Name="LoginWindow" Visibility="Collapsed">
             <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="75" Text="Login" VerticalAlignment="Top" Height="96" Width="363" Canvas.Left="23" Canvas.Top="20"/>
             <TextBlock Height="46" Canvas.Left="19"  Text="Username:" Canvas.Top="172" Width="142" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35"/>
             <TextBox Name="LoginUsername" Height="46" Canvas.Left="161" TextWrapping="Wrap" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Canvas.Top="172" Width="218"/>
@@ -118,4 +141,3 @@
 
 
 </Window>
-    

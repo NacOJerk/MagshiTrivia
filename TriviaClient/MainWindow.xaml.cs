@@ -17,6 +17,8 @@ using TriviaClient.infrastructure;
 using TriviaClient.Requests;
 using TriviaClient.Responses;
 using TriviaClient.Events;
+using System.ComponentModel;
+using System.Threading;
 
 namespace TriviaClient
 {
@@ -27,9 +29,39 @@ namespace TriviaClient
         public MainWindow()
         {
             InitializeComponent();
-            PipeManager pipe = new PipeManager();
-            this.connection = new Connection("127.0.0.1", 12345, pipe, this);
+            SwitchWindow(LoadingWindow);
+            dynamic thread = new Thread(() => 
+            {
+                PipeManager pipe = new PipeManager();
+                try
+                {
+                    this.connection = new Connection("172.29.111.107", 12345, pipe, this);
+                }
+                catch(Exception)
+                {
+                    //Couldnt connect to server
+                    Error error = new Error();
+                    error.Title = "Connection Error";
+                    error.Message.Text = "Couldn't connect to server";
+                    error.Show();
+                    while (error.IsActive) ;
+                    return;
+                }
+                this.Dispatcher.Invoke(() =>
+                {
+                    SwitchWindow(LoginWindow);
+                });
+
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            Closing += OnWindowClosing;
         }
+        public void OnWindowClosing(object sender, CancelEventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
 
         public void SwitchWindow(Canvas c)
         {
@@ -49,6 +81,7 @@ namespace TriviaClient
             JoinRoomWindow.Visibility = Visibility.Collapsed;
             QuestionWindow.Visibility = Visibility.Collapsed;
             WinnerWindow.Visibility = Visibility.Collapsed;
+            LoadingWindow.Visibility = Visibility.Collapsed;
         }
 
         private void Login_Button_Click(object sender, RoutedEventArgs e)
@@ -57,25 +90,29 @@ namespace TriviaClient
             string password = LoginPassword.Password;
             LoginPassword.Password = "";
             LoginUsername.Text = "";
-            LoginRequest request = new LoginRequest(username, password);
-            byte[] data = JsonPacketRequestSerializer.GetInstance().Seriliaze(request);
-            this.connection.Send(data, (PacketEvent ev) => {
-                if(ev.GetResponse().GetID() != Utils.ResponseID.LOGIN_RESPONSE)
+            if (username.Length != 0 && password.Length != 0)
+            {
+                LoginRequest request = new LoginRequest(username, password);
+                byte[] data = JsonPacketRequestSerializer.GetInstance().Seriliaze(request);
+                this.connection.Send(data, (PacketEvent ev) =>
                 {
+                    if (ev.GetResponse().GetID() != Utils.ResponseID.LOGIN_RESPONSE)
+                    {
                     //IDK this is some kind of error or something dont want to handle it now
                     return;
-                }
-                LoginResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeLoginResponse(ev.GetResponse().GetBuffer());
-                if (resp.GetStatus() == 1)
-                {
-                    ev.GetConnection().getData().Login(username);
-                    ev.GetConnection().SetListener(new MenuPacketListener());
+                    }
+                    LoginResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeLoginResponse(ev.GetResponse().GetBuffer());
+                    if (resp.GetStatus() == 1)
+                    {
+                        ev.GetConnection().getData().Login(username);
+                        ev.GetConnection().SetListener(new MenuPacketListener());
                     //We can add it so in here it will switch to the new one watch
 
                     ev.GetMainWindow().MenuUsername.Text = username;
-                    SwitchWindow(MenuWindow);                    
-                }
-            });
+                        SwitchWindow(MenuWindow);
+                    }
+                });
+            }
         }
 
         private void Signup_Text_Click(object sender, RoutedEventArgs e)
@@ -113,6 +150,14 @@ namespace TriviaClient
                     SwitchWindow(MenuWindow);
 
                 }
+                else
+                {
+                    Error win = new Error();
+                    win.Title = "Signup Error!";
+                    win.Message.Text = "Invalid username or email (username might be taken)";
+                    win.Show();
+                    win.Close();
+                }
             });
         }
 
@@ -136,6 +181,13 @@ namespace TriviaClient
 
         private void Logout_Button_Click(object sender, RoutedEventArgs e)
         {
+            byte[] buff = JsonPacketRequestSerializer.GetInstance().Seriliaze(new SignoutRequest());
+            connection.Send(buff, (PacketEvent ev) =>
+            {
+                LogoutResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeLogoutResponse(ev.GetResponse().GetBuffer());
+                ev.GetConnection().SetListener(null);
+                ev.GetMainWindow().SwitchWindow(LoginWindow);
+            });
 
         }
 
