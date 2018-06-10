@@ -96,5 +96,35 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 		}
 	}
 	if (client.isLoggedIn())
+	{
+		UserRoomData& roomData = client.getUser().getRoomData();
+		if (roomData.loggedIn)
+		{
+			unsigned int id = roomData.id;
+			Room& room = m_handlerFactory.getRoomManager()->getRoom(id);
+			if (roomData.isAdmin)
+			{
+				for (auto usr : room.getAllUsers())
+				{
+					LoggedUser& user = usr.get();
+					SOCKET sock = user.getClient().getSocket();
+					buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(LeaveRoomResponse(SUCCESS));
+					sendBuffer(sock, buff);
+					if (!user.getRoomData().isAdmin)
+					{
+						locked<IRequestHandler*>& hand = client.getHandler();
+						IRequestHandler** handler = hand;
+						delete *handler;
+						*handler = m_handlerFactory.createMenuRequestHandler(user);
+						hand();
+					}
+				}
+			}
+			else
+			{
+				room.removeUser(client.getUser().getUsername());
+			}
+		}
 		m_handlerFactory.getLoginManager()->logout(client.getUser().getUsername());
+	}
 }

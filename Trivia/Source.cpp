@@ -11,9 +11,9 @@ void main()
 	try
 	{
 		WSAInitializer wsaInit;
-		Server myServer;
+		Server* myServer = Server::getInstance();
 
-		myServer.run();
+		myServer->run();
 	}
 	catch (std::exception& e)
 	{

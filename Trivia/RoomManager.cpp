@@ -17,12 +17,12 @@ unsigned int RoomManager::generateId()
 
 unsigned int RoomManager::createRoom(LoggedUser& user, unsigned int maxPlayers, unsigned int timePerQuestion, unsigned int amountQuestions)
 {
-	int id = 0;
+	unsigned int id = 0;
 	RoomData data(user.getUsername(), maxPlayers, timePerQuestion, amountQuestions, false);
 	vector<std::reference_wrapper<LoggedUser>> vec;
 	vec.push_back(user);
-	Room room(data, vec);
-	m_rooms[id = generateId()] = room;
+	Room room(data, vec, id = generateId());
+	m_rooms[id] = room;
 	return id;
 }
 

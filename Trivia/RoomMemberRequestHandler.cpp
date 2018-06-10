@@ -45,6 +45,7 @@ RequestResult RoomMemberRequestHandler::getRoomState(Request request)
 
 RequestResult RoomMemberRequestHandler::leaveRoom(Request request)
 {
+	m_room.removeUser(m_user.getUsername());
 	LeaveRoomResponse res(SUCCESS);
 	buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(res);
 	IRequestHandler* handler = m_handlerFactory.createMenuRequestHandler(m_user);

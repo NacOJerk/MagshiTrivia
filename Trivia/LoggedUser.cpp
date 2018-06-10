@@ -24,3 +24,8 @@ LoggedUser & LoggedUser::operator=(LoggedUser & usr)
 	_client = usr.getClient();
 	return *this;
 }
+
+UserRoomData & LoggedUser::getRoomData()
+{
+	return _data;
+}
