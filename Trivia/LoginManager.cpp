@@ -81,6 +81,7 @@ void LoginManager::logout(const std::string& name)
 
 		//Finalizing things
 		usr->getClient().setUser(nullptr);
+		printf("Client logged out (%s)\n", usr->getUsername().c_str());
 		delete usr;
 		users->erase(it);
 	}
