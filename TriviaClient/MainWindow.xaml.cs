@@ -28,7 +28,7 @@ namespace TriviaClient
         {
             InitializeComponent();
             PipeManager pipe = new PipeManager();
-            //this.connection = new Connection("127.0.0.1", 12345, pipe, this);
+            this.connection = new Connection("127.0.0.1", 12345, pipe, this);
         }
 
         public void SwitchWindow(Canvas c)

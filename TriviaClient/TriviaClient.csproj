@@ -65,7 +65,6 @@
     <Compile Include="Events\PacketHandler.cs" />
     <Compile Include="Events\IPacketListener.cs" />
     <Compile Include="Infrastructure\Response.cs" />
-    <Compile Include="Infrastructure\User.cs" />
     <Compile Include="Infrastructure\UserData.cs" />
     <Compile Include="Requests\CloseRoomRequest.cs" />
     <Compile Include="Requests\CreateRoomRequest.cs" />

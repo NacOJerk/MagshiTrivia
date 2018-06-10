@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Newtonsoft.Json;
 namespace TriviaClient.Requests
 {
     class CloseRoomRequest
     {
+        [JsonProperty()]
         private int id;
         public CloseRoomRequest(int id)
         {
@@ -18,7 +19,7 @@ namespace TriviaClient.Requests
         {
             return id;
         }
-
+        
         public string ToString()
         {
             return "{\"id\": " + id + "}";
