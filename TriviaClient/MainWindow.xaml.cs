@@ -20,9 +20,6 @@ using TriviaClient.Events;
 
 namespace TriviaClient
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private Connection connection;
@@ -31,7 +28,7 @@ namespace TriviaClient
         {
             InitializeComponent();
             PipeManager pipe = new PipeManager();
-            this.connection = new Connection("127.0.0.1", 12345, pipe, this);
+            //this.connection = new Connection("127.0.0.1", 12345, pipe, this);
         }
 
         public void SwitchWindow(Canvas c)
@@ -76,9 +73,7 @@ namespace TriviaClient
                     //We can add it so in here it will switch to the new one watch
 
                     ev.GetMainWindow().MenuUsername.Text = username;
-                    SetAllVisibilityCollapsed();
-                    MenuWindow.Visibility = Visibility.Visible;
-                    
+                    SwitchWindow(MenuWindow);                    
                 }
             });
         }
@@ -115,8 +110,7 @@ namespace TriviaClient
                     //We can add it so in here it will switch to the new one watch
 
                     ev.GetMainWindow().MenuUsername.Text = username;
-                    SetAllVisibilityCollapsed();
-                    MenuWindow.Visibility = Visibility.Visible;
+                    SwitchWindow(MenuWindow);
 
                 }
             });
@@ -127,8 +121,7 @@ namespace TriviaClient
             SignupUsername.Text = "";
             SignupPassword.Password = "";
             SignupEmail.Text = "";
-            SetAllVisibilityCollapsed();
-            LoginWindow.Visibility = Visibility.Visible;
+            SwitchWindow(LoginWindow);
         }
 
         private void Join_Room_Button_Click(object sender, RoutedEventArgs e)
@@ -138,8 +131,7 @@ namespace TriviaClient
 
         private void Create_Room_Button_Click(object sender, RoutedEventArgs e)
         {
-            SetAllVisibilityCollapsed();
-            CreateRoomWindow.Visibility = Visibility.Visible;
+            SwitchWindow(CreateRoomWindow);
         }
 
         private void Logout_Button_Click(object sender, RoutedEventArgs e)
@@ -154,14 +146,12 @@ namespace TriviaClient
 
         private void Highscores_Back_Image_Click(object sender, MouseButtonEventArgs e)
         {
-            SetAllVisibilityCollapsed();
-            MenuWindow.Visibility = Visibility.Visible;
+            SwitchWindow(MenuWindow);
         }
 
         private void Stats_Back_Image_Click(object sender, MouseButtonEventArgs e)
         {
-            SetAllVisibilityCollapsed();
-            MenuWindow.Visibility = Visibility.Visible;
+            SwitchWindow(MenuWindow);
         }
 
         private void Exit_Room_Button_Click(object sender, RoutedEventArgs e)
