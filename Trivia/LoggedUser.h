@@ -18,5 +18,7 @@ public:
 	Client& getClient();
 	LoggedUser& operator=(LoggedUser&);
 	UserRoomData& getRoomData();
+	bool operator==(const LoggedUser&) const;
+	bool operator<(const LoggedUser&) const;
 };
 

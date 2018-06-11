@@ -29,3 +29,13 @@ UserRoomData & LoggedUser::getRoomData()
 {
 	return _data;
 }
+
+bool LoggedUser::operator==(const LoggedUser & othr) const
+{
+	return !m_username.compare(othr.m_username);
+}
+
+bool LoggedUser::operator<(const LoggedUser & othr) const
+{
+	return m_username < othr.m_username	;
+}

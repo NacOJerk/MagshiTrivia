@@ -13,16 +13,9 @@ private:
 	RequestResult leaveRoom(Request);
 	RequestResult getRoomState(Request);
 
-	RequestResult handlRequest(Request, Client&)
-	{
-		//unnecessary function
-		//preventing overload errors
-		return RequestResult(buffer(), nullptr);
-	}
-
 public:
 	RoomMemberRequestHandler(Room&, LoggedUser&, RoomManager&, RequestHandlerFactory&);
 
 	bool isRequestRelevant(Request);
-	RequestResult handleRequest(Request);
+	RequestResult handleRequest(Request, Client&);
 };

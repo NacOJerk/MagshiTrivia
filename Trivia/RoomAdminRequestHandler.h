@@ -14,16 +14,9 @@ private:
 	RequestResult startGame(Request);
 	RequestResult getRoomState(Request);
 
-	RequestResult handlRequest(Request, Client&)
-	{
-		//unnecessary function
-		//preventing overload errors
-		return RequestResult(buffer(), nullptr);
-	}
-
 public:
 	RoomAdminRequestHandler(Room&, LoggedUser&, RoomManager&, RequestHandlerFactory&);
 
 	bool isRequestRelevant(Request) override;
-	RequestResult handleRequest(Request);
+	RequestResult handleRequest(Request, Client&);
 };
