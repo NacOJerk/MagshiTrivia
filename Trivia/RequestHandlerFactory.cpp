@@ -10,9 +10,8 @@ LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
 	return new LoginRequestHandler(m_loginManager, *this);
 }
 
-MenuRequestHandler * RequestHandlerFactory::createMenuRequestHandler(LoggedUser usr)
+MenuRequestHandler * RequestHandlerFactory::createMenuRequestHandler(LoggedUser& usr)
 {
-	printf("%s", usr.getUsername());
 	return new MenuRequestHandler(usr, m_roomManager, m_highscoreTable, m_loginManager,*this);
 }
 

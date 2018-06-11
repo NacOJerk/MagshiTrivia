@@ -92,7 +92,6 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 			if (client.isLoggedIn())
 				printf(" (%s)", client.getUser().getUsername().c_str());
 			printf("\n");
-			throw e;
 			break;
 		}
 	}

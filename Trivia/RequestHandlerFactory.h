@@ -22,7 +22,7 @@ class RequestHandlerFactory
 public:
 	RequestHandlerFactory(IDatabase&);
 	LoginRequestHandler* createLoginRequestHandler();
-	MenuRequestHandler* createMenuRequestHandler(LoggedUser);
+	MenuRequestHandler* createMenuRequestHandler(LoggedUser&);
 	RoomAdminRequestHandler* createRoomAdminRequestHandler(LoggedUser&, Room&);
 	RoomMemberRequestHandler* createRoomMemberRequestHandler(LoggedUser&, Room&);
 	LoginManager* getLoginManager();
