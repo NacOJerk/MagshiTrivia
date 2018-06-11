@@ -26,7 +26,7 @@ Communicator& Server::getCommunicator()
 void Server::run()
 {
 	m_database.open("GOD.DB");
-	m_communicator.start(12345);
+	m_communicator.start(25565);
 	while (true)
 	{
 		std::string str;
