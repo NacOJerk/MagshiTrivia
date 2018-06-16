@@ -3,6 +3,8 @@
 
 using std::mutex;
 
+template <class E> class locked_container;
+
 template <class E> class locked
 {
 public:
@@ -46,6 +48,11 @@ public:
 		return _obj;
 	}
 
+	operator locked_container<E>()
+	{
+		return locked_container<E>(*this);
+	}
+
 	void operator()()
 	{
 		lock.unlock();
@@ -56,4 +63,26 @@ public:
 private:
 	E* _obj;
 	mutex lock;
+};
+
+template <class E> class locked_container
+{
+	locked& _lock;
+	E* pointer;
+	locked_container(locked& lock) : _lock(lock)
+	{
+		pointer = _lock;
+	}
+public:
+	~locked_container()
+	{
+		pointer = nullptr;
+		_lock();
+	}
+
+	operator E&()
+	{
+		return *pointer;
+	}
+
 };

@@ -20,12 +20,12 @@ std::string Question::getQuestion() const
 	return m_question;
 }
 
-std::vector<std::string> Question::getPossibleAnswers()
+std::vector<std::string> Question::getPossibleAnswers() const
 {
 	return m_answers;
 }
 
-std::string Question::getRightAnswer()
+std::string Question::getRightAnswer() const
 {
 	return m_answers[0];
 }

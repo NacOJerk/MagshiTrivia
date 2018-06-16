@@ -12,7 +12,7 @@ public:
 	Question(std::string, std::string);
 	void addWrongAnswer(std::string);
 	std::string getQuestion() const;
-	std::vector<std::string> getPossibleAnswers();
-	std::string getRightAnswer(); 
+	std::vector<std::string> getPossibleAnswers() const;
+	std::string getRightAnswer() const;  
 };
 
