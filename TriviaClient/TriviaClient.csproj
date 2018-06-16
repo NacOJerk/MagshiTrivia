@@ -67,7 +67,10 @@
     <Compile Include="Events\PacketEvent.cs" />
     <Compile Include="Events\PacketHandler.cs" />
     <Compile Include="Events\IPacketListener.cs" />
+    <Compile Include="Events\RoomAdminPacketListener.cs" />
+    <Compile Include="Events\RoomMemberPacketListener.cs" />
     <Compile Include="Infrastructure\Response.cs" />
+    <Compile Include="Infrastructure\Room.cs" />
     <Compile Include="Infrastructure\UserData.cs" />
     <Compile Include="Requests\CloseRoomRequest.cs" />
     <Compile Include="Requests\CreateRoomRequest.cs" />
@@ -82,12 +85,19 @@
     <Compile Include="Requests\SignoutRequest.cs" />
     <Compile Include="Requests\SignupRequest.cs" />
     <Compile Include="Requests\StartGameRequest.cs" />
+    <Compile Include="Responses\CreateRoomResponse.cs" />
     <Compile Include="Responses\ErrorResponse.cs" />
+    <Compile Include="Responses\GetHighscoresResponse.cs" />
     <Compile Include="Responses\GetPlayersInRoomResponse.cs" />
+    <Compile Include="Responses\GetRoomsResponse.cs" />
+    <Compile Include="Responses\GetRoomStateResponse.cs" />
+    <Compile Include="Responses\JoinRoomResponse.cs" />
     <Compile Include="Responses\JsonPacketResponseDeserializer.cs" />
+    <Compile Include="Responses\LeaveRoomResponse.cs" />
     <Compile Include="Responses\LoginResponse.cs" />
     <Compile Include="Responses\LogoutResponse.cs" />
     <Compile Include="Responses\SignupResponse.cs" />
+    <Compile Include="Responses\StartGameResponse.cs" />
     <Compile Include="Utils\consts.cs" />
     <Compile Include="Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>

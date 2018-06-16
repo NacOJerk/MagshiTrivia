@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace TriviaClient.Requests
 {
     class LoginRequest
     {
-        private string username, password;
+        [JsonProperty(PropertyName ="username")]
+        private string username;
+        [JsonProperty(PropertyName ="password")]
+        private string password;
 
         public LoginRequest(string username, string password)
         {
@@ -25,10 +29,6 @@ namespace TriviaClient.Requests
         {
             return password;
         }
-
-        public string ToString()
-        {
-            return "{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}";
-        }
+        
     }
 }

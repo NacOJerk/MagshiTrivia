@@ -102,7 +102,7 @@ buffer JsonResponsePacketSerializer::serializeResponse(JoinRoomResponse res)
 buffer JsonResponsePacketSerializer::serializeResponse(CreateRoomResponse res)
 {
 	json jsn;
-	jsn["status"] = res.getStatus();
+	jsn["id"] = res.getStatus();
 	return encapsule(jsn.dump(), CREATE_ROOM_RESPONSE);;
 }
 
@@ -116,7 +116,7 @@ buffer JsonResponsePacketSerializer::serializeResponse(HighscoreResponse res)
 	{
 		json j;
 		j["name"] = score.getUsername();
-		j["score"] = score.getScore();
+		j["score"] = std::to_string(score.getScore());
 		users.push_back(j.dump());
 	}
 	jsn["status"] = res.getStatus();

@@ -58,5 +58,40 @@ namespace TriviaClient.Responses
         {
             return JsonConvert.DeserializeObject<GetPlayersInRoomResponse>(Decapsule(buff));
         }
+
+        public CreateRoomResponse DeserializeCreateRoomResponse(byte[] buff)
+        {
+            return JsonConvert.DeserializeObject<CreateRoomResponse>(Decapsule(buff));
+        }
+
+        public GetRoomsResponse DeserializeGetRoomsResponse(byte[] buff)
+        {
+            return JsonConvert.DeserializeObject<GetRoomsResponse>(Decapsule(buff));
+        }
+        
+        public JoinRoomResponse DeserializeJoinRoomResponse(byte[] buff)
+        {
+            return JsonConvert.DeserializeObject<JoinRoomResponse>(Decapsule(buff));
+        }
+
+        public GetRoomStateResponse DeserializeGetRoomStateResponse(byte[] buff)
+        {
+            return JsonConvert.DeserializeObject<GetRoomStateResponse>(Decapsule(buff));
+        }
+
+        public LeaveRoomResponse DeserializeLeaveRoomResponse(byte[] buff)
+        {
+            return JsonConvert.DeserializeObject<LeaveRoomResponse>(Decapsule(buff));
+        }
+
+        public StartGameResponse DeserializeStartGameResponse(byte[] buff)
+        {
+            return JsonConvert.DeserializeObject<StartGameResponse>(Decapsule(buff));
+        }
+
+        public GetHighscoresResponse DeserializeGetHighscoresResponse(byte[] buff)
+        {
+            return JsonConvert.DeserializeObject<GetHighscoresResponse>(Decapsule(buff));
+        }
     }
 }
