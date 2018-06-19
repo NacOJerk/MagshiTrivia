@@ -66,6 +66,7 @@ namespace TriviaClient.Connections
         public Response Recive()
         {
             Response r = null;
+            lock(reciveLock)
             {
                 r = pipe.Read(client.Client);
             }
@@ -75,6 +76,7 @@ namespace TriviaClient.Connections
         public void Send(byte[] data, Handle handler)
         {
             Response r = null;
+            lock(reciveLock)
             {
                 Send(data);
                 r = pipe.Read(client.Client);

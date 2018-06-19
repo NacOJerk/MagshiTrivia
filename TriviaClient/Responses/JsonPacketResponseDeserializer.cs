@@ -31,6 +31,7 @@ namespace TriviaClient.Responses
                 byte[] byt = new byte[2] { bit, temp };
                 buf += BitConverter.ToChar(byt, 0);
             }
+            Console.WriteLine(buf);
             return buf;
         }
 

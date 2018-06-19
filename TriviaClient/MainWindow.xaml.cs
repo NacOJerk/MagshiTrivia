@@ -35,7 +35,7 @@ namespace TriviaClient
                 PipeManager pipe = new PipeManager();
                 try
                 {
-                    this.connection = new Connection("127.0.0.1", 12345, pipe, this);
+                    this.connection = new Connection("172.29.124.8", 12345, pipe, this);
                 }
                 catch(Exception)
                 {
@@ -457,7 +457,7 @@ namespace TriviaClient
 
         private void Winner_Button_Click(object sender, RoutedEventArgs e)
         {
-            connection.SetListener(new MenuPacketListener);
+            connection.SetListener(new MenuPacketListener());
             SetAllVisibilityCollapsed();
             MenuWindow.Visibility = Visibility.Visible;
         }
