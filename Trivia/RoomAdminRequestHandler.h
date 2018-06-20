@@ -18,5 +18,5 @@ public:
 	RoomAdminRequestHandler(Room&, LoggedUser&, RoomManager&, RequestHandlerFactory&);
 
 	bool isRequestRelevant(Request) override;
-	RequestResult handleRequest(Request, Client&);
+	RequestResult handlRequest(Request, Client&);
 };

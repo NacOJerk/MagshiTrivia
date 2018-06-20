@@ -13,7 +13,7 @@ bool RoomMemberRequestHandler::isRequestRelevant(Request request)
 	return id == LEAVE_ROOM_REQUEST || id == GET_ROOM_STATE_REQUEST;
 }
 
-RequestResult RoomMemberRequestHandler::handleRequest(Request request, Client& c)
+RequestResult RoomMemberRequestHandler::handlRequest(Request request, Client& c)
 {
 	RequestId id = request.getID();
 

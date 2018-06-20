@@ -14,7 +14,7 @@ bool RoomAdminRequestHandler::isRequestRelevant(Request request)
 	return id == GET_ROOM_STATE_REQUEST || id == CLOSE_ROOM_REQUEST || id == START_GAME_REQUEST;
 }
 
-RequestResult RoomAdminRequestHandler::handleRequest(Request request, Client& c)
+RequestResult RoomAdminRequestHandler::handlRequest(Request request, Client& c)
 {
 	RequestId id = request.getID();
 

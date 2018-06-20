@@ -17,5 +17,5 @@ public:
 	RoomMemberRequestHandler(Room&, LoggedUser&, RoomManager&, RequestHandlerFactory&);
 
 	bool isRequestRelevant(Request);
-	RequestResult handleRequest(Request, Client&);
+	RequestResult handlRequest(Request, Client&);
 };

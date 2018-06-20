@@ -16,6 +16,7 @@ void Game::runGame()
 		byte roundOver = isRoundOver();
 		if (roundOver)
 		{
+			testAnswers();
 			if (lastQuestion() || roundOver == 2)
 			{
 				finishGame();
@@ -64,14 +65,16 @@ void Game::testAnswers()
 	std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>& users = _users;
 	for (auto user : users)
 	{
+		StupidMeter sm = BRICK;
 		if (std::get<1>(user).answered)
 		{
-
+			sm = _currentQuestion.getStuipedityRate(std::get<1>(user).answerID);
 		}
 		else
 		{
 			std::get<1>(user).wrongAnswerCount += 1;
 		}
+
 	}
 }
 
