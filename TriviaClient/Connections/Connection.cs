@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TriviaClient.Threads;
 using TriviaClient.infrastructure;
 using TriviaClient.Events;
 using TriviaClient.Utils;
@@ -10,6 +10,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace TriviaClient.Connections
 {
@@ -20,28 +21,34 @@ namespace TriviaClient.Connections
         private PipeManager pipe;
         private TcpClient client;
         private ListenerWrap wrap;
-        private Object reciveLock;
         private Object sendLock;
         private UserData userData;
         private MainWindow window;
+        private TriviaClient.Threads.ThreadPriority priority;
+        private Deque<Response> responses;
 
         public Connection(string addr, int port, PipeManager mang,MainWindow window, IPacketListener pack = null)
         { 
             //We start by trying to connect to the server
             client = new TcpClient();
             client.Connect(addr, port);
-            reciveLock = new Object();
             sendLock = new Object();
             pipe = mang;
             if(pack != null)
                 wrap = new ListenerWrap(pack);
             userData = new UserData();
             this.window = window;
-            dynamic thread = new Thread(Reciver);
-            thread.Start();
+            priority = new Threads.ThreadPriority();
+            responses = new Deque<Response>();
+
+            dynamic recive = new Thread(Reciver);
+            recive.Start();
+            dynamic handle = new Thread(Handler);
+            handle.Start();
+
         }
 
-        public UserData getData()//Totally not thread safe yet doe I will just make it safe inside of the object
+        public UserData GetData()//Totally not thread safe yet doe I will just make it safe inside of the object
         {
             return userData;
         }
@@ -63,38 +70,50 @@ namespace TriviaClient.Connections
             }
         }
 
-        public Response Recive()
-        {
-            Response r = null;
-            lock(reciveLock)
-            {
-                r = pipe.Read(client.Client);
-            }
-            return r;
-        }
-
         public void Send(byte[] data, Handle handler)
         {
             Response r = null;
-            lock(reciveLock)
+            lock(priority.Lock)
             {
                 Send(data);
-                r = pipe.Read(client.Client);
+                priority.WaitFirst();
+                if (responses.IsEmpty())
+                    throw new Exception("Some thing went horribly wrong");
+                r = responses.PopBack();
             }
             handler(new PacketEvent(this, r, window));
+        }
+
+        private void Handler()
+        {
+            while(client.Connected)
+            {
+                if (wrap == null)
+                    continue;
+                lock(priority.Lock)
+                {
+                    priority.WaitLast();
+                    while(!responses.IsEmpty())
+                    {
+                        Response resp = responses.PopFront();
+                        bool handled = wrap.Invoke(resp, this, window);
+                        if (!handled)
+                        {
+                            Console.WriteLine("Unhandled packet " + resp.GetID());
+                        }
+                    }
+                }
+            }
         }
 
         private void Reciver()
         {
             while(client.Connected)
             {
-                if (wrap == null)
-                    continue;
-                Response resp = Recive();
-                bool handled = wrap.Invoke(resp, this, window);
-                if(!handled)
+                lock(priority.Lock)
                 {
-                    Console.WriteLine("Unhandled packet " + resp.GetID());
+                    responses.AddBackward(pipe.Read(client.Client));
+                    priority.PulseAll();
                 }
             }
         }

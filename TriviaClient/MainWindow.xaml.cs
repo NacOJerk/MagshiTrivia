@@ -105,7 +105,7 @@ namespace TriviaClient
                     
                     if (resp.GetStatus() == 1)
                     {
-                        ev.GetConnection().getData().Login(username);
+                        ev.GetConnection().GetData().Login(username);
                         ev.GetConnection().SetListener(new MenuPacketListener());
                     //We can add it so in here it will switch to the new one watch
 
@@ -143,7 +143,7 @@ namespace TriviaClient
                 SignupResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeSignupResponse(ev.GetResponse().GetBuffer());
                 if (resp.GetStatus() == 1)
                 {
-                    ev.GetConnection().getData().Login(username);
+                    ev.GetConnection().GetData().Login(username);
                     ev.GetConnection().SetListener(new MenuPacketListener());
                     //We can add it so in here it will switch to the new one watch
 
@@ -213,7 +213,7 @@ namespace TriviaClient
                 LogoutResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeLogoutResponse(ev.GetResponse().GetBuffer());
                 ev.GetConnection().SetListener(null);
                 ev.GetMainWindow().SwitchWindow(LoginWindow);
-                ev.GetConnection().getData().Logout();
+                ev.GetConnection().GetData().Logout();
             });
 
         }
@@ -271,9 +271,9 @@ namespace TriviaClient
 
         private void Exit_Room_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (!connection.getData().IsInRoom())
+            if (!connection.GetData().IsInRoom())
                 return;
-            LeaveRoomRequest request = new LeaveRoomRequest(connection.getData().GetRoomId());
+            LeaveRoomRequest request = new LeaveRoomRequest(connection.GetData().GetRoomId());
             connection.Send(JsonPacketRequestSerializer.GetInstance().Seriliaze(request), (PacketEvent ev) =>
             {
                 if(ev.GetResponse().GetID() != Utils.ResponseID.LEAVE_ROOM_RESPONSE)
@@ -287,7 +287,7 @@ namespace TriviaClient
 
         private void Close_Room_Button_Click(object sender, RoutedEventArgs e)
         {
-            CloseRoomRequest request = new CloseRoomRequest(connection.getData().GetRoomId());
+            CloseRoomRequest request = new CloseRoomRequest(connection.GetData().GetRoomId());
             connection.Send(JsonPacketRequestSerializer.GetInstance().Seriliaze(request), (PacketEvent ev) =>
             {
                 if(ev.GetResponse().GetID() != Utils.ResponseID.CLOSE_ROOM_RESPONSE)
@@ -299,14 +299,14 @@ namespace TriviaClient
                 AdminQuestionCount.Text = "[questionCount] questions in this room";
                 AdminAnswerTimeout.Text = "Only [answerTimeout] seconds to answer";
                 AdminConnectedPlayers.Text = "[players]/[maxPlayers] players in the room";
-                connection.getData().LeaveRoom();
+                connection.GetData().LeaveRoom();
                 SwitchWindow(MenuWindow);
             });
         }
 
         private void Start_Game_Button_Click(object sender, RoutedEventArgs e)
         {
-            StartGameRequest request = new StartGameRequest(connection.getData().GetRoomId());
+            StartGameRequest request = new StartGameRequest(connection.GetData().GetRoomId());
             connection.Send(JsonPacketRequestSerializer.GetInstance().Seriliaze(request), (PacketEvent ev) =>
             {
                 if(ev.GetResponse().GetID() != Utils.ResponseID.START_GAME_RESPONSE)
@@ -375,7 +375,7 @@ namespace TriviaClient
                             MemberQuestionCount.Text = MemberQuestionCount.Text.Replace("[questionCount]", "" + state.GetQuestionCount());
                             MemberConnectedPlayers.Text = MemberConnectedPlayers.Text.Replace("[players]/[maxPlayers]", roomName.Substring(roomName.LastIndexOf(' ') + 1));
                             SwitchWindow(RoomMemberWindow);
-                            connection.getData().EnterRoom(ToInt(id));
+                            connection.GetData().EnterRoom(ToInt(id));
                             connection.SetListener(new RoomMemberPacketListener());
                         }
                     });
@@ -419,7 +419,7 @@ namespace TriviaClient
         private void Create_Room_Window_Button_Click(object sender, RoutedEventArgs e)
         {
             int maxUsers = ToInt(MaxUsers.Text), questionCount = ToInt(QuestionCount.Text), questionTimeout = ToInt(QuestionTimeout.Text);
-            string username = this.connection.getData().GetUsername();
+            string username = this.connection.GetData().GetUsername();
             CreateRoomRequest request = new CreateRoomRequest(username, maxUsers, questionCount, questionTimeout);
             byte[] buff = JsonPacketRequestSerializer.GetInstance().Seriliaze(request);
             this.connection.Send(buff, (PacketEvent ev) =>
@@ -442,7 +442,7 @@ namespace TriviaClient
                     AdminConnectedPlayers.Text = people;
                     AdminQuestionCount.Text = count;
                     SwitchWindow(RoomAdminWindow);
-                    connection.getData().EnterRoom(resp.GetID());
+                    connection.GetData().EnterRoom(resp.GetID());
                 }
                 else
                 {

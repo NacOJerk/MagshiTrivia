@@ -98,10 +98,12 @@
     <Compile Include="Responses\LogoutResponse.cs" />
     <Compile Include="Responses\SignupResponse.cs" />
     <Compile Include="Responses\StartGameResponse.cs" />
+    <Compile Include="Threads\ThreadPriority.cs" />
     <Compile Include="Utils\consts.cs" />
     <Compile Include="Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\Deque.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

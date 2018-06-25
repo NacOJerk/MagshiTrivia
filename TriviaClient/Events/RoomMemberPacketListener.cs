@@ -21,7 +21,7 @@ namespace TriviaClient.Events
         [PacketHandler(Utils.ResponseID.LEAVE_ROOM_RESPONSE)]
         public void LeaveRoom(PacketEvent e)
         {
-            e.GetConnection().getData().LeaveRoom();
+            e.GetConnection().GetData().LeaveRoom();
             e.GetConnection().SetListener(new MenuPacketListener());
             e.GetMainWindow().MemberQuestionCount.Text = "[questionCount] questions in this room";
             e.GetMainWindow().MemberAnswerTimeout.Text = "Only [answerTimeout] seconds to answer";
@@ -33,8 +33,8 @@ namespace TriviaClient.Events
         [PacketHandler(Utils.ResponseID.LOGOUT_RESPONSE)]
         public void Logout(PacketEvent e)
         {
-            e.GetConnection().getData().LeaveRoom();
-            e.GetConnection().getData().Logout();
+            e.GetConnection().GetData().LeaveRoom();
+            e.GetConnection().GetData().Logout();
             e.GetMainWindow().MenuUsername.Text = "";
             e.GetMainWindow().SwitchWindow(e.GetMainWindow().LoginWindow);
         }
