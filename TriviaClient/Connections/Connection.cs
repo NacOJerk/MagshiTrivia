@@ -27,14 +27,14 @@ namespace TriviaClient.Connections
         private TriviaClient.Threads.ThreadPriority priority;
         private Deque<Response> responses;
 
-        public Connection(string addr, int port, PipeManager mang,MainWindow window, IPacketListener pack = null)
-        { 
+        public Connection(string addr, int port, PipeManager mang, MainWindow window, IPacketListener pack = null)
+        {
             //We start by trying to connect to the server
             client = new TcpClient();
             client.Connect(addr, port);
             sendLock = new Object();
             pipe = mang;
-            if(pack != null)
+            if (pack != null)
                 wrap = new ListenerWrap(pack);
             userData = new UserData();
             this.window = window;
@@ -48,10 +48,7 @@ namespace TriviaClient.Connections
 
         }
 
-        public UserData GetData()//Totally not thread safe yet doe I will just make it safe inside of the object
-        {
-            return userData;
-        }
+        public UserData GetData() { return userData; }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void SetListener(IPacketListener pack)

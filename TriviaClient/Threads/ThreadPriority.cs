@@ -33,10 +33,7 @@ namespace TriviaClient.Threads
             }
         }
 
-        public void PulseAll()
-        {
-            Monitor.PulseAll(Lock);
-        }
+        public void PulseAll(){ Monitor.PulseAll(Lock); }
 
         private bool IsFirst()
         {
