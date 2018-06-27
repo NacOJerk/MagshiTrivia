@@ -28,5 +28,6 @@ public:
 	LoginManager* getLoginManager();
 	RoomManager* getRoomManager();
 	HighscoreTable* getHighscoreTable();
+	IDatabase& getDatabase();//Breaks UML A Bit but I dont have time to fix it
 };
 

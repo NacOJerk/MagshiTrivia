@@ -23,6 +23,7 @@ private:
 	RequestResult getHighscores(Request);
 	RequestResult joinRoom(Request);
 	RequestResult createRoom(Request);
+	RequestResult getStats(Request);
 
 public:
 	MenuRequestHandler(LoggedUser&, RoomManager&, HighscoreTable&, LoginManager&, RequestHandlerFactory&);

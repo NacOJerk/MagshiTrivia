@@ -62,6 +62,20 @@ bool SQLDatabase::open(const std::string & name)
 		}
 		*/
 	}
+	if (getQuestions(1).size() < 1)
+	{
+		addQuestion("Who made this game ?", "Shahar and Barr", "Shahar", "Barr", "Donald Trump");
+		addQuestion("Mark Zuckerberg was one of the founders of which social networking site?", "Facebook", "Twitter", "Apple", "A Tree");
+		addQuestion("Created in 2009, what was the first decentralized cryptocurrency?", "Bitcoin", "Ethereum", "Dollar", "MD5");
+		addQuestion("Who wrote Harry Potter ?", "J. K. Rowling", "Stephen Edwin King", "Barak Obama", "iPhone X");
+		addQuestion("When talking about computer memory, what does the acronym ROM stand for?", "Read-only memory", "Random Access Memory", "Run On Me", "Mario Oddesy Runner");
+		addQuestion("What does wabba laba dub dub mean?", "I am in great pain, please help me", "I am having a ton of fun join me", "NOTHING", "SEND COOKIES");
+		addQuestion("In a photo editing program, what do the letters RGB stand for?", "Red, Green & Blue", "Run, Gain, Breath", "Raiding, Gaining, Balancing", "ROBERT SMITH");
+		addQuestion("HTML and CSS are computer languages used to create what?", "Websites", "Programs", "CDs", "Quantom Computers !");
+		addQuestion("Which monster is blue ?", "COOKIE MONSTER !", "Gremlin", "Chupacabra", "Banshee");
+		addQuestion("In what year was the first Apple computer released?", "1976", "1996", "2006", "1946");
+		addQuestion("In cooking, margarine is used as a substitute for what ingredient?", "Butter", "Sugar", "Honey", "COOKIES");
+	}
 	return true;
 }
 
@@ -208,7 +222,7 @@ void SQLDatabase::addGame(const std::string & username, const bool & win)
 
 float SQLDatabase::getWinRate(const std::string & u)
 {
-	const char* QUERY = "SELECT WINS/ROOMS*1.0 FROM ROOM_STATS WHERE USER=?";
+	const static char* QUERY = "SELECT WINS/ROOMS*1.0 FROM ROOM_STATS WHERE USER=?";
 	const char* username = u.c_str();
 	float storer = -1;
 	const static auto callback = [](void* store, int len, const char ** data, const char**) -> int
@@ -218,6 +232,33 @@ float SQLDatabase::getWinRate(const std::string & u)
 	};
 	exec(QUERY, callback, &storer, nullptr, "T", { &username });
 	return storer;
+}
+
+std::vector<Question> SQLDatabase::getQuestions(const unsigned int & _amount)
+{
+	const static char* QUERY = "SELECT QUESTION, CORRECT_ANS, ANSWER2, ANSWER3, ANSWER4 FROM QUESTION ORDER BY RAND() LIMIT ?";
+	unsigned int amount = _amount;
+	std::vector<Question> questions;
+	const static auto callback = [](void* ques, int len, const char ** data, const char**) -> int
+	{
+		std::string question = string(data[0]);
+		std::string currectAnswer = string(data[1]);
+		((std::vector<Question>*)ques)->push_back(Question(question, currectAnswer, { string(data[2]), string(data[3]), string(data[4]) }));
+		return SQLITE_OK;
+	};
+	exec(QUERY, callback, &questions, nullptr, "I", { &amount });
+	return questions;
+}
+
+void SQLDatabase::addQuestion(const std::string & question, const std::string & currAns, const std::string & wAns2, const std::string & wAns3, const std::string & wAns4)
+{
+	const static char* QUERY = "INSERT INTO QUESTION (QUESTION, CORRECT_ANS, ANSWER2, ANSWER3, ANSWER4) VALUES (?, ?, ?, ?, ?)";
+	const char* quest = question.c_str();
+	const char* ans1 = currAns.c_str();
+	const char* ans2 = wAns2.c_str();
+	const char* ans3 = wAns3.c_str();
+	const char* ans4 = wAns4.c_str();
+	exec(QUERY, nullptr, nullptr, nullptr, "TTTTT", { &quest, &ans1, &ans2, &ans3, &ans4 });
 }
 
 int SQLDatabase::exec(const char * query, int(*callback)(void *, int, const char **, const char **), void * val, char ** errmsg, const char * types, std::vector<void*> args)

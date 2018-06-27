@@ -66,14 +66,25 @@ void Game::testAnswers()
 	for (auto user : users)
 	{
 		StupidMeter sm = BRICK;
+		unsigned int timeA = _timeForQuestion;
 		if (std::get<1>(user).answered)
 		{
 			sm = _currentQuestion.getStuipedityRate(std::get<1>(user).answerID);
+			timeA = std::get<1>(user).questionAnswer - _currentQuestion.getStartTime();
+			//Reset data
+			std::get<1>(user).answered = false;
+			std::get<1>(user).answerID = -1;
+			std::get<1>(user).questionAnswer = time(NULL);
 		}
-		else
-		{
+		if (sm != GENIUS)
 			std::get<1>(user).wrongAnswerCount += 1;
+		else
+			std::get<1>(user).currectAnswerCount += 1;
+		{
+			int totalQuestion = std::get<1>(user).wrongAnswerCount + std::get<1>(user).currectAnswerCount;
+			std::get<1>(user).averageAnswerTime = (std::get<1>(user).currectAnswerCount * (totalQuestion - 1) + timeA) / totalQuestion;
 		}
+
 
 	}
 }

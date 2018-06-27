@@ -30,6 +30,11 @@ HighscoreTable * RequestHandlerFactory::getHighscoreTable()
 	return &m_highscoreTable;
 }
 
+IDatabase & RequestHandlerFactory::getDatabase()
+{
+	return _database;
+}
+
 RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(LoggedUser& usr, Room& rm)
 {
 	return new RoomAdminRequestHandler(rm, usr, m_roomManager, *this);

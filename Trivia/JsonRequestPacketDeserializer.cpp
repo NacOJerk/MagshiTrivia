@@ -66,3 +66,10 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(bu
 
 	return CreateRoomRequest(j_info["username"], j_info["maxUsers"], j_info["questionCount"], j_info["answerTimeout"]);
 }
+
+SendAnswerRequest JsonRequestPacketDeserializer::deserializeSendAnswerRequest(buffer buff)
+{
+	json j_info = readInfo(buff);
+	unsigned int answer = j_info["answer"];
+	return SendAnswerRequest(answer);
+}

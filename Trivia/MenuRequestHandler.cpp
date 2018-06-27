@@ -7,6 +7,7 @@
 #include "GetRoomsResponse.h"
 #include "GetPlayersInRoomRequest.h"
 #include "GetPlayersInRoomResponse.h"
+#include "GetStatsResponse.h"
 #include "HighscoreResponse.h"
 #include "JsonRequestPacketDeserializer.h"
 #include "JsonResponsePacketSerializer.h"
@@ -59,10 +60,21 @@ RequestResult MenuRequestHandler::joinRoom(Request r)
 RequestResult MenuRequestHandler::createRoom(Request r)
 {
 	CreateRoomRequest req = JsonRequestPacketDeserializer::getInstance()->deserializeCreateRoomRequest(r.getBuffer());
-	unsigned int status = !(req.getMaxUsers() < 1 || req.getAnswerTimeout() < 1 || req.getQuestionCount() < 1) ? SUCCESS : FAILED;
+
+	unsigned int status = !(req.getMaxUsers() < 1 || req.getAnswerTimeout() < 1 || req.getQuestionCount() < 1 || m_handlerFactory.getDatabase().getQuestions(req.getQuestionCount()).size() < req.getQuestionCount()) ? SUCCESS : FAILED;
 	if(status == SUCCESS)
 		status = m_roomManager.createRoom(m_users, req.getMaxUsers(), req.getAnswerTimeout(), req.getQuestionCount());
 	return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(CreateRoomResponse(status)), nullptr);
+}
+
+RequestResult MenuRequestHandler::getStats(Request r)
+{
+	const std::string username = m_users.getUsername();
+	float winRate = m_highscoreTable.getWinRate(username);
+	float successRate = m_highscoreTable.getSuccessRate(username);
+	float stuipidityRate = m_highscoreTable.getStuipdityRate(username);
+	float averageTime = m_highscoreTable.getAverageTime(username);
+	return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(GetStatsResponse(winRate,successRate,stuipidityRate,averageTime)), nullptr);
 }
 
 
@@ -75,7 +87,7 @@ MenuRequestHandler::MenuRequestHandler(LoggedUser& usr, RoomManager & rm, Highsc
 bool MenuRequestHandler::isRequestRelevant(Request req)
 {
 	RequestId id = req.getID();
-	return id == GET_PLAYERS_IN_ROOM_REQUEST || id == JOIN_ROOM_REQUEST || id == CREATE_ROOM_REQUEST || id == SIGNOUT_REQUEST || id == GET_ROOMS_REQUEST || id == GET_HIGHSCORE;
+	return id == GET_PLAYERS_IN_ROOM_REQUEST || id == JOIN_ROOM_REQUEST || id == CREATE_ROOM_REQUEST || id == SIGNOUT_REQUEST || id == GET_ROOMS_REQUEST || id == GET_HIGHSCORE || id == GET_STATS_REQUEST;
 }
 
 RequestResult MenuRequestHandler::handlRequest(Request req, Client& sock)
@@ -94,6 +106,8 @@ RequestResult MenuRequestHandler::handlRequest(Request req, Client& sock)
 		return signout(req);
 	case GET_HIGHSCORE:
 		return getHighscores(req);
+	case GET_STATS_REQUEST:
+		return getStats(req);
 	}
 	throw std::exception("Couldn't handle packet");
 }

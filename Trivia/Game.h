@@ -15,7 +15,7 @@ class Game
 {
 	//vars
 	std::vector<Question> m_question;
-	size_t _timeForQuestion;
+	size_t _timeForQuestion;//In seconds
 	size_t _currentQuestionID;
 	QuestionData _currentQuestion;
 
@@ -34,7 +34,7 @@ class Game
 public:
 	Game(std::vector<std::reference_wrapper<LoggedUser>>, std::vector<Question>);
 	
-	void submitAnswer(LoggedUser&, unsigned int);
+	void submitAnswer(LoggedUser&, unsigned int, time_t);
 	void removePlayer(LoggedUser&);
 
 	void stop();

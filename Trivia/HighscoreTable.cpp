@@ -12,3 +12,23 @@ void HighscoreTable::addQuestionStat(const string& username, const unsigned int&
 {
 	m_database.addQuestionStat(username, time, stupidityRate);
 }
+
+float HighscoreTable::getWinRate(const string & username)
+{
+	return m_database.getWinRate(username);
+}
+
+float HighscoreTable::getSuccessRate(const string & username)
+{
+	return m_database.getSuccessRate(username);
+}
+
+float HighscoreTable::getStuipdityRate(const string & username)
+{
+	return m_database.getStuipidityRate(username);
+}
+
+float HighscoreTable::getAverageTime(const string & username)
+{
+	return m_database.getAverageTime(username);
+}
