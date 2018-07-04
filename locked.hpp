@@ -67,13 +67,14 @@ private:
 
 template <class E> class locked_container
 {
-	locked& _lock;
+	locked<E>& _lock;
 	E* pointer;
-	locked_container(locked& lock) : _lock(lock)
+
+public:
+	locked_container(locked<E>& lock) : _lock(lock)
 	{
 		pointer = _lock;
 	}
-public:
 	~locked_container()
 	{
 		pointer = nullptr;

@@ -61,33 +61,27 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 	Client client(client_socket, m_handlerFactory.createLoginRequestHandler());
 	while (true)
 	{
-		locked<IRequestHandler*>& hand = client.getHandler();
-		IRequestHandler** handler = hand;
 		try
 		{
+			locked_container<IRequestHandler*> handl = client.getHandler();
+			IRequestHandler*& handler = handl;
 			Request req = _pm.read(client_socket);
-			if (!(*handler)->isRequestRelevant(req))
+			if (!(handler)->isRequestRelevant(req))
 			{
 				buffer response = JsonResponsePacketSerializer::getInstance()->serializeResponse(ErrorResponse("Your request does not fit the current state"));
 				sendBuffer(client_socket, response);
-				handler == nullptr;
-				hand();
 				continue;
 			}
 			RequestResult result = (*handler)->handlRequest(req, client);
 			sendBuffer(client_socket, result.getBuffer());
 			if (result.getNewHandler() != nullptr)
 			{
-				delete *handler;
-				*handler = result.getNewHandler();
+				delete handler;
+				handler = result.getNewHandler();
 			}
-			handler == nullptr;
-			hand();
 		}
 		catch (std::exception& e)
 		{
-			if (handler)
-				hand();
 			printf("Client disconnected");
 			if (client.isLoggedIn())
 				printf(" (%s)", client.getUser().getUsername().c_str());

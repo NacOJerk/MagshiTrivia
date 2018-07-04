@@ -42,11 +42,10 @@ RequestResult RoomAdminRequestHandler::closeRoom(Request request)
 		Server::getInstance()->getCommunicator().sendBuffer(sock, buff);
 		if (!user.getRoomData().isAdmin)
 		{
-			locked<IRequestHandler*>& hand = user.getClient().getHandler();
-			IRequestHandler** handler = hand;
-			delete *handler;
-			*handler = m_handlerFactory.createMenuRequestHandler(user);
-			hand();
+			locked_container<IRequestHandler*> handl = user.getClient().getHandler();
+			IRequestHandler*& handler = handl;
+			delete handler;
+			handler = m_handlerFactory.createMenuRequestHandler(user);
 		}
 		string name = users[0].get().getUsername();
 		m_room.removeUser(name);
