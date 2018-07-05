@@ -78,6 +78,7 @@
     <Compile Include="Requests\GetPlayersInRoomRequest.cs" />
     <Compile Include="Requests\GetRoomsRequest.cs" />
     <Compile Include="Requests\GetRoomStateRequest.cs" />
+    <Compile Include="Requests\GetStatsRequest.cs" />
     <Compile Include="Requests\JoinRoomRequest.cs" />
     <Compile Include="Requests\JsonPacketRequestSerializer.cs" />
     <Compile Include="Requests\LeaveRoomRequest.cs" />
