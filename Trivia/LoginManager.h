@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 
+class LoggedUser;
+class Client;
+
 class LoginManager
 {
 	IDatabase& m_database;
@@ -16,4 +19,3 @@ public:
 	LoggedUser* getUser(const std::string&);
 	void logout(const std::string&);
 };
-

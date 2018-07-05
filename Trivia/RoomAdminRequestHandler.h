@@ -2,6 +2,8 @@
 #include "IRequestHandler.h"
 #include "RequestHandlerFactory.h"
 
+class RequestHandlerFactory;
+
 class RoomAdminRequestHandler : public IRequestHandler
 {
 private:
@@ -18,5 +20,5 @@ public:
 	RoomAdminRequestHandler(Room&, LoggedUser&, RoomManager&, RequestHandlerFactory&);
 
 	bool isRequestRelevant(Request) override;
-	RequestResult handlRequest(Request, Client&);
+	RequestResult handlRequest(Request, Client&) override;
 };

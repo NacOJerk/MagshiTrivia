@@ -83,7 +83,7 @@ RequestResult RoomAdminRequestHandler::startGame(Request request)
 	IRequestHandler* _handler = nullptr;
 	try
 	{
-		Game& game = m_handlerFactory.getGameManager()->createGame(m_room);
+		Game& game = m_handlerFactory.getGameManager()->createGame(m_room, m_handlerFactory);
 		StartGameResponse res(success);
 		buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(res);
 		while (!users.empty())

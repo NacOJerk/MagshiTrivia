@@ -4,13 +4,15 @@
 #include "GameManager.h"
 #include "RequestHandlerFactory.h"
 #include "LoggedUser.h"
+#include "Game.h"
 
+class Game;
 class RequestHandlerFactory;
 
 class GameRequestHandler : public IRequestHandler
 {
-	Game& m_game;
 	LoggedUser& m_user;
+	Game& m_game;
 	RequestHandlerFactory& m_handlerFactory;
 	RequestResult submitAnswer(Request);
 	RequestResult leaveGame(Request);

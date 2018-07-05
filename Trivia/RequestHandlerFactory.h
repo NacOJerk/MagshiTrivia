@@ -10,27 +10,30 @@
 #include "GameManager.h"
 #include "GameRequestHandler.h"
 
-class GameManager;
 class LoginRequestHandler;
 class MenuRequestHandler;
 class RoomAdminRequestHandler;
 class RoomMemberRequestHandler;
 class GameRequestHandler;
+class GameManager;
+class Game;
 
 class RequestHandlerFactory
 {
 	LoginManager m_loginManager;
 	RoomManager m_roomManager;
-	GameManager m_gameManager;
+	GameManager* m_gameManager;
 	HighscoreTable m_highscoreTable;
 	IDatabase& _database;
 public:
 	RequestHandlerFactory(IDatabase&);
+	~RequestHandlerFactory();
 	LoginRequestHandler* createLoginRequestHandler();
 	MenuRequestHandler* createMenuRequestHandler(LoggedUser&);
 	RoomAdminRequestHandler* createRoomAdminRequestHandler(LoggedUser&, Room&);
 	RoomMemberRequestHandler* createRoomMemberRequestHandler(LoggedUser&, Room&);
 	GameRequestHandler* createGameRequestHandler(LoggedUser&, Game&);
+	IDatabase& getDatabase();
 	LoginManager* getLoginManager();
 	RoomManager* getRoomManager();
 	HighscoreTable* getHighscoreTable();

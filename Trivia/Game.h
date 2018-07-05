@@ -14,6 +14,7 @@
 #include "RequestHandlerFactory.h"
 #include "GameManager.h"
 
+class RequestHandlerFactory;
 class GameManager;
 
 class Game
@@ -48,6 +49,8 @@ public:
 	Game(std::vector<std::reference_wrapper<LoggedUser>>, std::vector<Question>, IDatabase&, size_t, RequestHandlerFactory&, GameManager&, const unsigned int id);
 	~Game();
 	bool operator==(const Game& b) const;
+	bool operator==(const unsigned int& b) const;
+
 	void start();
 	void submitAnswer(LoggedUser&, unsigned int, time_t);
 	void removePlayer(LoggedUser&);

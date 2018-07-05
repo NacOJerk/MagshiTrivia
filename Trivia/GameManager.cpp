@@ -1,8 +1,8 @@
 #include "GameManager.h"
 
-GameManager::GameManager(IDatabase & data, RequestHandlerFactory& fact) : m_database(data), _fact(fact)
+GameManager::GameManager(IDatabase & data) : m_database(data)
 {
-	_ids = 0;
+	_ids = 100;
 }
 
 GameManager::~GameManager()
@@ -15,7 +15,22 @@ GameManager::~GameManager()
 	}
 }
 
-Game & GameManager::createGame( Room & rom)
+Game * GameManager::getGame(const unsigned int & id)
+{
+	locked_container<std::vector<Game*>> _games = this->_games;
+	std::vector<Game*>& games = _games;
+	std::vector<Game*>::iterator itr = games.begin();
+	for (; itr != games.end(); itr++)
+	{
+		if ((**itr) == id)
+			break;
+	}
+	if (itr != games.end())
+		return *itr;
+	return nullptr;
+}
+
+Game & GameManager::createGame( Room & rom, RequestHandlerFactory& _fact)
 {
 	Game* game = new Game(rom.getAllUsers(), m_database.getQuestions(rom.getData().getAmountQuestions()), m_database, rom.getData().getTimePerQuestion(),_fact,*this,_ids++);
 	locked_container<std::vector<Game*>> _games = this->_games;

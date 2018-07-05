@@ -38,7 +38,7 @@ void Game::runGame()
 			{
 				finishGame();
 				(bool&)running = false;
-				std::thread(cleanUp, std::reference_wrapper<locked<bool>>(_running), std::reference_wrapper<GameManager>(_manager));//clean up
+				std::thread(cleanUp, std::reference_wrapper<locked<bool>>(_running), std::reference_wrapper<GameManager>(_manager), this);//clean up
 				break;
 			}
 			else
@@ -137,7 +137,7 @@ void Game::finishGame()
 			IRequestHandler* handler = _handler;
 			delete handler;
 			handler = _factory.createMenuRequestHandler(user.first);
-			user.first.get().getRoomData().game = nullptr;
+			user.first.get().getRoomData().game = 0;
 		}
 	}
 }
@@ -169,7 +169,7 @@ void Game::sendHome()
 		IRequestHandler* handler = _handler;
 		delete handler;
 		handler = _factory.createMenuRequestHandler(user.first);
-		user.first.get().getRoomData().game = nullptr;
+		user.first.get().getRoomData().game = 0;
 	}
 }
 
@@ -179,7 +179,7 @@ Game::Game(std::vector<std::reference_wrapper<LoggedUser>> users, std::vector<Qu
 	std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>& usersMap = _users;
 	for (auto user : users)
 	{
-		user.get().getRoomData().game = this;
+		user.get().getRoomData().game = _id;
 		usersMap[user] = {false, 0, time(NULL), 0, 0, 0};
 	}
 }
@@ -194,6 +194,11 @@ Game::~Game()
 bool Game::operator==(const Game & b) const
 {
 	return _id == b._id;
+}
+
+bool Game::operator==(const unsigned int & b) const
+{
+	return _id == b;
 }
 
 void Game::start()

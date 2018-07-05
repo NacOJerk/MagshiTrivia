@@ -12,14 +12,14 @@ class Game;
 
 class GameManager
 {
-	RequestHandlerFactory& _fact;
 	IDatabase& m_database;
 	locked<std::vector<Game*>> _games;
 	unsigned int _ids;
 public:
-	GameManager(IDatabase&, RequestHandlerFactory&);
+	GameManager(IDatabase&);
 	~GameManager();
-	Game& createGame(Room&);
+	Game* getGame(const unsigned int&);
+	Game& createGame(Room&, RequestHandlerFactory&);
 	void removeGame(Game&);
 };
 

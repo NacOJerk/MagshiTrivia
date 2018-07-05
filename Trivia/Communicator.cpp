@@ -121,7 +121,7 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 		}
 		if (roomData.game)
 		{
-			roomData.game->removePlayer(client.getUser());
+			m_handlerFactory.getGameManager()->getGame(roomData.game)->removePlayer(client.getUser());
 			//Add stuff
 		}
 		m_handlerFactory.getLoginManager()->logout(client.getUser().getUsername());
