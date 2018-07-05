@@ -1,5 +1,9 @@
 #include "Question.h"
 
+Question::Question()
+{
+}
+
 Question::Question(std::string question, std::string rightAnswer, std::vector<std::string> wrongAnswers) : m_question(question), m_answers()
 {
 	m_answers.push_back(rightAnswer);
@@ -28,6 +32,13 @@ std::vector<std::string> Question::getPossibleAnswers() const
 std::string Question::getRightAnswer() const
 {
 	return m_answers[0];
+}
+
+Question & Question::operator=(const Question & othr)
+{
+	m_question = othr.m_question;
+	m_answers = othr.m_answers;
+	return *this;
 }
 
 

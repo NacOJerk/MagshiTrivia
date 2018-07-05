@@ -11,9 +11,10 @@ class QuestionData
 	time_t _questionStart;
 	std::vector<unsigned int> _randomized;
 public:
+	QuestionData();
 	QuestionData(Question);
 	StupidMeter getStuipedityRate(unsigned int) const;
 	std::string getQuestion() const;
-	std::map<unsigned int, std::string> getAnswers() const;
+	std::vector<std::string> getAnswers() const;
 	time_t getStartTime() const;
 };

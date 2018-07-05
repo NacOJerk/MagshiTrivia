@@ -72,7 +72,7 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 				sendBuffer(client_socket, response);
 				continue;
 			}
-			RequestResult result = (*handler)->handlRequest(req, client);
+			RequestResult result = (handler)->handlRequest(req, client);
 			sendBuffer(client_socket, result.getBuffer());
 			if (result.getNewHandler() != nullptr)
 			{
@@ -118,6 +118,11 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 			{
 				room.removeUser(client.getUser().getUsername());
 			}
+		}
+		if (roomData.game)
+		{
+			roomData.game->removePlayer(client.getUser());
+			//Add stuff
 		}
 		m_handlerFactory.getLoginManager()->logout(client.getUser().getUsername());
 	}

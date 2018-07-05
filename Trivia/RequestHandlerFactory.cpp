@@ -1,6 +1,6 @@
 #include "RequestHandlerFactory.h"
 
-RequestHandlerFactory::RequestHandlerFactory(IDatabase & data) : m_loginManager(data), _database(data), m_highscoreTable(data)
+RequestHandlerFactory::RequestHandlerFactory(IDatabase & data) : m_loginManager(data), _database(data), m_highscoreTable(data), m_gameManager(data, *this)
 {
 
 }
@@ -30,9 +30,9 @@ HighscoreTable * RequestHandlerFactory::getHighscoreTable()
 	return &m_highscoreTable;
 }
 
-IDatabase & RequestHandlerFactory::getDatabase()
+GameManager * RequestHandlerFactory::getGameManager()
 {
-	return _database;
+	return &m_gameManager;
 }
 
 RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(LoggedUser& usr, Room& rm)
@@ -43,4 +43,9 @@ RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(Lo
 RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(LoggedUser& usr, Room& rm)
 {
 	return new RoomMemberRequestHandler(rm, usr, m_roomManager, *this);
+}
+
+GameRequestHandler * RequestHandlerFactory::createGameRequestHandler(LoggedUser & usr, Game & gm)
+{
+	return new GameRequestHandler(gm, usr, *this);
 }

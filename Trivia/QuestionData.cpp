@@ -2,6 +2,10 @@
 #include <ctime>
 #include <algorithm>
 
+QuestionData::QuestionData()
+{
+}
+
 QuestionData::QuestionData(Question question) : _current(question), _questionStart(time(NULL))
 {
 	size_t possibilities = _current.getPossibleAnswers().size();
@@ -39,13 +43,13 @@ std::string QuestionData::getQuestion() const
 	return _current.getQuestion();
 }
 
-std::map<unsigned int, std::string> QuestionData::getAnswers() const
+std::vector<std::string> QuestionData::getAnswers() const
 {
-	std::map<unsigned int, std::string> questions;
+	std::vector<std::string> questions;
 	std::vector<std::string> quest = _current.getPossibleAnswers();
 	for (size_t i = 0, len = _randomized.size(); i < len; i++)
 	{
-		questions[i] = quest[_randomized[i]];
+		questions.push_back(quest[_randomized[i]]);
 	}
 	return questions;
 }

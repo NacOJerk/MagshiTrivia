@@ -78,8 +78,39 @@ RequestResult RoomAdminRequestHandler::getRoomState(Request request)
 
 RequestResult RoomAdminRequestHandler::startGame(Request request)
 {
-	StartGameResponse res(SUCCESS);
+	vector<std::reference_wrapper<LoggedUser>>& users = m_room.getAllUsers();
+	byte success = SUCCESS;
+	IRequestHandler* _handler = nullptr;
+	try
+	{
+		Game& game = m_handlerFactory.getGameManager()->createGame(m_room);
+		StartGameResponse res(success);
+		buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(res);
+		while (!users.empty())
+		{
+			LoggedUser& user = users[0].get();
+			SOCKET sock = user.getClient().getSocket();
+			Server::getInstance()->getCommunicator().sendBuffer(sock, buff);
+			if (!user.getRoomData().isAdmin)
+			{
+				locked_container<IRequestHandler*> handl = user.getClient().getHandler();
+				IRequestHandler*& handler = handl;
+				delete handler;
+				handler = m_handlerFactory.createGameRequestHandler(user,game);
+			}
+			string name = users[0].get().getUsername();
+			m_room.removeUser(name);
+		}
+		unsigned int id = m_room.getData().getId();
+		m_roomManager.deleteRoom(id);
+		_handler = m_handlerFactory.createGameRequestHandler(m_user, game);
+		game.start();
+	}
+	catch (std::exception)
+	{
+		success = FAILED;
+	}
+	StartGameResponse res(success);
 	buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(res);
-
-	return RequestResult(buff, nullptr);
+	return RequestResult(buff, _handler);
 }
