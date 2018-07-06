@@ -92,6 +92,7 @@
     <Compile Include="Responses\GetPlayersInRoomResponse.cs" />
     <Compile Include="Responses\GetRoomsResponse.cs" />
     <Compile Include="Responses\GetRoomStateResponse.cs" />
+    <Compile Include="Responses\GetStatsResponse.cs" />
     <Compile Include="Responses\JoinRoomResponse.cs" />
     <Compile Include="Responses\JsonPacketResponseDeserializer.cs" />
     <Compile Include="Responses\LeaveRoomResponse.cs" />

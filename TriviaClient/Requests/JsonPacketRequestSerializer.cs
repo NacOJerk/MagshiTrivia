@@ -91,9 +91,9 @@ namespace TriviaClient.Requests
             return Encapsule(JsonConvert.SerializeObject(request), RequestID.GET_ROOM_STATE_REQUEST);
         }
 
-        public byte[] Serialize(GetStatsRequest request)
+        public byte[] Seriliaze(GetStatsRequest request)
         {
-            return Encapsule("", RequestID.)
+            return Encapsule("", RequestID.GET_STATS_REQUEST);
         }
 
         private JsonPacketRequestSerializer()

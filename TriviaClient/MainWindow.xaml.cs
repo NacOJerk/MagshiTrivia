@@ -35,7 +35,7 @@ namespace TriviaClient
                 PipeManager pipe = new PipeManager();
                 try
                 {
-                    this.connection = new Connection("172.29.124.8", 12345, pipe, this);
+                    this.connection = new Connection("127.0.0.1", 12345, pipe, this);
                 }
                 catch(Exception)
                 {
@@ -266,7 +266,19 @@ namespace TriviaClient
 
         private void Stats_Image_Click(object sender, MouseButtonEventArgs e)
         {
-            
+            connection.Send(JsonPacketRequestSerializer.GetInstance().Seriliaze(new GetStatsRequest()), (PacketEvent ev) =>
+            {
+                if(ev.GetResponse().GetID() != Utils.ResponseID.STATS_RESPONSE)
+                {
+                    return;
+                }
+                GetStatsResponse response = JsonPacketResponseDeserializer.GetInstance().DeserializeGetStatsResponse(ev.GetResponse().GetBuffer());
+                StupidityRate.Text = "Stupidity Rate: " + response.GetStupidityRate() + "%";
+                WinningRate.Text = "Winning Rate: " + response.GetWinRate() + "%";
+                AverageTime.Text = "Average Time Per Questions: " + response.GetAverageTime();
+                CorrectAnswersRate.Text = "Correct Answers Rate: " + response.GetSuccessRate() + "%";
+                SwitchWindow(StatsWindow);
+            });
         }
 
         private void Exit_Room_Button_Click(object sender, RoutedEventArgs e)
