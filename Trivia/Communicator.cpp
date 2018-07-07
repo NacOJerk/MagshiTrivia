@@ -3,6 +3,7 @@
 #include "Request.h"
 #include "JsonResponsePacketSerializer.h"
 #include "ErrorResponse.h"
+#include "EncryptionPipe.h"
 #include <ctime>
 
 Communicator::Communicator(RequestHandlerFactory & facto, std::pair<Key, Key> keys) : m_handlerFactory(facto), _keys(keys)
@@ -48,15 +49,41 @@ void Communicator::handleRequests()
 	}
 }
 
-void startEncryption(Client&)
+void Communicator::startEncryption(Client& c)
 {
+	PipeManager& pipe = c.getPipeManager();
 
+	//Lets sort our keys
+	Key publicKey = _keys.first;
+	Key privateKey = _keys.second;
+
+	//So the first thing we gonna want to do is to send the public key
+	buffer buff = publicKey.getBuffer();
+	pipe.write(buff);
+
+	//Next up we want to switch to our encryption pipe
+	EncryptionPipe firstPipe(privateKey);
+	pipe.addPipe(firstPipe);
+
+	//Now we gonna get the key from the client
+	buff = pipe.readPacket();
+
+	//We gonna consturct it
+	privateKey = Key(buff);
+
+	//And we are going to switch to a brand new pipe
+	pipe.clearPipes();
+	EncryptionPipe secondPipe(privateKey);
+	pipe.addPipe(secondPipe);
+
+	//And we are done :)
 }
 
 void Communicator::startThreadForNewClient(SOCKET client_socket)
 {
 	printf("Client joined\n");
 	Client client(client_socket, m_handlerFactory.createLoginRequestHandler());
+	startEncryption(client);
 	while (true)
 	{
 		try

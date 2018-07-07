@@ -76,6 +76,20 @@ char* recive(const SOCKET& socket, const unsigned int& length)
 
 Request PipeManager::read()
 {
+	buffer buf = readPacket();
+
+	byte id = buf[0];
+	unsigned int length = buf[1] << 24 | buf[2] << 16 | buf[3] << 8 | buf[4];
+	buf.erase(buf.begin(), buf.begin() + 5);
+
+	if (length != buf.size())
+		throw std::exception("Buffer size and length size mismatch");
+
+	return Request(getEnumFromID(id), time(0), buf);
+}
+
+buffer PipeManager::readPacket()
+{
 	locked_container<std::vector<std::reference_wrapper<const Pipe>>> pipes = _pipes;
 	std::vector<std::reference_wrapper<const Pipe>> _pipes = pipes;
 	char* len = recive(_sock, 4);
@@ -91,15 +105,7 @@ Request PipeManager::read()
 	delete chars;
 
 	//piping the things
-	for(auto rit = _pipes.rbegin(); rit != _pipes.rend(); ++rit)
+	for (auto rit = _pipes.rbegin(); rit != _pipes.rend(); ++rit)
 		buf = rit->get().read(buf);
-
-	byte id = buf[0];
-	length = buf[1] << 24 | buf[2] << 16 | buf[3] << 8 | buf[4];
-	buf.erase(buf.begin(), buf.begin() + 5);
-
-	if (length != buf.size())
-		throw std::exception("Buffer size and length size mismatch");
-
-	return Request(getEnumFromID(id), time(0), buf);
+	return buf;
 }

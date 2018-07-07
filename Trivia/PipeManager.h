@@ -24,5 +24,7 @@ public:
 	void write(buffer);//Returns true if it was able to send the data	
 	Request read();//Returns a request
 
+	buffer readPacket();
+
 };
 
