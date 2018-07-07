@@ -132,7 +132,7 @@ void Game::finishGame()
 		//sending data
 		for (auto user : users)
 		{
-			Server::getInstance()->getCommunicator().sendBuffer(user.first.get().getClient().getSocket(), JsonResponsePacketSerializer::getInstance()->serializeResponse(SendResultsResponse(poses[user.first.get().getUsername()], results)));
+			user.first.get().getClient().getPipeManager().write( JsonResponsePacketSerializer::getInstance()->serializeResponse(SendResultsResponse(poses[user.first.get().getUsername()], results)));
 			locked_container<IRequestHandler*> _handler = user.first.get().getClient().getHandler();
 			IRequestHandler* handler = _handler;
 			delete handler;
@@ -153,7 +153,7 @@ void Game::sendNextQuestion()
 	std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>& users = _users;
 	for (auto user : users)
 	{
-		Server::getInstance()->getCommunicator().sendBuffer(user.first.get().getClient().getSocket(), buff);
+		user.first.get().getClient().getPipeManager().write(buff);
 	}
 }
 
@@ -164,7 +164,7 @@ void Game::sendHome()
 	buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(LeaveRoomResponse(1));
 	for (auto user : users)
 	{
-		Server::getInstance()->getCommunicator().sendBuffer(user.first.get().getClient().getSocket(), buff);
+		user.first.get().getClient().getPipeManager().write(buff);
 		locked_container<IRequestHandler*> _handler = user.first.get().getClient().getHandler();
 		IRequestHandler* handler = _handler;
 		delete handler;

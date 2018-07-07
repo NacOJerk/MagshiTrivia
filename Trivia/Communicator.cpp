@@ -48,12 +48,6 @@ void Communicator::handleRequests()
 	}
 }
 
-void Communicator::sendBuffer(SOCKET socket, buffer buff)
-{
-	_pm.write(buff, socket);
-}
-
-
 
 void Communicator::startThreadForNewClient(SOCKET client_socket)
 {
@@ -65,15 +59,15 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 		{
 			locked_container<IRequestHandler*> handl = client.getHandler();
 			IRequestHandler*& handler = handl;
-			Request req = _pm.read(client_socket);
+			Request req = client.getPipeManager().read();
 			if (!(handler)->isRequestRelevant(req))
 			{
 				buffer response = JsonResponsePacketSerializer::getInstance()->serializeResponse(ErrorResponse("Your request does not fit the current state"));
-				sendBuffer(client_socket, response);
+				client.getPipeManager().write(response);
 				continue;
 			}
 			RequestResult result = (handler)->handlRequest(req, client);
-			sendBuffer(client_socket, result.getBuffer());
+			client.getPipeManager().write(result.getBuffer());
 			if (result.getNewHandler() != nullptr)
 			{
 				delete handler;
@@ -103,7 +97,7 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 					LoggedUser& user = usr.get();
 					SOCKET sock = user.getClient().getSocket();
 					buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(LeaveRoomResponse(SUCCESS));
-					sendBuffer(sock, buff);
+					client.getPipeManager().write(buff);
 					if (!user.getRoomData().isAdmin)
 					{
 						locked<IRequestHandler*>& hand = client.getHandler();

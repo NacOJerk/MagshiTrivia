@@ -15,12 +15,9 @@ class Communicator
 {
 	RequestHandlerFactory& m_handlerFactory;
 	SOCKET _serverSocket;
-	PipeManager _pm;
-
 public:
 	Communicator(RequestHandlerFactory&);
 	void start(unsigned int port);
-	void sendBuffer(SOCKET, buffer);
 private:
 	void bindAndListen(unsigned int port);
 	void handleRequests();

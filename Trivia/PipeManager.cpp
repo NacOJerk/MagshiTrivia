@@ -1,16 +1,27 @@
 #include "PipeManager.h"
 
-PipeManager::PipeManager()
+PipeManager::PipeManager(SOCKET sock) : _sock(sock)
 {
 }
 
 void PipeManager::addPipe(const Pipe & pipe)
 {
+	locked_container<std::vector<std::reference_wrapper<const Pipe>>> pipes = _pipes;
+	std::vector<std::reference_wrapper<const Pipe>> _pipes = pipes;
 	_pipes.push_back(pipe);
 }
 
-void PipeManager::write(buffer buf, const SOCKET & socket) const
+void PipeManager::clearPipes()
 {
+	locked_container<std::vector<std::reference_wrapper<const Pipe>>> pipes = _pipes;
+	std::vector<std::reference_wrapper<const Pipe>> _pipes = pipes;
+	_pipes.clear();
+}
+
+void PipeManager::write(buffer buf)
+{
+	locked_container<std::vector<std::reference_wrapper<const Pipe>>> pipes = _pipes;
+	std::vector<std::reference_wrapper<const Pipe>> _pipes = pipes;
 	//Piping it up
 	for (auto pipe : _pipes)
 	{
@@ -36,7 +47,7 @@ void PipeManager::write(buffer buf, const SOCKET & socket) const
 	int pos = 0;
 	do
 	{
-		int result = send(socket, data + pos, length.ia, 0);
+		int result = send(_sock, data + pos, length.ia, 0);
 		if (result == INVALID_SOCKET)
 		{
 			throw std::exception("Error while sending data to socket");
@@ -63,14 +74,15 @@ char* recive(const SOCKET& socket, const unsigned int& length)
 	return chars;
 }
 
-Request PipeManager::read(const SOCKET & socket)
+Request PipeManager::read()
 {
-
-	char* len = recive(socket, 4);
+	locked_container<std::vector<std::reference_wrapper<const Pipe>>> pipes = _pipes;
+	std::vector<std::reference_wrapper<const Pipe>> _pipes = pipes;
+	char* len = recive(_sock, 4);
 	unsigned int length = len[0] << 24 | len[1] << 16 | len[2] << 8 | len[3];
 	delete len;
 
-	char* chars = recive(socket, length);
+	char* chars = recive(_sock, length);
 	//First I recive them bytes
 
 	//moving the things to buff

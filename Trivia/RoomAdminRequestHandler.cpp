@@ -37,9 +37,8 @@ RequestResult RoomAdminRequestHandler::closeRoom(Request request)
 	while (!users.empty())
 	{
 		LoggedUser& user = users[0].get();
-		SOCKET sock = user.getClient().getSocket();
 		buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(LeaveRoomResponse(SUCCESS));
-		Server::getInstance()->getCommunicator().sendBuffer(sock, buff);
+		user.getClient().getPipeManager().write(buff);
 		if (!user.getRoomData().isAdmin)
 		{
 			locked_container<IRequestHandler*> handl = user.getClient().getHandler();
@@ -89,8 +88,7 @@ RequestResult RoomAdminRequestHandler::startGame(Request request)
 		while (!users.empty())
 		{
 			LoggedUser& user = users[0].get();
-			SOCKET sock = user.getClient().getSocket();
-			Server::getInstance()->getCommunicator().sendBuffer(sock, buff);
+			user.getClient().getPipeManager().write(buff);
 			if (!user.getRoomData().isAdmin)
 			{
 				locked_container<IRequestHandler*> handl = user.getClient().getHandler();
