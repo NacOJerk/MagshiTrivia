@@ -57,10 +57,13 @@ void Communicator::startEncryption(Client& c)
 	//Lets sort our keys
 	Key publicKey = _keys.first;
 	Key privateKey = _keys.second;
-
+	std::cout << "Public: " << publicKey << std::endl;
+	std::cout << "Private: " << privateKey << std::endl;
 	//So the first thing we gonna want to do is to send the public key
 	buffer buff = publicKey.getBuffer();
 	pipe.write(buff);
+
+
 
 	//Next up we want to switch to our encryption pipe
 	Pipe* firstPipe = new EncryptionPipe(privateKey);
@@ -71,7 +74,7 @@ void Communicator::startEncryption(Client& c)
 
 	//We gonna consturct it
 	privateKey = Key(buff);
-	std::cout << privateKey << std::endl;
+	std::cout << "Recived: " << privateKey << std::endl;
 	//And we are going to switch to a brand new pipe
 	pipe.clearPipes();
 	Pipe* secondPipe = new EncryptionPipe(privateKey);
