@@ -108,7 +108,7 @@ buffer PipeManager::readPacket()
 {
 	locked_container<std::vector<Pipe*>> pipes = _pipes;
 	std::vector<Pipe*>& _pipes = pipes;
-	char* len = recive(_sock, 4);
+	unsigned char* len = (unsigned char*)recive(_sock, 4);
 	unsigned int length = len[0] << 24 | len[1] << 16 | len[2] << 8 | len[3];
 	delete len;
 

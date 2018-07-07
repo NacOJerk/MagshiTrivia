@@ -37,13 +37,17 @@ namespace TriviaClient.infrastructure
             data[2] = (byte)(len >> 8 & 255);
             data[1] = (byte)(len >> 16 & 255);
             data[0] = (byte)(len >> 24 & 255);
+            Console.WriteLine(len);
             for (int i = 0; i < buff.Length; data[i + 4] = buff[i], i++) ;
             while(data.Length > 0)
             {
+                Console.WriteLine(data.Length);
                 int sent = sock.Send(data);
+                Console.WriteLine(sent);
                 byte[] data2 = new byte[data.Length - sent];
                 for (int i = sent; i < data.Length; data2[i - sent] = data[sent], i++) ;
                 data = data2;
+                Console.WriteLine(data.Length);
             }
         }
 
