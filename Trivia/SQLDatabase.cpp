@@ -236,7 +236,7 @@ float SQLDatabase::getWinRate(const std::string & u)
 
 std::vector<Question> SQLDatabase::getQuestions(const unsigned int & _amount)
 {
-	const static char* QUERY = "SELECT QUESTION, CORRECT_ANS, ANSWER2, ANSWER3, ANSWER4 FROM QUESTION ORDER BY RAND() LIMIT ?";
+	const static char* QUERY = "SELECT QUESTION, CORRECT_ANS, ANSWER2, ANSWER3, ANSWER4 FROM QUESTION ORDER BY RANDOM() LIMIT ?";
 	unsigned int amount = _amount;
 	std::vector<Question> questions;
 	const static auto callback = [](void* ques, int len, const char ** data, const char**) -> int
