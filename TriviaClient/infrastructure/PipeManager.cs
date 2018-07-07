@@ -22,6 +22,11 @@ namespace TriviaClient.infrastructure
             _pipes.Add(pipe);
         }
 
+        public void ClearPipes()
+        {
+            _pipes.Clear();
+        }
+
         public void Send(Socket sock, byte[] buff)
         {
             foreach (IPipe pipe in _pipes)
@@ -58,6 +63,18 @@ namespace TriviaClient.infrastructure
             byte[] buff = new byte[data.Length - 5];
             for (int i = 0; i < buff.Length; buff[i] = data[i + 5] , i++) ;
             return new Response(id, buff);
+        }
+
+        public byte[] ReadPacket(Socket sock)
+        {
+            byte[] len = new byte[4];
+            sock.Receive(len);
+            int length = len[3] | len[2] << 8 | len[1] << 16 | len[0] << 24;
+            byte[] data = new byte[length];
+            sock.Receive(data);
+            foreach (IPipe pipe in _pipes.Reverse<IPipe>())
+                data = pipe.Read(data);
+            return data;
         }
 
     }

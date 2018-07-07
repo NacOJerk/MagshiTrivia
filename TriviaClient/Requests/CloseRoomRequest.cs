@@ -8,7 +8,7 @@ namespace TriviaClient.Requests
 {
     class CloseRoomRequest
     {
-        [JsonProperty()]
+        [JsonProperty(PropertyName = "id")]
         private int id;
         public CloseRoomRequest(int id)
         {

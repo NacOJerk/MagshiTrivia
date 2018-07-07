@@ -3,20 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
-namespace TriviaClient.Requests
+namespace TriviaClient.Responses
 {
-    class JoinRoomRequest
+    class CreateRoomResponse
     {
-        [JsonProperty(PropertyName ="id")]
         private int id;
-        public JoinRoomRequest(int id)
+        public CreateRoomResponse(int id)
         {
             this.id = id;
         }
-
-        public int GetId()
+        
+        public int GetID()
         {
             return id;
         }

@@ -9,15 +9,22 @@ namespace TriviaClient.infrastructure
     class UserData
     {
         private string username;
+        private int roomId;
 
         public UserData()
         {
             username = "";
+            roomId = -1;
         }
 
         public bool IsLoggedIn()
         {
             return username.Length > 0;
+        }
+
+        public bool IsInRoom()
+        {
+            return roomId > -1;
         }
 
         public void Login(string username)
@@ -41,5 +48,19 @@ namespace TriviaClient.infrastructure
             username = "";
         }
 
+        public void EnterRoom(int id)
+        {
+            this.roomId = id;
+        }
+
+        public int GetRoomId()
+        {
+            return roomId;
+        }
+
+        public void LeaveRoom()
+        {
+            roomId = -1;
+        }
     }
 }

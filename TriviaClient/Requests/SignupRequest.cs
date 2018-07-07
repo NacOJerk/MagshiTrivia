@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace TriviaClient.Requests
 {
     class SignupRequest
     {
-        private string username, password, email;
+        [JsonProperty(PropertyName ="username")]
+        private string username;
+        [JsonProperty(PropertyName = "password")]
+        private string password;
+        [JsonProperty(PropertyName = "email")]
+        private string email;
 
         public SignupRequest(string username, string password, string email)
         {
@@ -30,11 +36,6 @@ namespace TriviaClient.Requests
         public string GetEmail()
         {
             return email;
-        }
-
-        public string ToString()
-        {
-            return "{\"username\": \"" + username + "\", \"password\": \"" + password + "\", \"email\": \"" + email + "\"}";
         }
     }
 }

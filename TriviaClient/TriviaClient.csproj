@@ -53,6 +53,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WpfAnimatedGif, Version=1.4.15.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WpfAnimatedGif.1.4.16\lib\net\WpfAnimatedGif.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -64,14 +67,19 @@
     <Compile Include="Events\PacketEvent.cs" />
     <Compile Include="Events\PacketHandler.cs" />
     <Compile Include="Events\IPacketListener.cs" />
+    <Compile Include="Events\RoomAdminPacketListener.cs" />
+    <Compile Include="Events\RoomMemberPacketListener.cs" />
     <Compile Include="Infrastructure\Response.cs" />
+    <Compile Include="Infrastructure\Room.cs" />
     <Compile Include="Infrastructure\UserData.cs" />
+    <Compile Include="Pipes\EncryptionPipe.cs" />
     <Compile Include="Requests\CloseRoomRequest.cs" />
     <Compile Include="Requests\CreateRoomRequest.cs" />
     <Compile Include="Requests\GetHighscoresRequest.cs" />
     <Compile Include="Requests\GetPlayersInRoomRequest.cs" />
     <Compile Include="Requests\GetRoomsRequest.cs" />
     <Compile Include="Requests\GetRoomStateRequest.cs" />
+    <Compile Include="Requests\GetStatsRequest.cs" />
     <Compile Include="Requests\JoinRoomRequest.cs" />
     <Compile Include="Requests\JsonPacketRequestSerializer.cs" />
     <Compile Include="Requests\LeaveRoomRequest.cs" />
@@ -79,13 +87,27 @@
     <Compile Include="Requests\SignoutRequest.cs" />
     <Compile Include="Requests\SignupRequest.cs" />
     <Compile Include="Requests\StartGameRequest.cs" />
+    <Compile Include="Responses\CreateRoomResponse.cs" />
     <Compile Include="Responses\ErrorResponse.cs" />
+    <Compile Include="Responses\GetHighscoresResponse.cs" />
     <Compile Include="Responses\GetPlayersInRoomResponse.cs" />
+    <Compile Include="Responses\GetRoomsResponse.cs" />
+    <Compile Include="Responses\GetRoomStateResponse.cs" />
+    <Compile Include="Responses\GetStatsResponse.cs" />
+    <Compile Include="Responses\JoinRoomResponse.cs" />
     <Compile Include="Responses\JsonPacketResponseDeserializer.cs" />
+    <Compile Include="Responses\LeaveRoomResponse.cs" />
     <Compile Include="Responses\LoginResponse.cs" />
     <Compile Include="Responses\LogoutResponse.cs" />
     <Compile Include="Responses\SignupResponse.cs" />
+    <Compile Include="Responses\StartGameResponse.cs" />
+    <Compile Include="Threads\ThreadPriority.cs" />
     <Compile Include="Utils\consts.cs" />
+    <Compile Include="Error.xaml.cs">
+      <DependentUpon>Error.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\Deque.cs" />
+    <Compile Include="Utils\RSA.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,6 +122,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Error.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -137,6 +163,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="loading.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="dots.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

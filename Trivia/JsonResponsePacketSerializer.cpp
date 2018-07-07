@@ -102,7 +102,7 @@ buffer JsonResponsePacketSerializer::serializeResponse(JoinRoomResponse res)
 buffer JsonResponsePacketSerializer::serializeResponse(CreateRoomResponse res)
 {
 	json jsn;
-	jsn["status"] = res.getStatus();
+	jsn["id"] = res.getStatus();
 	return encapsule(jsn.dump(), CREATE_ROOM_RESPONSE);;
 }
 
