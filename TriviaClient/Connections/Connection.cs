@@ -107,9 +107,10 @@ namespace TriviaClient.Connections
         {
             while(client.Connected)
             {
-                lock(priority.Lock)
+                Response resp = pipe.Read(client.Client);
+                lock (priority.Lock)
                 {
-                    responses.AddBackward(pipe.Read(client.Client));
+                    responses.AddBackward(resp);
                     priority.PulseAll();
                 }
             }
