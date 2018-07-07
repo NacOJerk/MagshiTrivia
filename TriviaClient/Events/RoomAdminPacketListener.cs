@@ -15,7 +15,7 @@ namespace TriviaClient.Events
             GetPlayersInRoomResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeGetPlayersInRoomResponse(e.GetResponse().GetBuffer());
             string people = e.GetMainWindow().AdminConnectedPlayers.Text;
             people = resp.GetPlayers().Length + people.Substring(people.IndexOf('/'));
-            e.GetMainWindow().AdminConnectedPlayers.Text = people;
+            e.GetMainWindow().RewriteTextBlock(e.GetMainWindow().AdminConnectedPlayers, people);
         }
 
         [PacketHandler(Utils.ResponseID.LOGOUT_RESPONSE)]
@@ -23,7 +23,7 @@ namespace TriviaClient.Events
         {
             e.GetConnection().GetData().LeaveRoom();
             e.GetConnection().GetData().Logout();
-            e.GetMainWindow().MenuUsername.Text = "";
+            e.GetMainWindow().RewriteTextBlock(e.GetMainWindow().MenuUsername, "");
             e.GetMainWindow().SwitchWindow(e.GetMainWindow().LoginWindow);
         }
     }

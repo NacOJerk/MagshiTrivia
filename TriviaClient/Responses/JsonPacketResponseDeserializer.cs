@@ -99,5 +99,15 @@ namespace TriviaClient.Responses
         {
             return JsonConvert.DeserializeObject<GetStatsResponse>(Decapsule(buff));
         }
+
+        public SendResultsResponse DeserializeSendResultsResponse(byte[] buff)
+        {
+            return JsonConvert.DeserializeObject<SendResultsResponse>(Decapsule(buff));
+        }
+
+        public SendQuestionResponse DeserializeSendQuestionResponse(byte[] buff)
+        {
+            return JsonConvert.DeserializeObject<SendQuestionResponse>(Decapsule(buff));
+        }
     }
 }

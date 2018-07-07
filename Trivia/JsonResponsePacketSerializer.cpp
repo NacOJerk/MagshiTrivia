@@ -190,17 +190,6 @@ buffer JsonResponsePacketSerializer::serializeResponse(SendResultsResponse res)
 {
 	json jsn;
 	jsn["position"] = res.getPosition();
-	vector<PlayerResult> pResults = res.getResults();
-	vector<json> results;
-	for (auto res : pResults)
-	{
-		json j;
-		j["username"] = res.username;
-		j["currectAnswer"] = res.currectAnswers;
-		j["wrongAnswer"] = res.wrongAnswers;
-		j["averageTime"] = res.averageTime;
-		results.push_back(j);
-	}
-	jsn["results"] = results;
+	jsn["winner"] = res.getResults()[0].username;
 	return encapsule(jsn.dump(), SEND_RESULTS_RESPONSE);;
 }

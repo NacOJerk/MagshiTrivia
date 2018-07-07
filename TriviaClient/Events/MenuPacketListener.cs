@@ -15,7 +15,7 @@ namespace TriviaClient.Events
         public void Logout(PacketEvent e)
         {
             e.GetConnection().GetData().Logout();
-            e.GetMainWindow().MenuUsername.Text = "";
+            e.GetMainWindow().RewriteTextBlock(e.GetMainWindow().MenuUsername, "");
             e.GetMainWindow().SwitchWindow(e.GetMainWindow().LoginWindow);
         }
     }

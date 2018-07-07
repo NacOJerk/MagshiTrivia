@@ -63,6 +63,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Connections\Connection.cs" />
+    <Compile Include="Events\GamePacketListener.cs" />
     <Compile Include="Events\MenuPacketListener.cs" />
     <Compile Include="Events\PacketEvent.cs" />
     <Compile Include="Events\PacketHandler.cs" />
@@ -99,6 +100,8 @@
     <Compile Include="Responses\LeaveRoomResponse.cs" />
     <Compile Include="Responses\LoginResponse.cs" />
     <Compile Include="Responses\LogoutResponse.cs" />
+    <Compile Include="Responses\SendQuestionResponse.cs" />
+    <Compile Include="Responses\SendResultsResponse.cs" />
     <Compile Include="Responses\SignupResponse.cs" />
     <Compile Include="Responses\StartGameResponse.cs" />
     <Compile Include="Threads\ThreadPriority.cs" />

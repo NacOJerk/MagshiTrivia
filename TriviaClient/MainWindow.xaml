@@ -130,8 +130,8 @@
 
         <Canvas Name="WinnerWindow" Visibility="Collapsed">
             <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="75" Text="The Winner is..." VerticalAlignment="Top" Height="177" Width="363" Canvas.Left="20" Canvas.Top="26"/>
-            <TextBlock TextAlignment="Center" Canvas.Left="20" TextWrapping="Wrap" Text="Username" Canvas.Top="203" Height="88" Width="363" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="75"/>
-            <TextBlock TextAlignment="Center" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35" Canvas.Left="20" TextWrapping="Wrap" Text="With 0 correct answers" Canvas.Top="296" Height="45" Width="363"/>
+            <TextBlock Name="WinnerName" TextAlignment="Center" Canvas.Left="20" TextWrapping="Wrap" Text="Username" Canvas.Top="203" Height="88" Width="363" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="75"/>
+            <TextBlock Name="WinnerPosition" TextAlignment="Center" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35" Canvas.Left="20" TextWrapping="Wrap" Text="You ended up in place 0" Canvas.Top="296" Height="45" Width="363"/>
             <Button Canvas.Left="77" Canvas.Top="363" Width="250" Height="75" Click="Winner_Button_Click" Content="Back to Menu" FontSize="45" FontFamily="/TriviaClient;component/#Dancing Script"/>
         </Canvas>
 

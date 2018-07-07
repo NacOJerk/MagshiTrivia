@@ -44,7 +44,8 @@ namespace TriviaClient
                     error.Title = "Connection Error";
                     error.Message.Text = "Couldn't connect to server";
                     error.Show();
-                    while (error.IsActive) ;
+                    error.Closing += OnWindowClosing;
+                             
                     return;
                 }
                 this.Dispatcher.Invoke(() =>
@@ -83,6 +84,16 @@ namespace TriviaClient
             QuestionWindow.Visibility = Visibility.Collapsed;
             WinnerWindow.Visibility = Visibility.Collapsed;
             LoadingWindow.Visibility = Visibility.Collapsed;
+        }
+
+        public void RewriteTextBlock(TextBlock tb, string text)
+        {
+            tb.Text = text;
+        }
+
+        public void RewriteButton(Button b, string text)
+        {
+            b.Content = text;
         }
 
         private void Login_Button_Click(object sender, RoutedEventArgs e)
@@ -303,7 +314,7 @@ namespace TriviaClient
             CloseRoomRequest request = new CloseRoomRequest(connection.GetData().GetRoomId());
             connection.Send(JsonPacketRequestSerializer.GetInstance().Seriliaze(request), (PacketEvent ev) =>
             {
-                if(ev.GetResponse().GetID() != Utils.ResponseID.CLOSE_ROOM_RESPONSE)
+                if(ev.GetResponse().GetID() != Utils.ResponseID.LEAVE_ROOM_RESPONSE)
                 {
                     //some error
                     return;
@@ -337,6 +348,8 @@ namespace TriviaClient
                 }
                 else
                 {
+                    ev.GetConnection().GetData().LeaveRoom();
+                    ev.GetConnection().SetListener(new GamePacketListener());
                     LoadingMessage.Text = "Starting game";
                     SwitchWindow(LoadingWindow);
                 }

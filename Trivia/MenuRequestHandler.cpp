@@ -63,8 +63,8 @@ RequestResult MenuRequestHandler::joinRoom(Request r)
 		}
 		else
 		{
-			m_roomManager.getRoom(r.getID()).addUser(m_users);
-			handler = m_handlerFactory.createRoomMemberRequestHandler(m_users, m_roomManager.getRoom(r.getID()));
+			m_roomManager.getRoom(req.getRoomId()).addUser(m_users);
+			handler = m_handlerFactory.createRoomMemberRequestHandler(m_users, m_roomManager.getRoom(req.getRoomId()));
 		}
 	}
 	return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(JoinRoomResponse(status)), handler);
