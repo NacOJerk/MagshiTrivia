@@ -110,14 +110,14 @@ buffer JsonResponsePacketSerializer::serializeResponse(HighscoreResponse res)
 {
 	
 	json jsn;
-	vector<string> users;
+	vector<json> users;
 	vector<Highscore> scores = res.getHighscores();
 	for (auto score : scores)
 	{
 		json j;
 		j["name"] = score.getUsername();
-		j["score"] = std::to_string(score.getScore());
-		users.push_back(j.dump());
+		j["score"] = score.getScore();
+		users.push_back(j);
 	}
 	jsn["status"] = res.getStatus();
 	jsn["scores"] = users;
@@ -158,4 +158,49 @@ buffer JsonResponsePacketSerializer::serializeResponse(LeaveRoomResponse res)
 	jsn["status"] = res.getStatus();
 
 	return encapsule(jsn.dump(), LEAVE_ROOM_RESPONSE);
+}
+
+buffer JsonResponsePacketSerializer::serializeResponse(GetStatsResponse res)
+{
+	json jsn;
+	jsn["winRate"] = res.getWinRate();
+	jsn["successRate"] = res.getSuccessRate();
+	jsn["stupidityRate"] = res.getStuipidityRate();
+	jsn["averageTime"] = res.getAverageTime();
+	return encapsule(jsn.dump(), STATS_RESPONSE);;
+}
+
+buffer JsonResponsePacketSerializer::serializeResponse(SendQuestionResponse res)
+{
+	json jsn;
+	jsn["question"] = res.getQuestion();
+	jsn["answers"] = res.getAnswers();
+	jsn["remaining"] = res.getRemainingQuestions();
+	return encapsule(jsn.dump(), SEND_QUESTION_RESPONSE);;
+}
+
+buffer JsonResponsePacketSerializer::serializeResponse(SendAnswerResponse res)
+{
+	json jsn;
+	jsn["status"] = res.getStatus();
+	return encapsule(jsn.dump(), SEND_ANSWER_RESPONSE);;
+}
+
+buffer JsonResponsePacketSerializer::serializeResponse(SendResultsResponse res)
+{
+	json jsn;
+	jsn["position"] = res.getPosition();
+	vector<PlayerResult> pResults = res.getResults();
+	vector<json> results;
+	for (auto res : pResults)
+	{
+		json j;
+		j["username"] = res.username;
+		j["currectAnswer"] = res.currectAnswers;
+		j["wrongAnswer"] = res.wrongAnswers;
+		j["averageTime"] = res.averageTime;
+		results.push_back(j);
+	}
+	jsn["results"] = results;
+	return encapsule(jsn.dump(), SEND_RESULTS_RESPONSE);;
 }

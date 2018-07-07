@@ -4,6 +4,9 @@
 #include "SQLDatabase.h"
 #include "Communicator.h"
 #include "RequestHandlerFactory.h"
+#include "RSA.h"
+
+using RSA::Key;
 
 class Server
 {
@@ -11,7 +14,8 @@ class Server
 	Communicator m_communicator;
 	RequestHandlerFactory m_handlerFactory;
 public:
-	Server();
+	Server(std::pair<Key, Key>);
 	void run();
+	Communicator& getCommunicator();
 };
 

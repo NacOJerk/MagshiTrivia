@@ -3,9 +3,10 @@
 #include "Request.h"
 #include "JsonResponsePacketSerializer.h"
 #include "ErrorResponse.h"
+#include "EncryptionPipe.h"
 #include <ctime>
 
-Communicator::Communicator(RequestHandlerFactory & facto) : m_handlerFactory(facto)
+Communicator::Communicator(RequestHandlerFactory & facto, std::pair<Key, Key> keys) : m_handlerFactory(facto), _keys(keys)
 {
 	_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
@@ -48,46 +49,72 @@ void Communicator::handleRequests()
 	}
 }
 
-void Communicator::sendBuffer(SOCKET socket, buffer buff)
+void Communicator::startEncryption(Client& c)
 {
-	_pm.write(buff, socket);
+	PipeManager& pipe = c.getPipeManager();
+
+	//Lets sort our keys
+	Key publicKey = _keys.first;
+	Key privateKey = _keys.second;
+	//So the first thing we gonna want to do is to send the public key
+	buffer buff = publicKey.getBuffer();
+	pipe.write(buff);
+
+
+
+	//Next up we want to switch to our encryption pipe
+	Pipe* firstPipe = new EncryptionPipe(privateKey);
+	pipe.addPipe(firstPipe);
+
+	//Now we gonna get the key from the client
+	buff = pipe.readPacket();
+
+	//We gonna consturct it
+	privateKey = Key(buff);
+	//And we are going to switch to a brand new pipe
+	pipe.clearPipes();
+	Pipe* secondPipe = new EncryptionPipe(privateKey);
+	pipe.addPipe(secondPipe);
+
+	//And we are done :)
 }
-
-
 
 void Communicator::startThreadForNewClient(SOCKET client_socket)
 {
-	printf("Client joined\n");
 	Client client(client_socket, m_handlerFactory.createLoginRequestHandler());
+	try
+	{
+		startEncryption(client);
+	}
+	catch (std::exception& e)
+	{
+		return;
+	}
+	printf("Client joined\n");
+
 	while (true)
 	{
-		locked<IRequestHandler*>& hand = client.getHandler();
-		IRequestHandler** handler = hand;
 		try
 		{
-			Request req = _pm.read(client_socket);
-			if (!(*handler)->isRequestRelevant(req))
+			locked_container<IRequestHandler*> handl = client.getHandler();
+			IRequestHandler*& handler = handl;
+			Request req = client.getPipeManager().read();
+			if (!(handler)->isRequestRelevant(req))
 			{
 				buffer response = JsonResponsePacketSerializer::getInstance()->serializeResponse(ErrorResponse("Your request does not fit the current state"));
-				sendBuffer(client_socket, response);
-				handler == nullptr;
-				hand();
+				client.getPipeManager().write(response);
 				continue;
 			}
-			RequestResult result = (*handler)->handlRequest(req, client);
-			sendBuffer(client_socket, result.getBuffer());
+			RequestResult result = (handler)->handlRequest(req, client);
+			client.getPipeManager().write(result.getBuffer());
 			if (result.getNewHandler() != nullptr)
 			{
-				delete *handler;
-				*handler = result.getNewHandler();
+				delete handler;
+				handler = result.getNewHandler();
 			}
-			handler == nullptr;
-			hand();
 		}
 		catch (std::exception& e)
 		{
-			if (handler)
-				hand();
 			printf("Client disconnected");
 			if (client.isLoggedIn())
 				printf(" (%s)", client.getUser().getUsername().c_str());
@@ -96,5 +123,40 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 		}
 	}
 	if (client.isLoggedIn())
+	{
+		UserRoomData& roomData = client.getUser().getRoomData();
+		if (roomData.loggedIn)
+		{
+			unsigned int id = roomData.id;
+			Room& room = m_handlerFactory.getRoomManager()->getRoom(id);
+			if (roomData.isAdmin)
+			{
+				for (auto usr : room.getAllUsers())
+				{
+					LoggedUser& user = usr.get();
+					SOCKET sock = user.getClient().getSocket();
+					buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(LeaveRoomResponse(SUCCESS));
+					client.getPipeManager().write(buff);
+					if (!user.getRoomData().isAdmin)
+					{
+						locked<IRequestHandler*>& hand = client.getHandler();
+						IRequestHandler** handler = hand;
+						delete *handler;
+						*handler = m_handlerFactory.createMenuRequestHandler(user);
+						hand();
+					}
+				}
+			}
+			else
+			{
+				room.removeUser(client.getUser().getUsername());
+			}
+		}
+		if (roomData.game)
+		{
+			m_handlerFactory.getGameManager()->getGame(roomData.game)->removePlayer(client.getUser());
+			//Add stuff
+		}
 		m_handlerFactory.getLoginManager()->logout(client.getUser().getUsername());
+	}
 }

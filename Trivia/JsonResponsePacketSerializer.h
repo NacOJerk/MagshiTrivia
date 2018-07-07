@@ -13,6 +13,10 @@
 #include "StartGameResponse.h"
 #include "GetRoomStateResponse.h"
 #include "LeaveRoomResponse.h"
+#include "GetStatsResponse.h"
+#include "SendQuestionResponse.h"
+#include "SendAnswerResponse.h"
+#include "SendResultsResponse.h"
 
 class JsonResponsePacketSerializer
 {
@@ -33,6 +37,10 @@ public:
 	buffer serializeResponse(StartGameResponse);
 	buffer serializeResponse(GetRoomStateResponse);
 	buffer serializeResponse(LeaveRoomResponse);
+	buffer serializeResponse(GetStatsResponse);
+	buffer serializeResponse(SendQuestionResponse);
+	buffer serializeResponse(SendAnswerResponse);
+	buffer serializeResponse(SendResultsResponse);
 	static JsonResponsePacketSerializer* getInstance();
 };
 

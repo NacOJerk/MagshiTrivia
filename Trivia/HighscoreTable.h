@@ -14,4 +14,8 @@ public:
 	HighscoreTable(IDatabase&);
 	vector<Highscore> getHighscores();
 	void addQuestionStat(const string& username, const unsigned int& time, const unsigned int& stupidityRate);
+	float getWinRate(const string& username);
+	float getSuccessRate(const string& username);
+	float getStuipdityRate(const string& username);
+	float getAverageTime(const string& username);
 };

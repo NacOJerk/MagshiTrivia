@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "Highscore.h"
+#include "Question.h"
 
 class IDatabase
 {
@@ -17,4 +18,6 @@ public:
 	virtual float getStuipidityRate(const std::string&) = 0;
 	virtual void addGame(const std::string&, const bool&) = 0;
 	virtual float getWinRate(const std::string&) = 0;
+	virtual std::vector<Question> getQuestions(const unsigned int&) = 0;
+	virtual void addQuestion(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&) = 0;
 };

@@ -5,6 +5,7 @@
 #include "GetPlayersInRoomRequest.h"
 #include "JoinRoomRequest.h"
 #include "CreateRoomRequest.h"
+#include "SendAnswerRequest.h"
 #include "../json.hpp"
 
 using json = nlohmann::json;
@@ -22,6 +23,7 @@ public:
 	GetPlayersInRoomRequest deserializeGetPlayersRequest(buffer);
 	JoinRoomRequest deserializeJoinRoomRequest(buffer);
 	CreateRoomRequest deserializeCreateRoomRequest(buffer);
+	SendAnswerRequest deserializeSendAnswerRequest(buffer);
 	static JsonRequestPacketDeserializer* getInstance();
 };
 

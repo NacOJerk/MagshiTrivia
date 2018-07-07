@@ -1,20 +1,47 @@
 #include "PipeManager.h"
 
-PipeManager::PipeManager()
+PipeManager::PipeManager(SOCKET sock) : _sock(sock)
 {
 }
 
-void PipeManager::addPipe(const Pipe & pipe)
+PipeManager::~PipeManager()
 {
+	locked_container<std::vector<Pipe*>> pipes = _pipes;
+	std::vector<Pipe*>& _pipes = pipes;
+	for (auto p : _pipes)
+	{
+		if (p)
+			delete p;
+	}
+}
+
+void PipeManager::addPipe(Pipe*  pipe)
+{
+	locked_container<std::vector<Pipe*>> pipes = _pipes;
+	std::vector<Pipe*>& _pipes = pipes;
 	_pipes.push_back(pipe);
 }
 
-void PipeManager::write(buffer buf, const SOCKET & socket) const
+void PipeManager::clearPipes()
 {
+	locked_container<std::vector<Pipe*>> pipes = _pipes;
+	std::vector<Pipe*>& _pipes = pipes;
+	for (auto p : _pipes)
+	{
+		if (p)
+			delete p;
+	}
+	_pipes.clear();
+}
+
+void PipeManager::write(buffer buf)
+{
+	locked_container<std::vector<Pipe*>> pipes = _pipes;
+	std::vector<Pipe*>& _pipes = pipes;
 	//Piping it up
 	for (auto pipe : _pipes)
 	{
-		buf = pipe.get().write(buf);
+		buf = pipe->write(buf);
 	}
 
 
@@ -36,7 +63,7 @@ void PipeManager::write(buffer buf, const SOCKET & socket) const
 	int pos = 0;
 	do
 	{
-		int result = send(socket, data + pos, length.ia, 0);
+		int result = send(_sock, data + pos, length.ia, 0);
 		if (result == INVALID_SOCKET)
 		{
 			throw std::exception("Error while sending data to socket");
@@ -63,14 +90,29 @@ char* recive(const SOCKET& socket, const unsigned int& length)
 	return chars;
 }
 
-Request PipeManager::read(const SOCKET & socket)
+Request PipeManager::read()
 {
+	buffer buf = readPacket();
 
-	char* len = recive(socket, 4);
+	byte id = buf[0];
+	unsigned int length = buf[1] << 24 | buf[2] << 16 | buf[3] << 8 | buf[4];
+	buf.erase(buf.begin(), buf.begin() + 5);
+
+	if (length != buf.size())
+		throw std::exception("Buffer size and length size mismatch");
+
+	return Request(getEnumFromID(id), time(0), buf);
+}
+
+buffer PipeManager::readPacket()
+{
+	locked_container<std::vector<Pipe*>> pipes = _pipes;
+	std::vector<Pipe*>& _pipes = pipes;
+	char* len = recive(_sock, 4);
 	unsigned int length = len[0] << 24 | len[1] << 16 | len[2] << 8 | len[3];
 	delete len;
 
-	char* chars = recive(socket, length);
+	char* chars = recive(_sock, length);
 	//First I recive them bytes
 
 	//moving the things to buff
@@ -79,15 +121,7 @@ Request PipeManager::read(const SOCKET & socket)
 	delete chars;
 
 	//piping the things
-	for(auto rit = _pipes.rbegin(); rit != _pipes.rend(); ++rit)
-		buf = rit->get().read(buf);
-
-	byte id = buf[0];
-	length = buf[1] << 24 | buf[2] << 16 | buf[3] << 8 | buf[4];
-	buf.erase(buf.begin(), buf.begin() + 5);
-
-	if (length != buf.size())
-		throw std::exception("Buffer size and length size mismatch");
-
-	return Request(getEnumFromID(id), time(0), buf);
+	for (auto rit = _pipes.rbegin(); rit != _pipes.rend(); ++rit)
+		buf = (*rit)->read(buf);
+	return buf;
 }

@@ -3,6 +3,7 @@
 #include "StartGameResponse.h"
 #include "GetRoomStateResponse.h"
 #include "JsonResponsePacketSerializer.h"
+#include "Server.h"
 
 RoomAdminRequestHandler::RoomAdminRequestHandler(Room& room, LoggedUser& user, RoomManager& roomManager, RequestHandlerFactory& handlerFactory) : m_room(room), m_user(user), m_roomManager(roomManager), m_handlerFactory(handlerFactory)
 {}
@@ -13,7 +14,7 @@ bool RoomAdminRequestHandler::isRequestRelevant(Request request)
 	return id == GET_ROOM_STATE_REQUEST || id == CLOSE_ROOM_REQUEST || id == START_GAME_REQUEST;
 }
 
-RequestResult RoomAdminRequestHandler::handleRequest(Request request)
+RequestResult RoomAdminRequestHandler::handlRequest(Request request, Client& c)
 {
 	RequestId id = request.getID();
 
@@ -32,8 +33,19 @@ RequestResult RoomAdminRequestHandler::handleRequest(Request request)
 RequestResult RoomAdminRequestHandler::closeRoom(Request request)
 {
 	vector<std::reference_wrapper<LoggedUser>>& users = m_room.getAllUsers();
+
 	while (!users.empty())
 	{
+		LoggedUser& user = users[0].get();
+		buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(LeaveRoomResponse(SUCCESS));
+		user.getClient().getPipeManager().write(buff);
+		if (!user.getRoomData().isAdmin)
+		{
+			locked_container<IRequestHandler*> handl = user.getClient().getHandler();
+			IRequestHandler*& handler = handl;
+			delete handler;
+			handler = m_handlerFactory.createMenuRequestHandler(user);
+		}
 		string name = users[0].get().getUsername();
 		m_room.removeUser(name);
 	}
@@ -65,8 +77,38 @@ RequestResult RoomAdminRequestHandler::getRoomState(Request request)
 
 RequestResult RoomAdminRequestHandler::startGame(Request request)
 {
-	StartGameResponse res(SUCCESS);
+	vector<std::reference_wrapper<LoggedUser>>& users = m_room.getAllUsers();
+	byte success = SUCCESS;
+	IRequestHandler* _handler = nullptr;
+	try
+	{
+		Game& game = m_handlerFactory.getGameManager()->createGame(m_room, m_handlerFactory);
+		StartGameResponse res(success);
+		buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(res);
+		while (!users.empty())
+		{
+			LoggedUser& user = users[0].get();
+			user.getClient().getPipeManager().write(buff);
+			if (!user.getRoomData().isAdmin)
+			{
+				locked_container<IRequestHandler*> handl = user.getClient().getHandler();
+				IRequestHandler*& handler = handl;
+				delete handler;
+				handler = m_handlerFactory.createGameRequestHandler(user,game);
+			}
+			string name = users[0].get().getUsername();
+			m_room.removeUser(name);
+		}
+		unsigned int id = m_room.getData().getId();
+		m_roomManager.deleteRoom(id);
+		_handler = m_handlerFactory.createGameRequestHandler(m_user, game);
+		game.start();
+	}
+	catch (std::exception)
+	{
+		success = FAILED;
+	}
+	StartGameResponse res(success);
 	buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(res);
-
-	return RequestResult(buff, nullptr);
+	return RequestResult(buff, _handler);
 }

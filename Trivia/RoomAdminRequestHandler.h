@@ -2,6 +2,8 @@
 #include "IRequestHandler.h"
 #include "RequestHandlerFactory.h"
 
+class RequestHandlerFactory;
+
 class RoomAdminRequestHandler : public IRequestHandler
 {
 private:
@@ -14,16 +16,9 @@ private:
 	RequestResult startGame(Request);
 	RequestResult getRoomState(Request);
 
-	RequestResult handlRequest(Request, Client&)
-	{
-		//unnecessary function
-		//preventing overload errors
-		return RequestResult(buffer(), nullptr);
-	}
-
 public:
 	RoomAdminRequestHandler(Room&, LoggedUser&, RoomManager&, RequestHandlerFactory&);
 
 	bool isRequestRelevant(Request) override;
-	RequestResult handleRequest(Request);
+	RequestResult handlRequest(Request, Client&) override;
 };

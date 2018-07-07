@@ -3,8 +3,14 @@
 #include <iostream>
 #include <string>
 
-Server::Server() : m_handlerFactory(m_database), m_communicator(m_handlerFactory)
+
+Server::Server(std::pair<Key, Key> keys) : m_handlerFactory(m_database), m_communicator(m_handlerFactory, keys)
 {
+}
+
+Communicator& Server::getCommunicator()
+{
+	return m_communicator;
 }
 
 void Server::run()

@@ -24,5 +24,7 @@ public:
 	float getStuipidityRate(const std::string&) override;
 	void addGame(const std::string&, const bool&) override;
 	float getWinRate(const std::string&) override;
+	std::vector<Question> getQuestions(const unsigned int&) override;
+	void addQuestion(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&) override;
 };
 

@@ -1,6 +1,6 @@
 #include "Client.h"
 
-Client::Client(SOCKET socket, IRequestHandler* handler) : _socket(socket), _usr(nullptr), _handler(handler)
+Client::Client(SOCKET socket, IRequestHandler* handler) : _socket(socket), _usr(nullptr), _handler(handler), _pm(socket)
 {
 }
 
@@ -38,4 +38,9 @@ LoggedUser & Client::getUser()
 	if (!isLoggedIn())
 		throw std::exception("You can not get a user until the client is logged in");
 	return *_usr;
+}
+
+PipeManager & Client::getPipeManager()
+{
+	return _pm;
 }
