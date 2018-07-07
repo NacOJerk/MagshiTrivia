@@ -4,7 +4,6 @@
 #include "JsonResponsePacketSerializer.h"
 #include "ErrorResponse.h"
 #include "EncryptionPipe.h"
-#include <iostream>
 #include <ctime>
 
 Communicator::Communicator(RequestHandlerFactory & facto, std::pair<Key, Key> keys) : m_handlerFactory(facto), _keys(keys)

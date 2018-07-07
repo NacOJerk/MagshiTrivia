@@ -1,9 +1,10 @@
 #pragma comment (lib, "ws2_32.lib")
 
 #include "WSAInitializer.h"
-#include <iostream>
 #include "Server.h"
 #include "RSA.h"
+#include <iostream>
+#include <time.h>
 
 #define PRIME_MAX 10'000
 #define E_MIN 100
@@ -15,6 +16,7 @@ using RSA::integer;
 
 void main()
 {
+	std::srand(time(0));
 	std::cout << "Generating keys..." << std::endl;
 	Primes primes;
 	primes.buildPrimes(PRIME_MAX);
