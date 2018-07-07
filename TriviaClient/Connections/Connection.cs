@@ -11,6 +11,8 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Collections.Generic;
+using RSA;
+using TriviaClient.Pipes;
 
 namespace TriviaClient.Connections
 {
@@ -40,12 +42,36 @@ namespace TriviaClient.Connections
             this.window = window;
             priority = new Threads.ThreadPriority();
             responses = new Deque<Response>();
-
+            SetupEncryption();
             dynamic recive = new Thread(Reciver);
             recive.Start();
             dynamic handle = new Thread(Handler);
             handle.Start();
+        }
 
+        private void SetupEncryption()
+        {
+            //We get the key first
+            byte[] key = pipe.ReadPacket(client.Client);
+            Key k = new Key(new List<byte>(key));
+
+            //Now we are going to generate a new key set
+            Primes prime = new Primes();
+            prime.BuildPrimes(2000);
+            Tuple<ulong, ulong> primes = prime.GetTwoPrimes();
+            Tuple<Key, Key> keys = RSA.RSA.GenerateKeys(primes.Item1, primes.Item2, 5, 500);
+            Key privateKey = keys.Item1;
+            Key publicKey = keys.Item2;
+
+            //Now we are going to do a double pipe switch
+            //First we gotta switch to the server's pipe
+            pipe.AddPipe(new EncryptionPipe(k));
+            pipe.Send(client.Client, publicKey.GetBuffer().ToArray());
+
+            //Now we gotta chaneg to the new pipe
+            pipe.ClearPipes();
+            pipe.AddPipe(new EncryptionPipe(privateKey));
+            //And we are done
         }
 
         public UserData GetData() { return userData; }

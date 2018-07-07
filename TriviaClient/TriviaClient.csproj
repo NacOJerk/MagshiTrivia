@@ -72,6 +72,7 @@
     <Compile Include="Infrastructure\Response.cs" />
     <Compile Include="Infrastructure\Room.cs" />
     <Compile Include="Infrastructure\UserData.cs" />
+    <Compile Include="Pipes\EncryptionPipe.cs" />
     <Compile Include="Requests\CloseRoomRequest.cs" />
     <Compile Include="Requests\CreateRoomRequest.cs" />
     <Compile Include="Requests\GetHighscoresRequest.cs" />
@@ -106,6 +107,7 @@
       <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\Deque.cs" />
+    <Compile Include="Utils\RSA.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
