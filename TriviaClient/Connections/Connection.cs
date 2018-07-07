@@ -54,6 +54,7 @@ namespace TriviaClient.Connections
             //We get the key first
             byte[] key = pipe.ReadPacket(client.Client);
             Key k = new Key(new List<byte>(key));
+            Console.WriteLine("Recived: " + k.GetKey() + " " + k.GetBase());
 
             //Now we are going to generate a new key set
             Primes prime = new Primes();
@@ -67,11 +68,13 @@ namespace TriviaClient.Connections
             //First we gotta switch to the server's pipe
             pipe.AddPipe(new EncryptionPipe(k));
             pipe.Send(client.Client, publicKey.GetBuffer().ToArray());
+            Console.WriteLine("Public: " + publicKey.GetKey() + " " + publicKey.GetBase());
 
             //Now we gotta chaneg to the new pipe
             pipe.ClearPipes();
             pipe.AddPipe(new EncryptionPipe(privateKey));
             //And we are done
+            Console.WriteLine("Private: " + privateKey.GetKey() + " " + privateKey.GetBase());
         }
 
         public UserData GetData() { return userData; }
