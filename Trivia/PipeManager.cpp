@@ -4,28 +4,44 @@ PipeManager::PipeManager(SOCKET sock) : _sock(sock)
 {
 }
 
-void PipeManager::addPipe(const Pipe & pipe)
+PipeManager::~PipeManager()
 {
-	locked_container<std::vector<std::reference_wrapper<const Pipe>>> pipes = _pipes;
-	std::vector<std::reference_wrapper<const Pipe>> _pipes = pipes;
+	locked_container<std::vector<Pipe*>> pipes = _pipes;
+	std::vector<Pipe*>& _pipes = pipes;
+	for (auto p : _pipes)
+	{
+		if (p)
+			delete p;
+	}
+}
+
+void PipeManager::addPipe(Pipe*  pipe)
+{
+	locked_container<std::vector<Pipe*>> pipes = _pipes;
+	std::vector<Pipe*>& _pipes = pipes;
 	_pipes.push_back(pipe);
 }
 
 void PipeManager::clearPipes()
 {
-	locked_container<std::vector<std::reference_wrapper<const Pipe>>> pipes = _pipes;
-	std::vector<std::reference_wrapper<const Pipe>> _pipes = pipes;
+	locked_container<std::vector<Pipe*>> pipes = _pipes;
+	std::vector<Pipe*>& _pipes = pipes;
+	for (auto p : _pipes)
+	{
+		if (p)
+			delete p;
+	}
 	_pipes.clear();
 }
 
 void PipeManager::write(buffer buf)
 {
-	locked_container<std::vector<std::reference_wrapper<const Pipe>>> pipes = _pipes;
-	std::vector<std::reference_wrapper<const Pipe>> _pipes = pipes;
+	locked_container<std::vector<Pipe*>> pipes = _pipes;
+	std::vector<Pipe*>& _pipes = pipes;
 	//Piping it up
 	for (auto pipe : _pipes)
 	{
-		buf = pipe.get().write(buf);
+		buf = pipe->write(buf);
 	}
 
 
@@ -90,8 +106,8 @@ Request PipeManager::read()
 
 buffer PipeManager::readPacket()
 {
-	locked_container<std::vector<std::reference_wrapper<const Pipe>>> pipes = _pipes;
-	std::vector<std::reference_wrapper<const Pipe>> _pipes = pipes;
+	locked_container<std::vector<Pipe*>> pipes = _pipes;
+	std::vector<Pipe*>& _pipes = pipes;
 	char* len = recive(_sock, 4);
 	unsigned int length = len[0] << 24 | len[1] << 16 | len[2] << 8 | len[3];
 	delete len;
@@ -106,6 +122,6 @@ buffer PipeManager::readPacket()
 
 	//piping the things
 	for (auto rit = _pipes.rbegin(); rit != _pipes.rend(); ++rit)
-		buf = rit->get().read(buf);
+		buf = (*rit)->read(buf);
 	return buf;
 }

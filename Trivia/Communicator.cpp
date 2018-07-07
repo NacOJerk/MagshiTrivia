@@ -4,6 +4,7 @@
 #include "JsonResponsePacketSerializer.h"
 #include "ErrorResponse.h"
 #include "EncryptionPipe.h"
+#include <iostream>
 #include <ctime>
 
 Communicator::Communicator(RequestHandlerFactory & facto, std::pair<Key, Key> keys) : m_handlerFactory(facto), _keys(keys)
@@ -62,7 +63,7 @@ void Communicator::startEncryption(Client& c)
 	pipe.write(buff);
 
 	//Next up we want to switch to our encryption pipe
-	EncryptionPipe firstPipe(privateKey);
+	Pipe* firstPipe = new EncryptionPipe(privateKey);
 	pipe.addPipe(firstPipe);
 
 	//Now we gonna get the key from the client
@@ -70,10 +71,10 @@ void Communicator::startEncryption(Client& c)
 
 	//We gonna consturct it
 	privateKey = Key(buff);
-
+	std::cout << privateKey << std::endl;
 	//And we are going to switch to a brand new pipe
 	pipe.clearPipes();
-	EncryptionPipe secondPipe(privateKey);
+	Pipe* secondPipe = new EncryptionPipe(privateKey);
 	pipe.addPipe(secondPipe);
 
 	//And we are done :)
@@ -81,9 +82,18 @@ void Communicator::startEncryption(Client& c)
 
 void Communicator::startThreadForNewClient(SOCKET client_socket)
 {
-	printf("Client joined\n");
 	Client client(client_socket, m_handlerFactory.createLoginRequestHandler());
-	startEncryption(client);
+	try
+	{
+		startEncryption(client);
+	}
+	catch (std::exception& e)
+	{
+		throw e;
+		return;
+	}
+	printf("Client joined\n");
+
 	while (true)
 	{
 		try
@@ -107,6 +117,7 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 		}
 		catch (std::exception& e)
 		{
+			throw e;
 			printf("Client disconnected");
 			if (client.isLoggedIn())
 				printf(" (%s)", client.getUser().getUsername().c_str());

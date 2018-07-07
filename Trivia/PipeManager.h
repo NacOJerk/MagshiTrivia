@@ -10,15 +10,15 @@
 
 class PipeManager
 {
-	locked<std::vector<std::reference_wrapper<const Pipe>>> _pipes;
+	locked<std::vector<Pipe*>> _pipes;
 	SOCKET _sock;
 	//You shouldn't be able to copy dis dude
 	PipeManager(const PipeManager&);
 public:
 
 	PipeManager(SOCKET);
-
-	void addPipe(const Pipe&);
+	~PipeManager();
+	void addPipe(Pipe*);
 	void clearPipes();
 
 	void write(buffer);//Returns true if it was able to send the data	
