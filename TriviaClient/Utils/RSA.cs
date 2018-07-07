@@ -166,6 +166,7 @@ namespace RSA
         public static List<byte> Crypt(List<byte> buff, Key key, bool encrypt)
         {
             List<byte> res = new List<byte>();
+            Console.WriteLine("The buff length is " + buff.Count);
             while (buff.Count > 0)
             {
                 ulong source = encrypt ? PopBuff(buff) : ReadVarInteger(buff);

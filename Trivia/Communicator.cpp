@@ -131,12 +131,19 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 			Room& room = m_handlerFactory.getRoomManager()->getRoom(id);
 			if (roomData.isAdmin)
 			{
+				buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(LeaveRoomResponse(SUCCESS));
 				for (auto usr : room.getAllUsers())
 				{
 					LoggedUser& user = usr.get();
 					SOCKET sock = user.getClient().getSocket();
-					buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(LeaveRoomResponse(SUCCESS));
-					client.getPipeManager().write(buff);
+					try 
+					{
+						client.getPipeManager().write(buff);
+					}
+					catch (std::exception e)
+					{
+						//probably user logged out
+					}
 					if (!user.getRoomData().isAdmin)
 					{
 						locked<IRequestHandler*>& hand = client.getHandler();
@@ -146,6 +153,7 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 						hand();
 					}
 				}
+				m_handlerFactory.getRoomManager()->deleteRoom(id);
 			}
 			else
 			{

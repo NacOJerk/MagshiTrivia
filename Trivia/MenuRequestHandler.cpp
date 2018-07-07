@@ -52,9 +52,22 @@ RequestResult MenuRequestHandler::joinRoom(Request r)
 {
 	JoinRoomRequest req = JsonRequestPacketDeserializer::getInstance()->deserializeJoinRoomRequest(r.getBuffer());
 	unsigned int status = m_roomManager.hasRoom(req.getRoomId()) ? SUCCESS : FAILED;
-	if(status == SUCCESS)
-		m_roomManager.getRoom(r.getID()).addUser(m_users);
-	return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(JoinRoomResponse(status)), nullptr);
+	IRequestHandler* handler = nullptr;
+	if (status == SUCCESS)
+	{
+		printf("Max users %d\n", m_roomManager.getRoom(req.getRoomId()).getData().getMaxPlayers());
+		printf("Current amout of users %d\n", m_roomManager.getRoom(req.getRoomId()).getAllUsers().size());
+		if (m_roomManager.getRoom(req.getRoomId()).getData().getMaxPlayers() <= m_roomManager.getRoom(req.getRoomId()).getAllUsers().size())
+		{
+			status = FAILED;
+		}
+		else
+		{
+			m_roomManager.getRoom(r.getID()).addUser(m_users);
+			handler = m_handlerFactory.createRoomMemberRequestHandler(m_users, m_roomManager.getRoom(r.getID()));
+		}
+	}
+	return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(JoinRoomResponse(status)), handler);
 }
 
 RequestResult MenuRequestHandler::createRoom(Request r)
@@ -62,9 +75,14 @@ RequestResult MenuRequestHandler::createRoom(Request r)
 	CreateRoomRequest req = JsonRequestPacketDeserializer::getInstance()->deserializeCreateRoomRequest(r.getBuffer());
 
 	unsigned int status = !(req.getMaxUsers() < 1 || req.getAnswerTimeout() < 1 || req.getQuestionCount() < 1 || m_handlerFactory.getDatabase().getQuestions(req.getQuestionCount()).size() < req.getQuestionCount()) ? SUCCESS : FAILED;
-	if(status == SUCCESS)
+	IRequestHandler* handler = nullptr;
+
+	if (status == SUCCESS)
+	{
 		status = m_roomManager.createRoom(m_users, req.getMaxUsers(), req.getAnswerTimeout(), req.getQuestionCount());
-	return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(CreateRoomResponse(status)), nullptr);
+		handler = m_handlerFactory.createRoomAdminRequestHandler(m_users, m_roomManager.getRoom(status));
+	}
+	return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(CreateRoomResponse(status)), handler);
 }
 
 RequestResult MenuRequestHandler::getStats(Request r)
@@ -103,7 +121,7 @@ RequestResult MenuRequestHandler::handlRequest(Request req, Client& sock)
 	case SIGNOUT_REQUEST:
 		return signout(req);
 	case GET_ROOMS_REQUEST:
-		return signout(req);
+		return getRooms(req);
 	case GET_HIGHSCORE:
 		return getHighscores(req);
 	case GET_STATS_REQUEST:

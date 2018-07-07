@@ -76,6 +76,7 @@ namespace TriviaClient
             MenuWindow.Visibility = Visibility.Collapsed;
             StatsWindow.Visibility = Visibility.Collapsed;
             HighscoresWindow.Visibility = Visibility.Collapsed;
+            CreateRoomWindow.Visibility = Visibility.Collapsed;
             RoomAdminWindow.Visibility = Visibility.Collapsed;
             RoomMemberWindow.Visibility = Visibility.Collapsed;
             JoinRoomWindow.Visibility = Visibility.Collapsed;
@@ -368,13 +369,18 @@ namespace TriviaClient
                 {
                     GetRoomStateRequest req = new GetRoomStateRequest(ToInt(id));
                     byte[] buffer = JsonPacketRequestSerializer.GetInstance().Seriliaze(req);
-                    this.connection.Send(buff, (PacketEvent eve) =>
+                    this.connection.Send(buffer, (PacketEvent eve) =>
                     {
                         if(eve.GetResponse().GetID() != Utils.ResponseID.GET_ROOM_STATE_RESPONSE)
                         {
                             Error win = new Error();
                             win.Title = "Join Room Error";
                             win.Message.Text = "An error occured while trying to join room";
+                            if(eve.GetResponse().GetID() == Utils.ResponseID.ERROR_RESPONSE)
+                            {
+                                ErrorResponse res = JsonPacketResponseDeserializer.GetInstance().DeserializeErrorResponse(eve.GetResponse().GetBuffer());
+                                win.Message.Text = res.GetMessage();
+                            }
                             win.Show();
                             SwitchWindow(MenuWindow);
                         }
@@ -442,14 +448,14 @@ namespace TriviaClient
                     return;
                 }
                 CreateRoomResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeCreateRoomResponse(ev.GetResponse().GetBuffer());
-                if (resp.GetID() != -1)
+                if (resp.GetID() != 0)
                 {
                     ev.GetConnection().SetListener(new RoomAdminPacketListener());
                     //We can add it so in here it will switch to the new one watch
                     string timeout = AdminAnswerTimeout.Text, people = AdminConnectedPlayers.Text, count = AdminQuestionCount.Text;
-                    timeout.Replace("[time]", questionTimeout.ToString());
-                    people.Replace("[players]/[max]", "1/" + maxUsers.ToString());
-                    count.Replace("[questions]", questionCount.ToString());
+                    timeout = timeout.Replace("[time]", questionTimeout.ToString());
+                    people= people.Replace("[players]/[max]", "1/" + maxUsers.ToString());
+                    count = count.Replace("[questions]", questionCount.ToString());
                     AdminAnswerTimeout.Text = timeout;
                     AdminConnectedPlayers.Text = people;
                     AdminQuestionCount.Text = count;

@@ -4,7 +4,7 @@ LoggedUser::LoggedUser() : LoggedUser("", Client(0 , nullptr))
 {
 }
 
-LoggedUser::LoggedUser(const std::string& username, Client& client) : m_username(username), _client(client)
+LoggedUser::LoggedUser(const std::string& username, Client& client) : m_username(username), _client(client), _data({false, 0, false, 0})
 {
 }
 

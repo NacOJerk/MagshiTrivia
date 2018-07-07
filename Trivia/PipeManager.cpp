@@ -34,6 +34,22 @@ void PipeManager::clearPipes()
 	_pipes.clear();
 }
 
+void writ(SOCKET socket, char * data, unsigned int length)
+{
+	int pos = 0;
+	do
+	{
+		int result = send(socket, data + pos, length, 0);
+		if (result == INVALID_SOCKET)
+		{
+			throw std::exception("Error while sending data to socket");
+		}
+		pos += result;
+	} while (pos < length);
+}
+
+
+
 void PipeManager::write(buffer buf)
 {
 	locked_container<std::vector<Pipe*>> pipes = _pipes;
@@ -43,8 +59,6 @@ void PipeManager::write(buffer buf)
 	{
 		buf = pipe->write(buf);
 	}
-
-
 	//Set up for like ya know sending the stuff
 	union byteint
 	{
@@ -52,25 +66,14 @@ void PipeManager::write(buffer buf)
 		unsigned int ia;
 	};
 
-	byteint length = { buf.size() };
+	byteint length;
+	length.ia = buf.size();
 	char* data = new char[buf.size() + 4];
 
 	for (int i = 0; i < 4; data[i] = length.b[3 - i], i++);
 	for (unsigned int i = 0; i < buf.size(); data[i + 4] = buf[i], i++);
 
-	length.ia += 4;
-	//Sending the thingy
-	int pos = 0;
-	do
-	{
-		int result = send(_sock, data + pos, length.ia, 0);
-		if (result == INVALID_SOCKET)
-		{
-			throw std::exception("Error while sending data to socket");
-		}
-		pos += result;
-		length.ia -= result;
-	} while (length.ia > 0);
+	writ(_sock, data, buf.size() + 4);
 }
 
 char* recive(const SOCKET& socket, const unsigned int& length)

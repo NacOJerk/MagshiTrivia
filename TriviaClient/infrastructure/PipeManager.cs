@@ -51,17 +51,52 @@ namespace TriviaClient.infrastructure
             }
         }
 
+        private byte[] ReceiveLargeFile(Socket socket, uint lenght)
+        {
+            // send first the length of total bytes of the data to server
+            // create byte array with the length that you've send to the server.
+            byte[] data = new byte[lenght];
+
+
+            uint size = lenght; // lenght to reveive
+            var total = 0; // total bytes to received
+            var dataleft = (int)size; // bytes that havend been received 
+
+            // 1. check if the total bytes that are received < than the size you've send before to the server.
+            // 2. if true read the bytes that have not been receive jet
+            while (total < size)
+            {
+                // receive bytes in byte array data[]
+                // from position of total received and if the case data that havend been received.
+                var recv = socket.Receive(data, total, dataleft, SocketFlags.None);
+                if (recv == 0) // if received data = 0 than stop reseaving
+                {
+                    data = null;
+                    break;
+                }
+                total += recv;  // total bytes read + bytes that are received
+                dataleft -= recv; // bytes that havend been received
+            }
+            return data; // return byte array and do what you have to do whith the bytes.
+        }
+
         public Response Read(Socket sock)
         {
-            byte[] len = new byte[4];
-            sock.Receive(len);
-            int length = len[3] | len[2] << 8 | len[1] << 16 | len[0] << 24;
-            byte[] data = new byte[length];
-            sock.Receive(data);
+            byte[] len = ReceiveLargeFile(sock, 4);
+            uint length = BitConverter.ToUInt32(
+                   BitConverter.IsLittleEndian
+                   ? len.Reverse().ToArray()
+                   : len, 0);
+            Console.Write("Data to read is said to be " + length);
+            byte[] data = ReceiveLargeFile(sock, length);
             foreach (IPipe pipe in _pipes.Reverse<IPipe>())
                 data = pipe.Read(data);
             ResponseID id = (ResponseID) data[0];
-            length = data[4] | data[3] << 8 | data[2] << 16 | data[1] << 24;
+            for (int i = 0; i < 4; len[i] = data[i + 1], i++) ;
+            length = BitConverter.ToUInt32(
+                  BitConverter.IsLittleEndian
+                  ? len.Reverse().ToArray()
+                  : len, 0);
             if (length != data.Length - 5)
                 throw new Exception("Invaild Packet");
             byte[] buff = new byte[data.Length - 5];
@@ -71,11 +106,12 @@ namespace TriviaClient.infrastructure
 
         public byte[] ReadPacket(Socket sock)
         {
-            byte[] len = new byte[4];
-            sock.Receive(len);
-            int length = len[3] | len[2] << 8 | len[1] << 16 | len[0] << 24;
-            byte[] data = new byte[length];
-            sock.Receive(data);
+            byte[] len = ReceiveLargeFile(sock, 4);
+            uint length = BitConverter.ToUInt32(
+                  BitConverter.IsLittleEndian
+                  ? len.Reverse().ToArray()
+                  : len, 0);
+            byte[] data = ReceiveLargeFile(sock, length);
             foreach (IPipe pipe in _pipes.Reverse<IPipe>())
                 data = pipe.Read(data);
             return data;

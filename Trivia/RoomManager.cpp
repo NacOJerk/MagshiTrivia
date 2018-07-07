@@ -21,7 +21,8 @@ unsigned int RoomManager::createRoom(LoggedUser& user, unsigned int maxPlayers, 
 	RoomData data(user.getUsername(), maxPlayers, timePerQuestion, amountQuestions, false);
 	vector<std::reference_wrapper<LoggedUser>> vec;
 	vec.push_back(user);
-	Room room(data, vec, id = generateId());
+	id = data.getId();
+	Room room(data, vec, id);
 	m_rooms[id] = room;
 	return id;
 }
@@ -36,7 +37,7 @@ bool RoomManager::getRoomState(unsigned int id)
 	return m_rooms[id].getData().getIsActive();
 }
 
-vector<Room>& RoomManager::getRooms()
+vector<Room> RoomManager::getRooms()
 {
 	vector<Room> vec;
 	for (auto it = m_rooms.begin(); it != m_rooms.end(); it++)
