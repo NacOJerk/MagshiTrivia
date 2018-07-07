@@ -54,11 +54,11 @@ namespace TriviaClient.Connections
             //We get the key first
             byte[] key = pipe.ReadPacket(client.Client);
             Key k = new Key(new List<byte>(key));
-            Console.WriteLine("Recived: " + k.GetKey() + " " + k.GetBase());
+            //Console.WriteLine("Recived: " + k.GetKey() + " " + k.GetBase());
 
             //Now we are going to generate a new key set
             Primes prime = new Primes();
-            prime.BuildPrimes(2000);
+            prime.BuildPrimes(1000);
             Tuple<ulong, ulong> primes = prime.GetTwoPrimes();
             Tuple<Key, Key> keys = RSA.RSA.GenerateKeys(primes.Item1, primes.Item2, 5, 500);
             Key privateKey = keys.Item1;
@@ -68,13 +68,13 @@ namespace TriviaClient.Connections
             //First we gotta switch to the server's pipe
             pipe.AddPipe(new EncryptionPipe(k));
             pipe.Send(client.Client, publicKey.GetBuffer().ToArray());
-            Console.WriteLine("Public: " + publicKey.GetKey() + " " + publicKey.GetBase());
+            //Console.WriteLine("Public: " + publicKey.GetKey() + " " + publicKey.GetBase());
 
             //Now we gotta chaneg to the new pipe
             pipe.ClearPipes();
             pipe.AddPipe(new EncryptionPipe(privateKey));
             //And we are done
-            Console.WriteLine("Private: " + privateKey.GetKey() + " " + privateKey.GetBase());
+           //Console.WriteLine("Private: " + privateKey.GetKey() + " " + privateKey.GetBase());
         }
 
         public UserData GetData() { return userData; }

@@ -37,7 +37,7 @@ namespace RSA
             do
             {
                 second = rnd.Next(0, primes.Count);
-            } while (second != first);
+            } while (second == first);
             return Tuple.Create(primes[first], primes[second]);
         }
     }
@@ -90,7 +90,7 @@ namespace RSA
             {
                 read = buff[0];
                 buff.RemoveAt(0);
-                byte value = (byte)( read & 255);
+                byte value = (byte)( read & 0b01111111);
                 result |= ((ulong)value << (7 * numRead));
                 numRead++;
                 if (numRead > 10)
