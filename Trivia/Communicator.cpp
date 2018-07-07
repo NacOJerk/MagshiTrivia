@@ -5,7 +5,7 @@
 #include "ErrorResponse.h"
 #include <ctime>
 
-Communicator::Communicator(RequestHandlerFactory & facto) : m_handlerFactory(facto)
+Communicator::Communicator(RequestHandlerFactory & facto, std::pair<Key, Key> keys) : m_handlerFactory(facto), _keys(keys)
 {
 	_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
@@ -48,6 +48,10 @@ void Communicator::handleRequests()
 	}
 }
 
+void startEncryption(Client&)
+{
+
+}
 
 void Communicator::startThreadForNewClient(SOCKET client_socket)
 {

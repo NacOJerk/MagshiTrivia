@@ -4,16 +4,17 @@
 #include "SQLDatabase.h"
 #include "Communicator.h"
 #include "RequestHandlerFactory.h"
+#include "RSA.h"
+
+using RSA::Key;
 
 class Server
 {
-	static Server* _instance;
 	SQLDatabase m_database;
 	Communicator m_communicator;
 	RequestHandlerFactory m_handlerFactory;
-	Server();
 public:
-	static Server* getInstance();
+	Server(std::pair<Key, Key>);
 	void run();
 	Communicator& getCommunicator();
 };
