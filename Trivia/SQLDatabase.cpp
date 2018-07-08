@@ -160,12 +160,12 @@ void SQLDatabase::addQuestionStat(const std::string & username, const unsigned i
 
 float SQLDatabase::getAverageTime(const std::string & u)
 {
-	const char* QUERY = "SELECT TIME/QUESTIONS*1.0 FROM QUESTION_STATS WHERE USER=?";
+	const char* QUERY = "SELECT 1.0*TIME/QUESTIONS FROM QUESTION_STATS WHERE USER=?";
 	const char* username = u.c_str();
 	float storer = -1;
 	const static auto callback = [](void* store, int len, const char ** data, const char**) -> int
 	{
-		*((bool*)store) = atof(data[0]);
+		*((float*)store) = atof(data[0]);
 		return SQLITE_OK;
 	};
 	exec(QUERY, callback, &storer, nullptr, "T", { &username });
@@ -174,12 +174,12 @@ float SQLDatabase::getAverageTime(const std::string & u)
 
 float SQLDatabase::getSuccessRate(const std::string & u)
 {
-	const char* QUERY = "SELECT CORRECT/QUESTIONS*1.0 FROM QUESTION_STATS WHERE USER=?";
+	const char* QUERY = "SELECT 1.0*CORRECT/QUESTIONS FROM QUESTION_STATS WHERE USER=?";
 	const char* username = u.c_str();
 	float storer = -1;
 	const static auto callback = [](void* store, int len, const char ** data, const char**) -> int
 	{
-		*((bool*)store) = atof(data[0]) * 100;
+		*((float*)store) = atof(data[0]) * 100;
 		return SQLITE_OK;
 	};
 	exec(QUERY, callback, &storer, nullptr, "T", { &username });
@@ -188,12 +188,12 @@ float SQLDatabase::getSuccessRate(const std::string & u)
 
 float SQLDatabase::getStuipidityRate(const std::string & u)
 {
-	const char* QUERY = "SELECT STUIPED/QUESTIONS*1.0 FROM QUESTION_STATS WHERE USER=?";
+	const char* QUERY = "SELECT 1.0*STUIPED/QUESTIONS FROM QUESTION_STATS WHERE USER=?";
 	const char* username = u.c_str();
 	float storer = -1;
 	const static auto callback = [](void* store, int len, const char ** data, const char**) -> int
 	{
-		*((bool*)store) = atof(data[0]) * 100;
+		*((float*)store) = atof(data[0]);
 		return SQLITE_OK;
 	};
 	exec(QUERY, callback, &storer, nullptr, "T", { &username });
@@ -222,12 +222,12 @@ void SQLDatabase::addGame(const std::string & username, const bool & win)
 
 float SQLDatabase::getWinRate(const std::string & u)
 {
-	const static char* QUERY = "SELECT WINS/ROOMS*1.0 FROM ROOM_STATS WHERE USER=?";
+	const static char* QUERY = "SELECT 1.0*WINS/ROOMS FROM ROOM_STATS WHERE USER=?";
 	const char* username = u.c_str();
 	float storer = -1;
 	const static auto callback = [](void* store, int len, const char ** data, const char**) -> int
 	{
-		*((bool*)store) = atof(data[0]) * 100;
+		*((float*)store) = atof(data[0]) * 100;
 		return SQLITE_OK;
 	};
 	exec(QUERY, callback, &storer, nullptr, "T", { &username });

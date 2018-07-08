@@ -50,7 +50,7 @@ void Game::runGame()
 		}
 		else
 		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));//Sleep for 500ms or 0.5s
+			std::this_thread::sleep_for(std::chrono::milliseconds(50));//Sleep for 500ms or 0.5s
 		}
 	}
 }
@@ -83,28 +83,31 @@ void Game::testAnswers()
 {
 	locked_container<std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>> _users = m_players;//locks stuff
 	std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>& users = _users;
-	for (auto user : users)
+	for (std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>::iterator itr = users.begin(); itr != users.end(); itr++)
 	{
 		StupidMeter sm = BRICK;
 		unsigned int timeA = _timeForQuestion;
-		if (std::get<1>(user).answered)
+		LoggedUser& user = itr->first;
+		GameData& data = itr->second;
+		if (data.answered)
 		{
-			sm = _currentQuestion.getStuipedityRate(std::get<1>(user).answerID);
-			timeA = std::get<1>(user).questionAnswer - _currentQuestion.getStartTime();
+			sm = _currentQuestion.getStuipedityRate(data.answerID);
+			timeA = data.questionAnswer - _currentQuestion.getStartTime();
 			//Reset data
-			std::get<1>(user).answered = false;
-			std::get<1>(user).answerID = -1;
-			std::get<1>(user).questionAnswer = time(NULL);
+			
+			data.answered = false;
+			data.answerID = -1;
+			data.questionAnswer = time(NULL);
 		}
 		if (sm != GENIUS)
-			std::get<1>(user).wrongAnswerCount += 1;
+			data.wrongAnswerCount += 1;
 		else
-			std::get<1>(user).currectAnswerCount += 1;
+			data.currectAnswerCount += 1;
 		{
-			int totalQuestion = std::get<1>(user).wrongAnswerCount + std::get<1>(user).currectAnswerCount;
-			std::get<1>(user).averageAnswerTime = (std::get<1>(user).currectAnswerCount * (totalQuestion - 1) + timeA) / totalQuestion;
+			int totalQuestion = data.wrongAnswerCount + data.currectAnswerCount;
+			data.averageAnswerTime = (data.currectAnswerCount * (totalQuestion - 1) + timeA) / totalQuestion;
 		}
-		_base.addQuestionStat(user.first.get().getUsername(), timeA, sm);
+		_base.addQuestionStat(user.getUsername(), timeA, sm);
 
 	}
 }
@@ -124,7 +127,7 @@ void Game::finishGame()
 		//Sorting results
 		std::sort(results.begin(), results.end(), [](PlayerResult a, PlayerResult b)
 		{
-			return a.currectAnswers < b.currectAnswers;
+			return a.currectAnswers > b.currectAnswers;
 		});
 		//Preparing for data sending
 		for (unsigned int i = 0, size = results.size(); i < size; i++)
@@ -134,6 +137,8 @@ void Game::finishGame()
 		//sending data
 		for (auto user : users)
 		{
+			_base.addGame(user.first.get().getUsername(), poses[user.first.get().getUsername()] == 0);
+			_base.addHighscore(user.first.get().getUsername(), user.second.currectAnswerCount);
 			user.first.get().getClient().getPipeManager().write( JsonResponsePacketSerializer::getInstance()->serializeResponse(SendResultsResponse(poses[user.first.get().getUsername()], results)));
 			locked_container<IRequestHandler*> _handler = user.first.get().getClient().getHandler();
 			IRequestHandler*& handler = _handler;

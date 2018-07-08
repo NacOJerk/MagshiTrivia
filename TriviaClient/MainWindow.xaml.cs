@@ -455,7 +455,25 @@ namespace TriviaClient
 
         private void AnswerQuestion(uint id)
         {
-            
+            SendAnswerRequest request = new SendAnswerRequest(id);
+            byte[] buffer = JsonPacketRequestSerializer.GetInstance().Seriliaze(request);
+            this.connection.Send(buffer, (PacketEvent ev) =>
+            {
+                if(ev.GetResponse().GetID() != Utils.ResponseID.SEND_ANSWER_RESPONSE)
+                {
+                    Console.WriteLine("Oh shittttttttt");
+                    return;
+                }
+                SendAnswerResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeSendAnswerResponse(ev.GetResponse().GetBuffer());
+                if(resp.GetStatus() == 1)
+                {
+                    //Everything is fine
+                }
+                else
+                {
+                    //RUNNNN FOR YOUR LIFEEEE
+                }
+            });
         }
 
         private void Answer1_Click(object sender, RoutedEventArgs e)

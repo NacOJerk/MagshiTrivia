@@ -78,6 +78,10 @@ RequestResult RoomAdminRequestHandler::getRoomState(Request request)
 RequestResult RoomAdminRequestHandler::startGame(Request request)
 {
 	vector<std::reference_wrapper<LoggedUser>>& users = m_room.getAllUsers();
+	if (users.size() <= 1)
+	{
+		return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(StartGameResponse(FAILED)),nullptr);
+	}
 	byte success = SUCCESS;
 	IRequestHandler* _handler = nullptr;
 	try

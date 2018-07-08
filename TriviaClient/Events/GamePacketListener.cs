@@ -31,11 +31,8 @@ namespace TriviaClient.Events
             {
                 SendResultsResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeSendResultsResponse(e.GetResponse().GetBuffer());
             
-                string position = e.GetMainWindow().WinnerPosition.Text;
-                position.Replace("0", resp.GetPosition().ToString());
-            
+                e.GetMainWindow().WinnerPosition.Text = e.GetMainWindow().WinnerPosition.Text.Replace("0", (resp.GetPosition() + 1) + "");
                 e.GetMainWindow().RewriteTextBlock(e.GetMainWindow().WinnerName, resp.GetWinner());
-                e.GetMainWindow().RewriteTextBlock(e.GetMainWindow().WinnerPosition, position);
                 e.GetMainWindow().SwitchWindow(e.GetMainWindow().WinnerWindow);
             });
             ResetQuestionWindow(e);

@@ -13,7 +13,6 @@ namespace TriviaClient.Events
         public void UpdatePlayers(PacketEvent e)
         {
             GetPlayersInRoomResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeGetPlayersInRoomResponse(e.GetResponse().GetBuffer());
-            Console.WriteLine("O hey there ?");
             e.GetMainWindow().Dispatcher.BeginInvoke((Action)delegate () {
                 e.GetMainWindow().FillRoomAdminData(resp);
             });
