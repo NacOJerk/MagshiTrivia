@@ -114,15 +114,15 @@ namespace TriviaClient.Connections
         {
             while(client.Connected)
             {
-                if (wrap == null)
-                    continue;
                 lock(priority.Lock)
                 {
                     priority.WaitLast();
                     while(!responses.IsEmpty())
                     {
                         Response resp = responses.PopFront();
-                        bool handled = wrap.Invoke(resp, this, window);
+                        bool handled = false;
+                        if (wrap != null)
+                            handled = wrap.Invoke(resp, this, window);
                         if (!handled)
                         {
                             Console.WriteLine("Unhandled packet " + resp.GetID());
@@ -137,6 +137,7 @@ namespace TriviaClient.Connections
             while(client.Connected)
             {
                 Response resp = pipe.Read(client.Client);
+                Console.WriteLine(resp.GetID() + " " + System.Text.Encoding.UTF8.GetString(resp.GetBuffer()));
                 lock (priority.Lock)
                 {
                     responses.AddBackward(resp);

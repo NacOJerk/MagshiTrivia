@@ -13,14 +13,15 @@ namespace TriviaClient.Responses
         private string[] players;
         private int question_count;
         private int answer_timeout;
-
-        public GetRoomStateResponse(int status, bool has_game_begun, string[] players, int question_count, int answer_timeout)
+        private int max_players;
+        public GetRoomStateResponse(int status, bool has_game_begun, string[] players, int question_count, int answer_timeout, int max_players)
         {
             this.status = status;
             this.has_game_begun = has_game_begun;
             this.players = players;
             this.question_count = question_count;
             this.answer_timeout = answer_timeout;
+            this.max_players = max_players;
         }
 
         public int GetStatus()
@@ -47,5 +48,11 @@ namespace TriviaClient.Responses
         {
             return answer_timeout;
         }
+
+        public int GetMaxPlayers()
+        {
+            return max_players;
+        }
+
     }
 }

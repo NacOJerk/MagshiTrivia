@@ -19,23 +19,13 @@ namespace TriviaClient.Pipes
 
         public byte[] Read(byte[] buff)
         {
-            List<byte> buf = new List<byte>();
-            for (int i = 0; i < buff.Length; i++)
-            {
-                Console.WriteLine(buff[i]);
-                buf.Add(buff[i]);
-            }
-            Console.WriteLine(buf.Count);
+            List<byte> buf = new List<byte>(buff);
             return RSA.RSA.Decrypt(buf, _key).ToArray();
         }
 
         public byte[] Write(byte[] buff)
         {
-            List<byte> buf = new List<byte>();
-            for (int i = 0; i < buff.Length; i++)
-            {
-                buf.Add(buff[i]);
-            }
+            List<byte> buf = new List<byte>(buff);
             return RSA.RSA.Encrypt(buf, _key).ToArray();
         }
     }

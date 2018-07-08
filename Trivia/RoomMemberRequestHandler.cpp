@@ -33,11 +33,13 @@ RequestResult RoomMemberRequestHandler::getRoomState(Request request)
 	vector<string> players;
 	bool hasGameBegun = m_room.getData().getIsActive();
 	auto& users = m_room.getAllUsers();
+	printf("Amount of users %d\n", users.size());
 	for (auto user : users)
 	{
 		players.push_back(user.get().getUsername());
 	}
-	GetRoomStateResponse res(status, hasGameBegun, players, questionCount, answerTimeout);
+	printf("Amount of names %d\n");
+	GetRoomStateResponse res(status, hasGameBegun, players, questionCount, answerTimeout, m_room.getData().getMaxPlayers());
 	buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(res);
 
 	return RequestResult(buff, nullptr);

@@ -69,7 +69,7 @@ RequestResult RoomAdminRequestHandler::getRoomState(Request request)
 	{
 		players.push_back(user.get().getUsername());
 	}
-	GetRoomStateResponse res(status, hasGameBegun, players, questionCount, answerTimeout);
+	GetRoomStateResponse res(status, hasGameBegun, players, questionCount, answerTimeout, m_room.getData().getMaxPlayers());
 	buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(res);
 
 	return RequestResult(buff, nullptr);

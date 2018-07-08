@@ -1,6 +1,6 @@
 #include "GetRoomStateResponse.h"
 
-GetRoomStateResponse::GetRoomStateResponse(const unsigned int status, const bool hasGameBegun, const vector<string> players, const unsigned int questionCount, const unsigned int answerTimeout) : _status(status), _hasGameBegun(hasGameBegun), _players(players), _questionCount(questionCount), _answerTimeout(answerTimeout)
+GetRoomStateResponse::GetRoomStateResponse(const unsigned int& status, const bool& hasGameBegun, const vector<string> players, const unsigned int& questionCount, const unsigned int& answerTimeout, const unsigned int& maxPlayers) : _status(status), _hasGameBegun(hasGameBegun), _players(players), _questionCount(questionCount), _answerTimeout(answerTimeout), _maxPlayers(maxPlayers)
 {}
 
 unsigned int GetRoomStateResponse::getStatus() const
@@ -31,4 +31,9 @@ unsigned int GetRoomStateResponse::getQuestionCount() const
 unsigned int GetRoomStateResponse::getAnswerTimeout() const
 {
 	return _answerTimeout;
+}
+
+unsigned int GetRoomStateResponse::getMaxPlayers() const
+{
+	return _maxPlayers;
 }

@@ -9,7 +9,9 @@ class GetPlayersInRoomResponse
 {
 private:
 	vector<string> players;
+	unsigned int max_players;
 public:
-	GetPlayersInRoomResponse(vector<string>);
+	GetPlayersInRoomResponse(vector<string>, const unsigned int&);
 	vector<string> getPlayers();
+	unsigned int getMaxPlayers();
 };

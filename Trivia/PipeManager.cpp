@@ -52,12 +52,14 @@ void writ(SOCKET socket, char * data, unsigned int length)
 
 void PipeManager::write(buffer buf)
 {
-	locked_container<std::vector<Pipe*>> pipes = _pipes;
-	std::vector<Pipe*>& _pipes = pipes;
-	//Piping it up
-	for (auto pipe : _pipes)
 	{
-		buf = pipe->write(buf);
+		locked_container<std::vector<Pipe*>> pipes = _pipes;
+		std::vector<Pipe*>& _pipes = pipes;
+		//Piping it up
+		for (auto pipe : _pipes)
+		{
+			buf = pipe->write(buf);
+		}
 	}
 	//Set up for like ya know sending the stuff
 	union byteint
@@ -109,8 +111,6 @@ Request PipeManager::read()
 
 buffer PipeManager::readPacket()
 {
-	locked_container<std::vector<Pipe*>> pipes = _pipes;
-	std::vector<Pipe*>& _pipes = pipes;
 	unsigned char* len = (unsigned char*)recive(_sock, 4);
 	unsigned int length = len[0] << 24 | len[1] << 16 | len[2] << 8 | len[3];
 	delete len;
@@ -123,8 +123,12 @@ buffer PipeManager::readPacket()
 	for (unsigned int i = 0; i < length; buf.push_back(chars[i++]));
 	delete chars;
 
-	//piping the things
-	for (auto rit = _pipes.rbegin(); rit != _pipes.rend(); ++rit)
-		buf = (*rit)->read(buf);
+	{
+		locked_container<std::vector<Pipe*>> pipes = _pipes;
+		std::vector<Pipe*>& _pipes = pipes;//Using the pipes for the least amount of time
+		//piping the things
+		for (auto rit = _pipes.rbegin(); rit != _pipes.rend(); ++rit)
+			buf = (*rit)->read(buf);
+	}
 	return buf;
 }

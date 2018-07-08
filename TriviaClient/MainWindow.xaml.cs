@@ -36,6 +36,10 @@ namespace TriviaClient
                 try
                 {
                     this.connection = new Connection("127.0.0.1", 12345, pipe, this);
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        SwitchWindow(LoginWindow);
+                    });
                 }
                 catch(Exception)
                 {
@@ -48,10 +52,7 @@ namespace TriviaClient
                              
                     return;
                 }
-                this.Dispatcher.Invoke(() =>
-                {
-                    SwitchWindow(LoginWindow);
-                });
+                
 
             });
             thread.SetApartmentState(ApartmentState.STA);
@@ -401,10 +402,10 @@ namespace TriviaClient
                         {
                             GetRoomStateResponse state = JsonPacketResponseDeserializer.GetInstance().DeserializeGetRoomStateResponse(eve.GetResponse().GetBuffer());
                             string roomName = RoomsList.SelectedItem.ToString();
-                            RoomMemberName.Text = roomName.Substring(roomName.IndexOf(' ')+1, roomName.LastIndexOf('\'') - roomName.IndexOf(' ') - 1) + "'s";
-                            MemberAnswerTimeout.Text = MemberAnswerTimeout.Text.Replace("[answerTimeout]", "" + state.GetAnswerTimeout());
-                            MemberQuestionCount.Text = MemberQuestionCount.Text.Replace("[questionCount]", "" + state.GetQuestionCount());
-                            MemberConnectedPlayers.Text = MemberConnectedPlayers.Text.Replace("[players]/[maxPlayers]", roomName.Substring(roomName.LastIndexOf(' ') + 1));
+                            RoomMemberName.Text = TriviaClient.Strings.ROOM_MEMBER_NAME.Replace("[NAME]", roomName.Substring(roomName.IndexOf(' ') + 1, roomName.LastIndexOf('\'') - roomName.IndexOf(' ') - 1));
+                            MemberAnswerTimeout.Text = TriviaClient.Strings.ROOM_QUESTION_TIME.Replace("[ANSWER_TIMEOUT]", state.GetAnswerTimeout() + "");
+                            MemberQuestionCount.Text = TriviaClient.Strings.ROOM_QUESTION_COUNT.Replace("[QUESTIONCOUNT]", "" + state.GetQuestionCount());
+                            FillRoomMemberData(state);
                             SwitchWindow(RoomMemberWindow);
                             connection.GetData().EnterRoom(ToInt(id));
                             connection.SetListener(new RoomMemberPacketListener());
@@ -414,6 +415,25 @@ namespace TriviaClient
                 RoomsList.Items.Clear();
             });
         }
+
+        private void FillRoomMemberData(GetRoomStateResponse state)
+        {
+            MemberConnectedPlayers.Text = TriviaClient.Strings.ROOM_CONNECTED_PLAYERS;
+            MemberConnectedPlayers.Text = MemberConnectedPlayers.Text.Replace("[PLAYERS]", state.GetPlayers().Length + "").Replace("[MAXPLAYERS]", state.GetMaxPlayers() + "");
+        }
+
+        public void FillRoomMemberData(GetPlayersInRoomResponse state)
+        {
+            MemberConnectedPlayers.Text = TriviaClient.Strings.ROOM_CONNECTED_PLAYERS;
+            MemberConnectedPlayers.Text = MemberConnectedPlayers.Text.Replace("[PLAYERS]", state.GetPlayers().Length + "").Replace("[MAXPLAYERS]", state.GetMaxPlayers() + "");
+        }
+
+        public void FillRoomAdminData(GetPlayersInRoomResponse state)
+        {
+            AdminConnectedPlayers.Text = TriviaClient.Strings.ROOM_CONNECTED_PLAYERS;
+            AdminConnectedPlayers.Text = AdminConnectedPlayers.Text.Replace("[PLAYERS]", state.GetPlayers().Length + "").Replace("[MAXPLAYERS]", state.GetMaxPlayers() + "");
+        }
+
 
         private void Cancel_Join_Button_Click(object sender, RoutedEventArgs e)
         {

@@ -6,18 +6,25 @@ using System.Threading.Tasks;
 
 namespace TriviaClient.Responses
 {
-    class GetPlayersInRoomResponse
+    public class GetPlayersInRoomResponse
     {
-        private string[] _players;
-
-        public GetPlayersInRoomResponse(string[] players)
+        private string[] players;
+        private int max_players;
+        public GetPlayersInRoomResponse(string[] players, int max_players)
         {
-            _players = players;
+            this.players = players;
+            this.max_players = max_players;
         }
 
         public string[] GetPlayers()
         {
-            return _players;
+            return players;
         }
+
+        public int GetMaxPlayers()
+        {
+            return max_players;
+        }
+
     }
 }

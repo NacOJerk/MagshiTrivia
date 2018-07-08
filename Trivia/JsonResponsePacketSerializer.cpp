@@ -88,7 +88,7 @@ buffer JsonResponsePacketSerializer::serializeResponse(GetPlayersInRoomResponse 
 	json jsn;
 
 	jsn["players"] = player.getPlayers();
-
+	jsn["max_players"] = player.getMaxPlayers();
 	return encapsule(jsn.dump(), GET_PLAYERS_IN_ROOM_RESPONSE);
 }
 
@@ -148,7 +148,7 @@ buffer JsonResponsePacketSerializer::serializeResponse(GetRoomStateResponse res)
 	jsn["players"] = res.getPlayers();
 	jsn["question_count"] = res.getQuestionCount();
 	jsn["answer_timeout"] = res.getAnswerTimeout();
-
+	jsn["max_players"] = res.getMaxPlayers();
 	return encapsule(jsn.dump(), GET_ROOM_STATE_RESPONSE);
 }
 

@@ -1,4 +1,6 @@
 #include "Room.h"
+#include "GetPlayersInRoomResponse.h"
+#include "JsonResponsePacketSerializer.h"
 
 Room::Room() : m_metadata(), m_users()
 {
@@ -20,6 +22,16 @@ void Room::addUser(LoggedUser& user)
 	user.getRoomData().loggedIn = true;
 	user.getRoomData().isAdmin = m_users.size() > 0 ? false : true;
 	m_users.push_back(user);
+	std::vector<std::string> users;
+	for (auto user : m_users)
+	{
+		users.push_back(user.get().getUsername());
+	}
+	buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(GetPlayersInRoomResponse(users, m_metadata.getMaxPlayers()));
+	for (int i = 0; i < m_users.size() - 1; i++)
+	{
+		m_users[i].get().getClient().getPipeManager().write(buff);
+	}
 }
 
 unsigned int Room::getID() const
@@ -29,7 +41,6 @@ unsigned int Room::getID() const
 
 void Room::removeUser(string username)
 {
-	
 	auto it = m_users.begin();
 	for (it; it != m_users.end(); it++)
 	{
@@ -42,6 +53,16 @@ void Room::removeUser(string username)
 		it->get().getRoomData().loggedIn = false;
 		it->get().getRoomData().isAdmin = false;
 		m_users.erase(it);
+		std::vector<std::string> users;
+		for (auto user : m_users)
+		{
+			users.push_back(user.get().getUsername());
+		}
+		buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(GetPlayersInRoomResponse(users, m_metadata.getMaxPlayers()));
+		for (int i = 0; i < m_users.size(); i++)
+		{
+			m_users[i].get().getClient().getPipeManager().write(buff);
+		}
 	}
 }
 

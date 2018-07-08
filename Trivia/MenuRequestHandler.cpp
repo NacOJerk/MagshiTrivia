@@ -38,7 +38,7 @@ RequestResult MenuRequestHandler::getPlayersInRoom(Request r)
 	{
 		users.push_back(user.get().getUsername());
 	}
-	return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(GetPlayersInRoomResponse(users)), nullptr);
+	return RequestResult(JsonResponsePacketSerializer::getInstance()->serializeResponse(GetPlayersInRoomResponse(users, m_roomManager.getRoom(req.getRoomId()).getData().getMaxPlayers())), nullptr);
 }
 
 RequestResult MenuRequestHandler::getHighscores(Request)
@@ -55,8 +55,6 @@ RequestResult MenuRequestHandler::joinRoom(Request r)
 	IRequestHandler* handler = nullptr;
 	if (status == SUCCESS)
 	{
-		printf("Max users %d\n", m_roomManager.getRoom(req.getRoomId()).getData().getMaxPlayers());
-		printf("Current amout of users %d\n", m_roomManager.getRoom(req.getRoomId()).getAllUsers().size());
 		if (m_roomManager.getRoom(req.getRoomId()).getData().getMaxPlayers() <= m_roomManager.getRoom(req.getRoomId()).getAllUsers().size())
 		{
 			status = FAILED;
