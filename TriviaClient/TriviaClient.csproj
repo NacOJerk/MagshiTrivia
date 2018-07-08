@@ -85,6 +85,7 @@
     <Compile Include="Requests\JsonPacketRequestSerializer.cs" />
     <Compile Include="Requests\LeaveRoomRequest.cs" />
     <Compile Include="Requests\LoginRequest.cs" />
+    <Compile Include="Requests\SendAnswerRequest.cs" />
     <Compile Include="Requests\SignoutRequest.cs" />
     <Compile Include="Requests\SignupRequest.cs" />
     <Compile Include="Requests\StartGameRequest.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="Responses\LeaveRoomResponse.cs" />
     <Compile Include="Responses\LoginResponse.cs" />
     <Compile Include="Responses\LogoutResponse.cs" />
+    <Compile Include="Responses\SendAnswerResponse.cs" />
     <Compile Include="Responses\SendQuestionResponse.cs" />
     <Compile Include="Responses\SendResultsResponse.cs" />
     <Compile Include="Responses\SignupResponse.cs" />

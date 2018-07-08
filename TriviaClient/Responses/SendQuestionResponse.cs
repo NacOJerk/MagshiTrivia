@@ -12,7 +12,7 @@ namespace TriviaClient.Responses
         string[] _answer;
         uint _remaining;
 
-        SendQuestionResponse(string question, string[] answers, uint remaining)
+        public SendQuestionResponse(string question, string[] answers, uint remaining)
         {
             _question = question;
             _answer = answers;

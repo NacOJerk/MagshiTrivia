@@ -10,7 +10,7 @@ namespace TriviaClient.Responses
     {
         int _position;
         string _winner;
-        SendResultsResponse(int position, string winner)
+        public SendResultsResponse(int position, string winner)
         {
             _position = position;
             _winner = winner;

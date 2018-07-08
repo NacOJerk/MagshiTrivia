@@ -21,6 +21,7 @@ void Game::runGame()
 	{
 		locked_container<bool> running = _running;
 		((bool&)running) = true;
+		_currentQuestionID = 0;
 		sendNextQuestion();
 	}
 	while (true)
@@ -38,7 +39,8 @@ void Game::runGame()
 			{
 				finishGame();
 				(bool&)running = false;
-				std::thread(cleanUp, std::reference_wrapper<locked<bool>>(_running), std::reference_wrapper<GameManager>(_manager), this);//clean up
+				std::thread t(cleanUp, std::reference_wrapper<locked<bool>>(_running), std::reference_wrapper<GameManager>(_manager), this);//clean up
+				t.join();
 				break;
 			}
 			else
@@ -55,7 +57,7 @@ void Game::runGame()
 
 bool Game::lastQuestion()
 {
-	return (_currentQuestionID - 1) == m_question.size();
+	return _currentQuestionID == m_question.size();
 }
 
 byte Game::isRoundOver()
@@ -146,14 +148,17 @@ void Game::sendNextQuestion()
 {
 	if (lastQuestion())
 		throw std::exception("You already reached the last question");
-	_currentQuestion = QuestionData(m_question[_currentQuestionID++]);
-	buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(SendQuestionResponse(_currentQuestion.getQuestion(), _currentQuestion.getAnswers(), m_question.size() - _currentQuestionID - 1));
-	//sending code ffs do this
-	locked_container<std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>> _users = m_players;//locks stuff
-	std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>& users = _users;
-	for (auto user : users)
+	else
 	{
-		user.first.get().getClient().getPipeManager().write(buff);
+		_currentQuestion = QuestionData(m_question[_currentQuestionID++]);
+		buffer buff = JsonResponsePacketSerializer::getInstance()->serializeResponse(SendQuestionResponse(_currentQuestion.getQuestion(), _currentQuestion.getAnswers(), m_question.size() - _currentQuestionID - 1));
+		//sending code ffs do this
+		locked_container<std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>> _users = m_players;//locks stuff
+		std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>& users = _users;
+		for (auto user : users)
+		{
+			user.first.get().getClient().getPipeManager().write(buff);
+		}
 	}
 }
 

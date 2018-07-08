@@ -96,6 +96,11 @@ namespace TriviaClient.Requests
             return Encapsule("", RequestID.GET_STATS_REQUEST);
         }
 
+        public byte[] Seriliaze(SendAnswerRequest request)
+        {
+            return Encapsule(JsonConvert.SerializeObject(request), RequestID.SEND_ANSWER_REQUEST);
+        }
+
         private JsonPacketRequestSerializer()
         {
 

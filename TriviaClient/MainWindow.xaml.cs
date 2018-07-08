@@ -25,39 +25,50 @@ namespace TriviaClient
     public partial class MainWindow : Window
     {
         private Connection connection;
+        private Error error;
 
         public MainWindow()
         {
             InitializeComponent();
             SwitchWindow(LoadingWindow);
+            error = new Error();
+            error.Title = "Connection Error";
+            error.Message.Text = "Couldn't connect to server";
+            error.Closing += OnWindowClosing;
             dynamic thread = new Thread(() => 
             {
                 PipeManager pipe = new PipeManager();
-                try
+                uint tries = 0;
+                do
                 {
-                    this.connection = new Connection("127.0.0.1", 12345, pipe, this);
+                    try
+                    {
+                        
+                        this.connection = new Connection("127.0.0.1", 12345, pipe, this);
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            SwitchWindow(LoginWindow);
+                        });
+                        break;
+                    }
+                    catch (Exception)
+                    {
+                        //Couldnt connect to server
+                        tries++;
+                        
+                    }
+                } while (tries<25);
+                if (this.connection == null)
+                {
                     this.Dispatcher.Invoke(() =>
                     {
-                        SwitchWindow(LoginWindow);
+                        error.Show();
                     });
                 }
-                catch(Exception)
-                {
-                    //Couldnt connect to server
-                    Error error = new Error();
-                    error.Title = "Connection Error";
-                    error.Message.Text = "Couldn't connect to server";
-                    error.Show();
-                    error.Closing += OnWindowClosing;
-                             
-                    return;
-                }
-                
-
             });
+            Closing += OnWindowClosing;
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
-            Closing += OnWindowClosing;
         }
         public void OnWindowClosing(object sender, CancelEventArgs e)
         {
@@ -442,29 +453,29 @@ namespace TriviaClient
             MenuWindow.Visibility = Visibility.Visible;
         }
 
-        private void AnswerQuestion(string answer)
+        private void AnswerQuestion(uint id)
         {
-
+            
         }
 
         private void Answer1_Click(object sender, RoutedEventArgs e)
         {
-            AnswerQuestion(Answer1.ContentStringFormat);
+            AnswerQuestion(0);
         }
 
         private void Answer2_Click(object sender, RoutedEventArgs e)
         {
-            AnswerQuestion(Answer2.ContentStringFormat);
+            AnswerQuestion(1);
         }
 
         private void Answer3_Click(object sender, RoutedEventArgs e)
         {
-            AnswerQuestion(Answer3.ContentStringFormat);
+            AnswerQuestion(2);
         }
 
         private void Answer4_Click(object sender, RoutedEventArgs e)
         {
-            AnswerQuestion(Answer4.ContentStringFormat);
+            AnswerQuestion(3);
         }
 
         private void Create_Room_Window_Button_Click(object sender, RoutedEventArgs e)
