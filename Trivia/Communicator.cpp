@@ -96,9 +96,9 @@ void Communicator::startThreadForNewClient(SOCKET client_socket)
 	{
 		try
 		{
+			Request req = client.getPipeManager().read();
 			locked_container<IRequestHandler*> handl = client.getHandler();
 			IRequestHandler*& handler = handl;
-			Request req = client.getPipeManager().read();
 			if (!(handler)->isRequestRelevant(req))
 			{
 				buffer response = JsonResponsePacketSerializer::getInstance()->serializeResponse(ErrorResponse("Your request does not fit the current state"));
