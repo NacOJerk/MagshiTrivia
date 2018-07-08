@@ -110,10 +110,10 @@
 
         <Canvas Name="QuestionWindow" Visibility="Collapsed">
             <TextBlock Name="Question" TextWrapping="Wrap" FontSize="45" FontFamily="/TriviaClient;component/#Dancing Script" Width="390" Canvas.Left="7" Canvas.Top="59" Text="Enter question here please"/>
-            <Button Name="Answer4" Content="Answer 4" Canvas.Left="26" Canvas.Top="417" Width="353" Height="55" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer4_Click"/>
-            <Button Name="Answer3" Content="Answer 3" Canvas.Left="26" Canvas.Top="354" Width="353" Height="55" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer3_Click"/>
-            <Button Name="Answer2" Content="Answer 2" Canvas.Left="26" Canvas.Top="291" Width="353" Height="55" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer2_Click"/>
-            <Button Name="Answer1" Content="Answer 1" Canvas.Left="26" Canvas.Top="226" Width="353" Height="55" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer1_Click"/>
+            <Button Name="Answer4" Content="Answer 4" Background="#dddddd" Canvas.Left="26" Canvas.Top="417" Width="353" Height="55" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer4_Click"/>
+            <Button Name="Answer3" Content="Answer 3" Background="#dddddd" Canvas.Left="26" Canvas.Top="354" Width="353" Height="55" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer3_Click"/>
+            <Button Name="Answer2" Content="Answer 2" Background="#dddddd" Canvas.Left="26" Canvas.Top="291" Width="353" Height="55" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer2_Click"/>
+            <Button Name="Answer1" Content="Answer 1" Background="#dddddd" Canvas.Left="26" Canvas.Top="226" Width="353" Height="55" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer1_Click"/>
             <TextBlock Name="Timer" Canvas.Left="150" TextWrapping="Wrap" Text="00:00" TextAlignment="Center" FontSize="35" Canvas.Top="12" Height="46" Width="100"/>
         </Canvas>
 

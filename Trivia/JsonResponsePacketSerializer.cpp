@@ -108,19 +108,15 @@ buffer JsonResponsePacketSerializer::serializeResponse(CreateRoomResponse res)
 
 buffer JsonResponsePacketSerializer::serializeResponse(HighscoreResponse res)
 {
-	
 	json jsn;
-	vector<json> users;
 	vector<Highscore> scores = res.getHighscores();
+	string highs = "";
 	for (auto score : scores)
 	{
-		json j;
-		j["name"] = score.getUsername();
-		j["score"] = score.getScore();
-		users.push_back(j);
+		highs += score.getUsername() + "\r" + std::to_string(score.getScore()) + "\n";
 	}
 	jsn["status"] = res.getStatus();
-	jsn["scores"] = users;
+	jsn["scores"] = highs;
 	return encapsule(jsn.dump(), HIGHSCORE_RESPONSE);;
 }
 

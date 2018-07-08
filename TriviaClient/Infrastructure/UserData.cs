@@ -10,6 +10,7 @@ namespace TriviaClient.infrastructure
     {
         private string username;
         private int roomId;
+        private uint time;
 
         public UserData()
         {
@@ -61,6 +62,16 @@ namespace TriviaClient.infrastructure
         public void LeaveRoom()
         {
             roomId = -1;
+        }
+
+        public void SetTime(uint _time)
+        {
+            time = _time;
+        }
+
+        public uint GetTime()
+        {
+            return time;
         }
     }
 }

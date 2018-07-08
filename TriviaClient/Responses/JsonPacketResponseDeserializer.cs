@@ -84,7 +84,9 @@ namespace TriviaClient.Responses
 
         public GetHighscoresResponse DeserializeGetHighscoresResponse(byte[] buff)
         {
-            return JsonConvert.DeserializeObject<GetHighscoresResponse>(Decapsule(buff));
+            string bnla = Decapsule(buff);
+            Console.WriteLine(bnla);
+            return JsonConvert.DeserializeObject<GetHighscoresResponse>(bnla);
         }
 
         public GetStatsResponse DeserializeGetStatsResponse(byte[] buff)

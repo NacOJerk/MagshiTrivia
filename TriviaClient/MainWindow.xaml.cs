@@ -321,6 +321,13 @@ namespace TriviaClient
             });
         }
 
+        private void ResetAdminRoom()
+        {
+                AdminQuestionCount.Text = "[questions] questions in this room";
+                AdminAnswerTimeout.Text = "Only [time] seconds to answer";
+                AdminConnectedPlayers.Text = "[players]/[max] players in the room";
+        }
+
         private void Close_Room_Button_Click(object sender, RoutedEventArgs e)
         {
             CloseRoomRequest request = new CloseRoomRequest(connection.GetData().GetRoomId());
@@ -332,9 +339,7 @@ namespace TriviaClient
                     return;
                 }
                 connection.SetListener(new MenuPacketListener());
-                AdminQuestionCount.Text = "[questionCount] questions in this room";
-                AdminAnswerTimeout.Text = "Only [answerTimeout] seconds to answer";
-                AdminConnectedPlayers.Text = "[players]/[maxPlayers] players in the room";
+                ResetAdminRoom();
                 connection.GetData().LeaveRoom();
                 SwitchWindow(MenuWindow);
             });
@@ -360,6 +365,7 @@ namespace TriviaClient
                 }
                 else
                 {
+                    ResetAdminRoom();
                     ev.GetConnection().GetData().LeaveRoom();
                     ev.GetConnection().SetListener(new GamePacketListener());
                     LoadingMessage.Text = "Starting game";
@@ -412,6 +418,7 @@ namespace TriviaClient
                         else
                         {
                             GetRoomStateResponse state = JsonPacketResponseDeserializer.GetInstance().DeserializeGetRoomStateResponse(eve.GetResponse().GetBuffer());
+                            connection.GetData().SetTime((uint)state.GetAnswerTimeout());
                             string roomName = RoomsList.SelectedItem.ToString();
                             RoomMemberName.Text = TriviaClient.Strings.ROOM_MEMBER_NAME.Replace("[NAME]", roomName.Substring(roomName.IndexOf(' ') + 1, roomName.LastIndexOf('\'') - roomName.IndexOf(' ') - 1));
                             MemberAnswerTimeout.Text = TriviaClient.Strings.ROOM_QUESTION_TIME.Replace("[ANSWER_TIMEOUT]", state.GetAnswerTimeout() + "");
@@ -442,7 +449,7 @@ namespace TriviaClient
         public void FillRoomAdminData(GetPlayersInRoomResponse state)
         {
             AdminConnectedPlayers.Text = TriviaClient.Strings.ROOM_CONNECTED_PLAYERS;
-            AdminConnectedPlayers.Text = AdminConnectedPlayers.Text.Replace("[PLAYERS]", state.GetPlayers().Length + "").Replace("[MAXPLAYERS]", state.GetMaxPlayers() + "");
+            AdminConnectedPlayers.Text = AdminConnectedPlayers.Text.Replace("[players]", state.GetPlayers().Length + "").Replace("[MAXPLAYERS]", state.GetMaxPlayers() + "");
         }
 
 
@@ -455,6 +462,13 @@ namespace TriviaClient
 
         private void AnswerQuestion(uint id)
         {
+            Button[] answers = { Answer1, Answer2, Answer3, Answer4 };
+            answers[id].Background = Brushes.Gray;
+            for(int i = 0; i < 4; i++)
+            {
+                answers[i].IsEnabled = false;
+            }
+            
             SendAnswerRequest request = new SendAnswerRequest(id);
             byte[] buffer = JsonPacketRequestSerializer.GetInstance().Seriliaze(request);
             this.connection.Send(buffer, (PacketEvent ev) =>
@@ -513,6 +527,7 @@ namespace TriviaClient
                 if (resp.GetID() != 0)
                 {
                     ev.GetConnection().SetListener(new RoomAdminPacketListener());
+                    connection.GetData().SetTime((uint)questionTimeout);
                     //We can add it so in here it will switch to the new one watch
                     string timeout = AdminAnswerTimeout.Text, people = AdminConnectedPlayers.Text, count = AdminQuestionCount.Text;
                     timeout = timeout.Replace("[time]", questionTimeout.ToString());
