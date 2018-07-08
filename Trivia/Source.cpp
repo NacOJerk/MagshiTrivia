@@ -6,7 +6,7 @@
 #include <iostream>
 #include <time.h>
 
-#define PRIME_MAX 10'000
+#define PRIME_MAX 65'000
 #define E_MIN 100
 #define E_MAX 500
 

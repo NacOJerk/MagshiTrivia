@@ -107,6 +107,18 @@ namespace RSA
 			return u;
 		}
 
+		std::pair<integer, std::pair<integer, integer> > extendedEuclid(integer a, integer b) {
+			if (a == 0) return std::make_pair(b, std::make_pair(0, 1));
+			std::pair<integer, std::pair<integer, integer> > p;
+			p = extendedEuclid(b % a, a);
+			return std::make_pair(p.first, std::make_pair(p.second.second - p.second.first*(b / a), p.second.first));
+		}
+
+		integer getPrivateKey(integer e, integer phi)
+		{
+			return (extendedEuclid(e, phi).second.first + phi) % phi;
+		}
+
 		integer getCoPrime(integer low, integer up, const integer& phi)
 		{
 			if (phi < up)
@@ -117,15 +129,6 @@ namespace RSA
 				if (GCD(test, phi) == 1)
 					return test;
 			}
-		}
-
-		integer getPrivateKey(integer e, integer phi)
-		{
-			e = e%phi;
-			for (integer x = 1; x<phi; x++)
-				if ((e*x) % phi == 1)
-					return x;
-			return -1;
 		}
 
 		integer popBuff(std::deque<byte>& buff)
