@@ -136,7 +136,7 @@ void Game::finishGame()
 		{
 			user.first.get().getClient().getPipeManager().write( JsonResponsePacketSerializer::getInstance()->serializeResponse(SendResultsResponse(poses[user.first.get().getUsername()], results)));
 			locked_container<IRequestHandler*> _handler = user.first.get().getClient().getHandler();
-			IRequestHandler* handler = _handler;
+			IRequestHandler*& handler = _handler;
 			delete handler;
 			handler = _factory.createMenuRequestHandler(user.first);
 			user.first.get().getRoomData().game = 0;
@@ -171,7 +171,7 @@ void Game::sendHome()
 	{
 		user.first.get().getClient().getPipeManager().write(buff);
 		locked_container<IRequestHandler*> _handler = user.first.get().getClient().getHandler();
-		IRequestHandler* handler = _handler;
+		IRequestHandler*& handler = _handler;
 		delete handler;
 		handler = _factory.createMenuRequestHandler(user.first);
 		user.first.get().getRoomData().game = 0;
@@ -208,11 +208,21 @@ bool Game::operator==(const unsigned int & b) const
 
 void Game::start()
 {
+	{
+		locked_container<std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>> _users = m_players;//locks stuff
+		std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>& users = _users;
+		for (auto user : users)
+		{
+			user.first.get().getRoomData().id = 0;
+			user.first.get().getRoomData().isAdmin = false;
+		}
+	}
 	_tr = std::thread(&Game::runGame, this);//and cabamo game running	
 }
 
 void Game::submitAnswer(LoggedUser & user, unsigned int answer, time_t time)
 {
+	printf("%s submitted an answer\n", user.getUsername().c_str());
 	locked_container<bool> running = _running;//This is used to synchronize stuff
 	locked_container<std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>> _users = m_players;//locks stuff
 	std::map<std::reference_wrapper<LoggedUser>, GameData, std::less<const LoggedUser>>& users = _users;

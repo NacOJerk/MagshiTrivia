@@ -104,7 +104,7 @@ RequestResult RoomAdminRequestHandler::startGame(Request request)
 		_handler = m_handlerFactory.createGameRequestHandler(m_user, game);
 		game.start();
 	}
-	catch (std::exception)
+	catch (std::exception e)
 	{
 		success = FAILED;
 	}
