@@ -43,20 +43,20 @@
         <Canvas Name="SignupWindow" Visibility="Collapsed">
             <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="75" Text="Signup" VerticalAlignment="Top" Height="96" Width="363" Canvas.Top="20" Canvas.Left="23"/>
             <TextBlock Height="46" Canvas.Left="19"  Text="Username:" Canvas.Top="160" Width="142" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35"/>
-            <TextBox Name="SignupEmail" Height="46" Canvas.Left="161" TextWrapping="Wrap" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Canvas.Top="294" Width="218"/>
+            <TextBox Name="SignupUsername" Height="46" Canvas.Left="163" TextWrapping="Wrap" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Canvas.Top="160" Width="218"/>
             <TextBlock Height="46" Canvas.Left="19"  Text="Password:" Canvas.Top="227" Width="142" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35"/>
             <PasswordBox Name="SignupPassword" Canvas.Left="161" Canvas.Top="227" Height="46" Width="218" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35"/>
-            <Button Canvas.Left="77" Canvas.Top="351" Width="250" Height="75" Click="Signup_Button_Click" Content="Signup" FontSize="50" FontFamily="/TriviaClient;component/#Dancing Script"/>
             <TextBlock TextWrapping="Wrap" Text="Already have an account? Login now!" TextAlignment="Center" Canvas.Top="443" Width="410" Height="30" FontSize="20" FontFamily="/TriviaClient;component/#Dancing Script" Foreground="Blue" PreviewMouseLeftButtonDown="Login_Text_Click"/>
             <TextBlock Height="46" Canvas.Left="19"  Text="Email:" Canvas.Top="294" Width="142" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35"/>
-            <TextBox Name="SignupUsername" Height="46" Canvas.Left="163" TextWrapping="Wrap" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Canvas.Top="160" Width="218"/>
+            <TextBox Name="SignupEmail" Height="46" Canvas.Left="161" TextWrapping="Wrap" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Canvas.Top="294" Width="218"/>
+            <Button Canvas.Left="77" Canvas.Top="351" Width="250" Height="75" Click="Signup_Button_Click" Content="Signup" FontSize="50" FontFamily="/TriviaClient;component/#Dancing Script"/>
         </Canvas>
 
         <Canvas Name="MenuWindow" Visibility="Collapsed">
             <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="75" VerticalAlignment="Top" Height="96" Width="363" Canvas.Top="20" Canvas.Left="23" Text="Hello"/>
             <Button Content="Join Room" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="45" Canvas.Top="208" Width="280" Height="71" Canvas.Left="65" Click="Join_Room_Button_Click"/>
-            <Button Content="Logout" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="45" Canvas.Top="404" Width="280" Height="71" Canvas.Left="65" Click="Logout_Button_Click"/>
             <Button Content="Create Room" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="45" Canvas.Top="307" Width="280" Height="71" Canvas.Left="65" Click="Create_Room_Button_Click"/>
+            <Button Content="Logout" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="45" Canvas.Top="404" Width="280" Height="71" Canvas.Left="65" Click="Logout_Button_Click"/>
             <TextBlock Name="MenuUsername" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="75" VerticalAlignment="Top" Height="96" Width="363" Canvas.Left="23" Canvas.Top="91" Text="Username"/>
             <Image Height="50" Canvas.Left="343" Canvas.Top="10" Width="50" Source="stats.png" PreviewMouseLeftButtonDown="Stats_Image_Click"/>
         </Canvas>
@@ -93,11 +93,11 @@
 
         <Canvas Name="RoomAdminWindow" Visibility="Collapsed">
             <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="75" Text="Your Room" VerticalAlignment="Top" Height="90" Width="363" Canvas.Left="23" Canvas.Top="26"/>
-            <Button Name="AdminCloseRoom" Content="Close Room" Canvas.Left="90" Canvas.Top="390" Width="230" Height="80" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35" Click="Close_Room_Button_Click"/>
             <TextBlock Name="AdminConnectedPlayers" Height="46"  Text="[players]/[max] players in the room" Canvas.Top="136" Width="410" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35" TextAlignment="Center"/>
             <TextBlock x:Name="AdminQuestionCount" Height="46"  Text="[questions] questions in this room" Canvas.Top="186" Width="410" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35" TextAlignment="Center"/>
             <TextBlock x:Name="AdminAnswerTimeout" Height="46"  Text="Only [time] seconds to answer" Canvas.Top="241" Width="410" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35" TextAlignment="Center"/>
             <Button x:Name="AdminStartGame" Content="Start Game" Canvas.Left="90" Canvas.Top="290" Width="230" Height="80" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35" Click="Start_Game_Button_Click"/>
+            <Button Name="AdminCloseRoom" Content="Close Room" Canvas.Left="90" Canvas.Top="390" Width="230" Height="80" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35" Click="Close_Room_Button_Click"/>
         </Canvas>
 
         <Canvas Name="JoinRoomWindow" Visibility="Collapsed">
@@ -109,23 +109,24 @@
         </Canvas>
 
         <Canvas Name="QuestionWindow" Visibility="Collapsed">
-            <TextBlock Name="Question" TextWrapping="Wrap" FontSize="45" FontFamily="/TriviaClient;component/#Dancing Script" Width="390" Canvas.Left="7" Canvas.Top="59" Text="Enter question here please"/>
-            <Button Name="Answer4" Content="Answer 4" Background="#dddddd" Canvas.Left="26" Canvas.Top="417" Width="353" Height="55" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer4_Click"/>
-            <Button Name="Answer3" Content="Answer 3" Background="#dddddd" Canvas.Left="26" Canvas.Top="354" Width="353" Height="55" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer3_Click"/>
-            <Button Name="Answer2" Content="Answer 2" Background="#dddddd" Canvas.Left="26" Canvas.Top="291" Width="353" Height="55" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer2_Click"/>
-            <Button Name="Answer1" Content="Answer 1" Background="#dddddd" Canvas.Left="26" Canvas.Top="226" Width="353" Height="55" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer1_Click"/>
+            <TextBlock Name="Question" TextWrapping="Wrap" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Width="390" Canvas.Left="7" Canvas.Top="59" Text="Enter question here please"/>
+            <Button Name="Answer1" Content="Answer 1" Background="#dddddd" Canvas.Left="26" Canvas.Top="226" Width="353" Height="55" FontSize="25" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer1_Click"/>
+            <Button Name="Answer2" Content="Answer 2" Background="#dddddd" Canvas.Left="26" Canvas.Top="291" Width="353" Height="55" FontSize="25" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer2_Click"/>
+            <Button Name="Answer3" Content="Answer 3" Background="#dddddd" Canvas.Left="26" Canvas.Top="354" Width="353" Height="55" FontSize="25" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer3_Click"/>
+            <Button Name="Answer4" Content="Answer 4" Background="#dddddd" Canvas.Left="26" Canvas.Top="417" Width="353" Height="55" FontSize="25" FontFamily="/TriviaClient;component/#Dancing Script" Click="Answer4_Click"/>
             <TextBlock Name="Timer" Canvas.Left="150" TextWrapping="Wrap" Text="00:00" TextAlignment="Center" FontSize="35" Canvas.Top="12" Height="46" Width="100"/>
         </Canvas>
 
-        <Canvas Name="CreateRoomWindow" Visibility="Collapsed">
+        <Canvas Name="CreateRoomWindow" Visibility="Visible">
             <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="75" Text="Create Room" VerticalAlignment="Top" Height="90" Width="363" Canvas.Left="20" Canvas.Top="26"/>
             <TextBlock Height="46" Canvas.Left="19"  Text="Max Users:" Canvas.Top="160" Width="229" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35"/>
-            <TextBox Name="QuestionTimeout" Height="46" Canvas.Left="253" TextWrapping="Wrap" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Canvas.Top="294" Width="126"/>
+            <TextBox Name="MaxUsers" Height="46" Canvas.Left="253" TextWrapping="Wrap" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Canvas.Top="160" Width="126"/>
             <TextBlock Height="46" Canvas.Left="19"  Text="Question Count:" Canvas.Top="227" Width="313" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35"/>
             <TextBox Name="QuestionCount" Canvas.Left="253" Canvas.Top="227" Height="46" Width="126" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35"/>
-            <Button Canvas.Left="77" Canvas.Top="351" Width="250" Height="75" Click="Create_Room_Window_Button_Click" Content="Create Room" FontSize="50" FontFamily="/TriviaClient;component/#Dancing Script"/>
             <TextBlock Height="46" Canvas.Left="19"  Text="Time Per Answer:" Canvas.Top="294" Width="229" FontFamily="/TriviaClient;component/#Dancing Script" FontSize="35"/>
-            <TextBox Name="MaxUsers" Height="46" Canvas.Left="253" TextWrapping="Wrap" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Canvas.Top="160" Width="126"/>
+            <TextBox Name="QuestionTimeout" Height="46" Canvas.Left="253" TextWrapping="Wrap" FontSize="35" FontFamily="/TriviaClient;component/#Dancing Script" Canvas.Top="294" Width="126"/>
+            <Button Canvas.Left="77" Canvas.Top="355" Width="250" Height="55" Click="Create_Room_Window_Button_Click" Content="Create Room" FontSize="50" FontFamily="/TriviaClient;component/#Dancing Script"/>
+            <Button Canvas.Left="77" Canvas.Top="419" Width="250" Height="55" Click="Cancel_Room_Window_Button_Click" Content="Cancel " FontSize="50" FontFamily="/TriviaClient;component/#Dancing Script"/>
         </Canvas>
 
         <Canvas Name="WinnerWindow" Visibility="Collapsed">

@@ -189,7 +189,6 @@ namespace TriviaClient
                     win.Title = "Signup Error!";
                     win.Message.Text = "Invalid username or email (username might be taken)";
                     win.Show();
-                    win.Close();
                 }
             });
         }
@@ -396,62 +395,65 @@ namespace TriviaClient
 
         private void Choose_Join_Button_Click(object sender, RoutedEventArgs e)
         {
-            string id = RoomsList.SelectedValue.ToString();
-            id = id.Split(')')[0];
-            JoinRoomRequest request = new JoinRoomRequest(ToInt(id));
-            byte[] buff = JsonPacketRequestSerializer.GetInstance().Seriliaze(request);
-            this.connection.Send(buff, (PacketEvent ev) =>
+            if (RoomsList.SelectedValue != null)
             {
-                if (ev.GetResponse().GetID() != Utils.ResponseID.JOIN_ROOM_RESPONSE)
+                string id = RoomsList.SelectedValue.ToString();
+                id = id.Split(')')[0];
+                JoinRoomRequest request = new JoinRoomRequest(ToInt(id));
+                byte[] buff = JsonPacketRequestSerializer.GetInstance().Seriliaze(request);
+                this.connection.Send(buff, (PacketEvent ev) =>
                 {
+                    if (ev.GetResponse().GetID() != Utils.ResponseID.JOIN_ROOM_RESPONSE)
+                    {
                     //some error
                     return;
-                }
-                JoinRoomResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeJoinRoomResponse(ev.GetResponse().GetBuffer());
-                if (resp.GetStatus() == 0)
-                {
-                    Error win = new Error();
-                    win.Title = "Join Room Error";
-                    win.Message.Text = "An error occured while trying to join room";
-                    win.Show();
-                    SwitchWindow(MenuWindow);
-                }
-                else
-                {
-                    GetRoomStateRequest req = new GetRoomStateRequest(ToInt(id));
-                    byte[] buffer = JsonPacketRequestSerializer.GetInstance().Seriliaze(req);
-                    this.connection.Send(buffer, (PacketEvent eve) =>
+                    }
+                    JoinRoomResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeJoinRoomResponse(ev.GetResponse().GetBuffer());
+                    if (resp.GetStatus() == 0)
                     {
-                        if(eve.GetResponse().GetID() != Utils.ResponseID.GET_ROOM_STATE_RESPONSE)
+                        Error win = new Error();
+                        win.Title = "Join Room Error";
+                        win.Message.Text = "An error occured while trying to join room";
+                        win.Show();
+                        SwitchWindow(MenuWindow);
+                    }
+                    else
+                    {
+                        GetRoomStateRequest req = new GetRoomStateRequest(ToInt(id));
+                        byte[] buffer = JsonPacketRequestSerializer.GetInstance().Seriliaze(req);
+                        this.connection.Send(buffer, (PacketEvent eve) =>
                         {
-                            Error win = new Error();
-                            win.Title = "Join Room Error";
-                            win.Message.Text = "An error occured while trying to join room";
-                            if(eve.GetResponse().GetID() == Utils.ResponseID.ERROR_RESPONSE)
+                            if (eve.GetResponse().GetID() != Utils.ResponseID.GET_ROOM_STATE_RESPONSE)
                             {
-                                ErrorResponse res = JsonPacketResponseDeserializer.GetInstance().DeserializeErrorResponse(eve.GetResponse().GetBuffer());
-                                win.Message.Text = res.GetMessage();
+                                Error win = new Error();
+                                win.Title = "Join Room Error";
+                                win.Message.Text = "An error occured while trying to join room";
+                                if (eve.GetResponse().GetID() == Utils.ResponseID.ERROR_RESPONSE)
+                                {
+                                    ErrorResponse res = JsonPacketResponseDeserializer.GetInstance().DeserializeErrorResponse(eve.GetResponse().GetBuffer());
+                                    win.Message.Text = res.GetMessage();
+                                }
+                                win.Show();
+                                SwitchWindow(MenuWindow);
                             }
-                            win.Show();
-                            SwitchWindow(MenuWindow);
-                        }
-                        else
-                        {
-                            GetRoomStateResponse state = JsonPacketResponseDeserializer.GetInstance().DeserializeGetRoomStateResponse(eve.GetResponse().GetBuffer());
-                            connection.GetData().SetTime((uint)state.GetAnswerTimeout());
-                            string roomName = RoomsList.SelectedItem.ToString();
-                            RoomMemberName.Text = TriviaClient.Strings.ROOM_MEMBER_NAME.Replace("[NAME]", roomName.Substring(roomName.IndexOf(' ') + 1, roomName.LastIndexOf('\'') - roomName.IndexOf(' ') - 1));
-                            MemberAnswerTimeout.Text = TriviaClient.Strings.ROOM_QUESTION_TIME.Replace("[ANSWER_TIMEOUT]", state.GetAnswerTimeout() + "");
-                            MemberQuestionCount.Text = TriviaClient.Strings.ROOM_QUESTION_COUNT.Replace("[QUESTIONCOUNT]", "" + state.GetQuestionCount());
-                            FillRoomMemberData(state);
-                            SwitchWindow(RoomMemberWindow);
-                            connection.GetData().EnterRoom(ToInt(id));
-                            connection.SetListener(new RoomMemberPacketListener());
-                        }
-                    });
-                }
-                RoomsList.Items.Clear();
-            });
+                            else
+                            {
+                                GetRoomStateResponse state = JsonPacketResponseDeserializer.GetInstance().DeserializeGetRoomStateResponse(eve.GetResponse().GetBuffer());
+                                connection.GetData().SetTime((uint)state.GetAnswerTimeout());
+                                string roomName = RoomsList.SelectedItem.ToString();
+                                RoomMemberName.Text = TriviaClient.Strings.ROOM_MEMBER_NAME.Replace("[NAME]", roomName.Substring(roomName.IndexOf(' ') + 1, roomName.LastIndexOf('\'') - roomName.IndexOf(' ') - 1));
+                                MemberAnswerTimeout.Text = TriviaClient.Strings.ROOM_QUESTION_TIME.Replace("[ANSWER_TIMEOUT]", state.GetAnswerTimeout() + "");
+                                MemberQuestionCount.Text = TriviaClient.Strings.ROOM_QUESTION_COUNT.Replace("[QUESTIONCOUNT]", "" + state.GetQuestionCount());
+                                FillRoomMemberData(state);
+                                SwitchWindow(RoomMemberWindow);
+                                connection.GetData().EnterRoom(ToInt(id));
+                                connection.SetListener(new RoomMemberPacketListener());
+                            }
+                        });
+                    }
+                    RoomsList.Items.Clear();
+                });
+            }
         }
 
         private void FillRoomMemberData(GetRoomStateResponse state)
@@ -497,15 +499,6 @@ namespace TriviaClient
                 {
                     Console.WriteLine("Oh shittttttttt");
                     return;
-                }
-                SendAnswerResponse resp = JsonPacketResponseDeserializer.GetInstance().DeserializeSendAnswerResponse(ev.GetResponse().GetBuffer());
-                if(resp.GetStatus() == 1)
-                {
-                    //Everything is fine
-                }
-                else
-                {
-                    //RUNNNN FOR YOUR LIFEEEE
                 }
             });
         }
@@ -565,9 +558,16 @@ namespace TriviaClient
                     win.Title = "Create Room Error!";
                     win.Message.Text = "something";
                     win.Show();
-                    win.Close();
                 }
             });
+        }
+
+        private void Cancel_Room_Window_Button_Click(object sender, RoutedEventArgs e)
+        {
+            MaxUsers.Text = "";
+            QuestionCount.Text = "";
+            QuestionTimeout.Text = "";
+            SwitchWindow(MenuWindow);
         }
 
         private void Winner_Button_Click(object sender, RoutedEventArgs e)
@@ -581,6 +581,8 @@ namespace TriviaClient
             int num = 0;
             foreach(char c in text)
             {
+                if (!(c >= '0' && c <= '9'))
+                    continue;
                 num *= 10;
                 num += c - '0';
             }
