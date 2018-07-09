@@ -127,7 +127,7 @@ void Game::finishGame()
 		//Sorting results
 		std::sort(results.begin(), results.end(), [](PlayerResult a, PlayerResult b)
 		{
-			return a.currectAnswers > b.currectAnswers;
+			return a.currectAnswers == b.currectAnswers ? a.averageTime > b.averageTime : a.currectAnswers > b.currectAnswers;
 		});
 		//Preparing for data sending
 		for (unsigned int i = 0, size = results.size(); i < size; i++)

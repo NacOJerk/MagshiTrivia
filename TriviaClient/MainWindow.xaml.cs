@@ -226,6 +226,9 @@ namespace TriviaClient
 
         private void Create_Room_Button_Click(object sender, RoutedEventArgs e)
         {
+            QuestionTimeout.Text = "";
+            QuestionCount.Text = "";
+            MaxUsers.Text = "";
             SwitchWindow(CreateRoomWindow);
         }
 
@@ -306,10 +309,10 @@ namespace TriviaClient
                     return;
                 }
                 GetStatsResponse response = JsonPacketResponseDeserializer.GetInstance().DeserializeGetStatsResponse(ev.GetResponse().GetBuffer());
-                StupidityRate.Text = "Stupidity Rate: " + response.GetStupidityRate() + "%";
-                WinningRate.Text = "Winning Rate: " + response.GetWinRate() + "%";
-                AverageTime.Text = "Average Time Per Questions: " + response.GetAverageTime();
-                CorrectAnswersRate.Text = "Correct Answers Rate: " + response.GetSuccessRate() + "%";
+                StupidityRate.Text = "Stupidity Rate: " + (int) response.GetStupidityRate() + "%";
+                WinningRate.Text = "Winning Rate: " + (int) response.GetWinRate() + "%";
+                AverageTime.Text = "Average Time Per Questions: " + (int) response.GetAverageTime() + " (s)";
+                CorrectAnswersRate.Text = "Correct Answers Rate: " + (int) response.GetSuccessRate() + "%";
                 SwitchWindow(StatsWindow);
             });
         }
@@ -458,7 +461,7 @@ namespace TriviaClient
         public void FillRoomAdminData(GetPlayersInRoomResponse state)
         {
             AdminConnectedPlayers.Text = TriviaClient.Strings.ROOM_CONNECTED_PLAYERS;
-            AdminConnectedPlayers.Text = AdminConnectedPlayers.Text.Replace("[players]", state.GetPlayers().Length + "").Replace("[MAXPLAYERS]", state.GetMaxPlayers() + "");
+            AdminConnectedPlayers.Text = AdminConnectedPlayers.Text.Replace("[PLAYERS]", state.GetPlayers().Length + "").Replace("[MAXPLAYERS]", state.GetMaxPlayers() + "");
         }
 
 

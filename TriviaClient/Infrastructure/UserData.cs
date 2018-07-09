@@ -11,7 +11,8 @@ namespace TriviaClient.infrastructure
         private string username;
         private int roomId;
         private uint time;
-
+        private uint timerThread;
+        
         public UserData()
         {
             username = "";
@@ -73,5 +74,16 @@ namespace TriviaClient.infrastructure
         {
             return time;
         }
+
+        public uint GetTimerThread()
+        {
+            return timerThread;
+        }
+
+        public void IncreateTimeThread()
+        {
+            ++timerThread;
+        }
+
     }
 }

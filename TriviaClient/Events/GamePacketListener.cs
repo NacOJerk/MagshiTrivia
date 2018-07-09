@@ -73,6 +73,8 @@ namespace TriviaClient.Events
         {
             dynamic thread = new Thread(() =>
             {
+                e.GetConnection().GetData().IncreateTimeThread();
+                uint timerId = e.GetConnection().GetData().GetTimerThread();
                 uint timer = e.GetConnection().GetData().GetTime();
                 do
                 {
@@ -82,7 +84,7 @@ namespace TriviaClient.Events
                     });
                     timer--;
                     Thread.Sleep(1000);
-                } while (timer > 0);
+                } while (timer > 0 && timerId == e.GetConnection().GetData().GetTimerThread());
             });
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
