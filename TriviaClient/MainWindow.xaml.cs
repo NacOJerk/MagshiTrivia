@@ -265,6 +265,14 @@ namespace TriviaClient
                 TextBlock[] textBlocks = { HighscoresFirst, HighscoresSecond, HighscoresThird, HighscoresForth, HighscoresFifth };
                 for(int i = 0; i < 5; i++)
                 {
+                    if(i == highscores.Length)
+                    {
+                        for(int j = i; j < 5; j++)
+                        {
+                            textBlocks[j].Visibility = Visibility.Collapsed;
+                        }
+                        break;
+                    }
                     textBlocks[i].Text = (i + 1) + ". " + highscores[i]["name"] + ": " + highscores[i]["score"];
                 }
                 ClearStats();
@@ -277,6 +285,7 @@ namespace TriviaClient
             TextBlock[] textBlocks = { HighscoresFirst, HighscoresSecond, HighscoresThird, HighscoresForth, HighscoresFifth };
             for (int i = 0; i < 5; i++)
             {
+                textBlocks[i].Visibility = Visibility.Visible;
                 textBlocks[i].Text = (i + 1) + ". Username: 0";
             }
             SwitchWindow(MenuWindow);

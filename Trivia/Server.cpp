@@ -15,7 +15,7 @@ Communicator& Server::getCommunicator()
 
 void Server::run()
 {
-	m_database.open("GOD.DB");
+	m_database.open("TriviaData.DB");
 	m_communicator.start(12345);
 	while (true)
 	{
