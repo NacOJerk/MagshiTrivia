@@ -39,12 +39,12 @@ namespace TriviaClient
             {
                 PipeManager pipe = new PipeManager();
                 uint tries = 0;
-                do
+                string[] config = System.IO.File.ReadAllLines("config.txt");
+                while (tries < 25 && config.Length == 2)
                 {
                     try
                     {
-                        
-                        this.connection = new Connection("127.0.0.1", 12345, pipe, this);
+                        this.connection = new Connection(config[0], ToInt(config[1]), pipe, this);
                         this.Dispatcher.Invoke(() =>
                         {
                             SwitchWindow(LoginWindow);
@@ -57,9 +57,17 @@ namespace TriviaClient
                         tries++;
                         
                     }
-                } while (tries<25);
+                }
                 if (this.connection == null)
                 {
+                    if(tries < 25)
+                    {
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            error.Title = "Bad config file";
+                            error.Message.Text = "The first line should have the host ip and the second the port";
+                        });
+                    }
                     this.Dispatcher.Invoke(() =>
                     {
                         error.Show();
